@@ -1,0 +1,1396 @@
+{
+  "0A9B4653-B11E-4D6A-850E-C6FCB621626C" : {
+    "objectMetadataList" : [
+      [
+        "0A9B4653-B11E-4D6A-850E-C6FCB621626C",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "0BA49D09-1004-472B-BE65-FDF58697A6BF" : {
+    "objectMetadataList" : [
+      [
+        "0BA49D09-1004-472B-BE65-FDF58697A6BF",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6" : {
+    "objectMetadataList" : [
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root",
+        "Watcher_27",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root",
+        "Watcher_27",
+        "Head",
+        "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root",
+        "Watcher_27",
+        "Head"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root",
+        "Watcher_27"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "1D572CEB-057A-41C3-B575-04C37501A3C0" : {
+    "objectMetadataList" : [
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root",
+        "Cube"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root",
+        "Explosion"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root",
+        "Sphere_Left"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root",
+        "Sphere_Right"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "251D95AC-8541-46E4-A701-FB70DF8D96F3" : {
+    "objectMetadataList" : [
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Light_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Light_Crossbow_Armature",
+        "Light_Crossbow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Short_Bow_Armature",
+        "Short_Bow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Repeating_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Heavy_Crossbow_Armature",
+        "Heavy_Crossbow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Arrow_26_inch_"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Arrow_32_inch"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_2_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_Armature",
+        "Recurve_Bow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Hand_Crossbow_Armature",
+        "Hand_Crossbow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Short_Bow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Horn_Bow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Heavy_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Crossbow_Bolt_5_inch"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Crossbow_Bolt_10_inch"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Repeating_Crossbow_Armature",
+        "Repeating_Crossbow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_2_Armature",
+        "Recurve_Bow_2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Hand_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Horn_Bow_Armature",
+        "Horn_Bow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "2831F438-0943-4498-821C-EF5AA3F737C8" : {
+    "objectMetadataList" : [
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandscapeScene",
+        "Gledista_Triacanthos_n3d"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
+        "Gledista_Triacanthos_n3d",
+        "default_group_n3d5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
+        "material",
+        "MATERIAL__14"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandscapeScene",
+        "Gledista_Triacanthos_n3d",
+        "default_group_n3d5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
+        "Gledista_Triacanthos_n3d"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
+        "material",
+        "MM_LEAF"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "2C22FBE8-5E97-400C-B49B-5E83B0ED562F" : {
+    "objectMetadataList" : [
+      [
+        "2C22FBE8-5E97-400C-B49B-5E83B0ED562F",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "3005A0C9-E2FC-41AC-9163-B67B5D0B9BD9" : {
+    "objectMetadataList" : [
+      [
+        "3005A0C9-E2FC-41AC-9163-B67B5D0B9BD9",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "30A43BFB-80D5-4399-B52B-E95BBDD78AB1" : {
+    "objectMetadataList" : [
+
+    ]
+  },
+  "4761986F-DADD-497F-8599-78BB4654132F" : {
+    "objectMetadataList" : [
+      [
+        "4761986F-DADD-497F-8599-78BB4654132F",
+        "Root",
+        "nataUSDwithAnimation",
+        "mtl"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4761986F-DADD-497F-8599-78BB4654132F",
+        "Root",
+        "nataUSDwithAnimation"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "4761986F-DADD-497F-8599-78BB4654132F",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "48344D04-7D55-4362-8BC1-20D43360DDAB" : {
+    "objectMetadataList" : [
+      [
+        "48344D04-7D55-4362-8BC1-20D43360DDAB",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "4B5AD60A-CF8C-4E88-81C5-F45277B33CE7" : {
+    "objectMetadataList" : [
+
+    ]
+  },
+  "5600AD10-685F-437E-BF14-231787F52283" : {
+    "objectMetadataList" : [
+      [
+        "5600AD10-685F-437E-BF14-231787F52283",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5600AD10-685F-437E-BF14-231787F52283",
+        "Root",
+        "BallFlying"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "596F62A4-B03B-4C4C-9431-7EF7BAC49F95" : {
+    "objectMetadataList" : [
+
+    ]
+  },
+  "6244253D-3103-42FC-8824-EE111AF49BDC" : {
+    "objectMetadataList" : [
+      [
+        "6244253D-3103-42FC-8824-EE111AF49BDC",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "RainbowBody"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6244253D-3103-42FC-8824-EE111AF49BDC",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "cloud_002_anim"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6244253D-3103-42FC-8824-EE111AF49BDC",
+        "Root",
+        "UpdatedGrumpyScene2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6244253D-3103-42FC-8824-EE111AF49BDC",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "65F6F990-A780-4474-B78B-572E0E4E273D" : {
+    "objectMetadataList" : [
+      [
+        "65F6F990-A780-4474-B78B-572E0E4E273D",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "675B0194-BF5E-4905-9349-3E1B9AFDE518" : {
+    "objectMetadataList" : [
+      [
+        "675B0194-BF5E-4905-9349-3E1B9AFDE518",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "675B0194-BF5E-4905-9349-3E1B9AFDE518",
+        "Root",
+        "Watcher_27"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "68E64CFB-BF5F-4BD1-B428-B54C072596E8" : {
+    "objectMetadataList" : [
+      [
+        "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
+        "Root",
+        "Nature_Compatible_Engine_animated",
+        "SkinnedMeshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
+        "Root",
+        "Nature_Compatible_Engine_animated",
+        "SkinnedMeshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
+        "Root",
+        "Nature_Compatible_Engine_animated"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
+        "Root",
+        "Nature_Compatible_Engine_animated",
+        "Meshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "6C467EEA-42FA-464C-83CB-8C822D347DD7" : {
+    "objectMetadataList" : [
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsmax",
+        "Bones"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "Root",
+        "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Materials",
+        "material",
+        "REDMAT"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsFBX_RCP",
+        "joint1",
+        "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsmax",
+        "joint1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsFBX_RCP",
+        "joint1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "Root",
+        "DragonTheUsurperSK_geometry"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Materials",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "usurper",
+        "light_set"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Bow",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Bow",
+        "SkinnedMeshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "light_set"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Sling"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsFBX_RCP",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "usurper",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "LandsapeScene",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E" : {
+    "objectMetadataList" : [
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Realistics_grass_03",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Bush_v2",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "bush",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "bush"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "forest"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Real_Bush",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Maple_tree",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "forest",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Realistics_grass_03"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "726009F9-C4FA-41C4-813B-E0FDE812BF56" : {
+    "objectMetadataList" : [
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2",
+        "RootNode",
+        "Object_4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "EnglishLongBow",
+        "mtl"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "bow3dsmax",
+        "Bones"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2",
+        "RootNode"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "bow3dsmax",
+        "mtl"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "bow3dsmax",
+        "mtl",
+        "bow_mat"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "bow3dsmax",
+        "joint1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bows_and_CrossBows",
+        "English_Long_Bow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2",
+        "RootNode",
+        "Object_4",
+        "_rootJoint",
+        "skin0"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2",
+        "RootNode",
+        "Object_4",
+        "_rootJoint"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "77509149-B205-4A05-A732-C817D05FF58C" : {
+    "objectMetadataList" : [
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Geom"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Geom",
+        "Sketchfab_model",
+        "root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Geom",
+        "Sketchfab_model",
+        "root",
+        "GLTF_SceneRootNode"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Geom",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "793FC15C-1C03-4774-8863-74243EFC59F1" : {
+    "objectMetadataList" : [
+      [
+        "793FC15C-1C03-4774-8863-74243EFC59F1",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "95052448-183C-40B5-9E52-3717AF9B48FA" : {
+    "objectMetadataList" : [
+      [
+        "95052448-183C-40B5-9E52-3717AF9B48FA",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "9C53305B-09C4-4316-AEFB-55158CB29E2D" : {
+    "objectMetadataList" : [
+      [
+        "9C53305B-09C4-4316-AEFB-55158CB29E2D",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "A21C1E11-ABB0-4972-8159-55AD3A9AA5B3" : {
+    "objectMetadataList" : [
+
+    ]
+  },
+  "A5217CC6-2074-4283-9C5A-2271F932022F" : {
+    "objectMetadataList" : [
+      [
+        "A5217CC6-2074-4283-9C5A-2271F932022F",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "C248778E-2B2E-4FCA-92ED-A1D1B0353C93" : {
+    "objectMetadataList" : [
+      [
+        "C248778E-2B2E-4FCA-92ED-A1D1B0353C93",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "C3F96BC3-6E4E-4472-9AF2-FCDE1CF70B4A" : {
+    "objectMetadataList" : [
+      [
+        "C3F96BC3-6E4E-4472-9AF2-FCDE1CF70B4A",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "CC34C24F-7593-4DAC-B593-663F44328AEB" : {
+    "objectMetadataList" : [
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "cloud_002_anim"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "cloud_002_anim",
+        "cloud_ref_root_jnt",
+        "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "cloud_002_anim",
+        "cloud_ref_geometry"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "RainbowBody"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root",
+        "UpdatedGrumpyScene2",
+        "cloud_002_anim",
+        "cloud_ref_root_jnt"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "D66134B1-3681-4A8E-AFE5-29F257229F3B" : {
+    "objectMetadataList" : [
+      [
+        "D66134B1-3681-4A8E-AFE5-29F257229F3B",
+        "Root",
+        "Sphere"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "D66134B1-3681-4A8E-AFE5-29F257229F3B",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "D7FB23BD-F9E6-4FDC-B273-7DE61377827A" : {
+    "objectMetadataList" : [
+      [
+        "D7FB23BD-F9E6-4FDC-B273-7DE61377827A",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "E010EBCA-365A-4100-9FFF-150D5868924F" : {
+    "objectMetadataList" : [
+      [
+        "E010EBCA-365A-4100-9FFF-150D5868924F",
+        "Viking_Hut"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E010EBCA-365A-4100-9FFF-150D5868924F",
+        "Root",
+        "Viking_Hut"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096" : {
+    "objectMetadataList" : [
+      [
+        "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  }
+}

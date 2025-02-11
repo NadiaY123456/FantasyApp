@@ -1,0 +1,575 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
+		41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */; };
+		41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */; };
+		41E39C7F2D5BE1C6007C29C6 /* GestureComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */; };
+		41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */; };
+		41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */; };
+		41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */; };
+		41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */; };
+		41E39C842D5BE1C6007C29C6 /* EntitySet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */; };
+		41E39C852D5BE1C6007C29C6 /* SkyboxUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C612D5BE1C6007C29C6 /* SkyboxUtilities.swift */; };
+		41E39C862D5BE1C6007C29C6 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */; };
+		41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */; };
+		41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */; };
+		41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C662D5BE1C6007C29C6 /* PlayData.swift */; };
+		41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */; };
+		41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6C2D5BE1C6007C29C6 /* AppState.swift */; };
+		41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */; };
+		41E39C8D2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */; };
+		41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */; };
+		41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C702D5BE1C6007C29C6 /* GameModelView.swift */; };
+		41E39C902D5BE1C6007C29C6 /* BallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C722D5BE1C6007C29C6 /* BallView.swift */; };
+		41E39C912D5BE1C6007C29C6 /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C732D5BE1C6007C29C6 /* GameOver.swift */; };
+		41E39C922D5BE1C6007C29C6 /* Lobby.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C742D5BE1C6007C29C6 /* Lobby.swift */; };
+		41E39C932D5BE1C6007C29C6 /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C752D5BE1C6007C29C6 /* Play.swift */; };
+		41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C762D5BE1C6007C29C6 /* Selection.swift */; };
+		41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C772D5BE1C6007C29C6 /* Start.swift */; };
+		41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C782D5BE1C6007C29C6 /* StartView.swift */; };
+		41E39C9D2D5BE1CE007C29C6 /* FantasyCastle.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */; };
+		41E39C9E2D5BE1CE007C29C6 /* FantasyTown.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */; };
+		41E39C9F2D5BE1CE007C29C6 /* FantasyTown.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C992D5BE1CE007C29C6 /* FantasyTown.skybox */; };
+		41E39CA02D5BE1CE007C29C6 /* FantasyTown2.mtlx in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C9A2D5BE1CE007C29C6 /* FantasyTown2.mtlx */; };
+		41E39CA12D5BE1CE007C29C6 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C9B2D5BE1CE007C29C6 /* ImageBasedLighting.skybox */; };
+		41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 41E39CA72D5BE546007C29C6 /* RealityKitContent */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
+		41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureComponent.swift; sourceTree = "<group>"; };
+		41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveComponent.swift; sourceTree = "<group>"; };
+		41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityViewExtensions.swift; sourceTree = "<group>"; };
+		41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapComponent.swift; sourceTree = "<group>"; };
+		41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityEntries.swift; sourceTree = "<group>"; };
+		41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitySet.swift; sourceTree = "<group>"; };
+		41E39C612D5BE1C6007C29C6 /* SkyboxUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyboxUtilities.swift; sourceTree = "<group>"; };
+		41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
+		41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMachineStates.swift; sourceTree = "<group>"; };
+		41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEntities.swift; sourceTree = "<group>"; };
+		41E39C662D5BE1C6007C29C6 /* PlayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayData.swift; sourceTree = "<group>"; };
+		41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUtilities.swift; sourceTree = "<group>"; };
+		41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		41E39C6C2D5BE1C6007C29C6 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FantasyAppGithubApp.swift; sourceTree = "<group>"; };
+		41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		41E39C702D5BE1C6007C29C6 /* GameModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModelView.swift; sourceTree = "<group>"; };
+		41E39C722D5BE1C6007C29C6 /* BallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallView.swift; sourceTree = "<group>"; };
+		41E39C732D5BE1C6007C29C6 /* GameOver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOver.swift; sourceTree = "<group>"; };
+		41E39C742D5BE1C6007C29C6 /* Lobby.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lobby.swift; sourceTree = "<group>"; };
+		41E39C752D5BE1C6007C29C6 /* Play.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
+		41E39C762D5BE1C6007C29C6 /* Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selection.swift; sourceTree = "<group>"; };
+		41E39C772D5BE1C6007C29C6 /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
+		41E39C782D5BE1C6007C29C6 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = FantasyCastle.skybox; sourceTree = "<group>"; };
+		41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FantasyTown.jpg; sourceTree = "<group>"; };
+		41E39C992D5BE1CE007C29C6 /* FantasyTown.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = FantasyTown.skybox; sourceTree = "<group>"; };
+		41E39C9A2D5BE1CE007C29C6 /* FantasyTown2.mtlx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = FantasyTown2.mtlx; sourceTree = "<group>"; };
+		41E39C9B2D5BE1CE007C29C6 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
+		41E39CA22D5BE28B007C29C6 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		05E9E6F72D1CF5A80008014C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		05E9E6F12D1CF5A80008014C = {
+			isa = PBXGroup;
+			children = (
+				41E39C7B2D5BE1C6007C29C6 /* MatheMagicApp */,
+				41E39C9C2D5BE1CE007C29C6 /* Resources */,
+				05E9E6FB2D1CF5A80008014C /* Products */,
+				41E39CA32D5BE28B007C29C6 /* Packages */,
+				05E9E74F2D1D3C5B0008014C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		05E9E6FB2D1CF5A80008014C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				05E9E6FA2D1CF5A80008014C /* MatheMagic.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		05E9E74F2D1D3C5B0008014C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		41E39C5D2D5BE1C6007C29C6 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */,
+				41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */,
+				41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */,
+				41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */,
+				41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		41E39C602D5BE1C6007C29C6 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */,
+				41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		41E39C622D5BE1C6007C29C6 /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C612D5BE1C6007C29C6 /* SkyboxUtilities.swift */,
+			);
+			path = Environment;
+			sourceTree = "<group>";
+		};
+		41E39C672D5BE1C6007C29C6 /* GameEngine */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
+				41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */,
+				41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */,
+				41E39C662D5BE1C6007C29C6 /* PlayData.swift */,
+			);
+			path = GameEngine;
+			sourceTree = "<group>";
+		};
+		41E39C692D5BE1C6007C29C6 /* Load */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */,
+			);
+			path = Load;
+			sourceTree = "<group>";
+		};
+		41E39C6B2D5BE1C6007C29C6 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		41E39C712D5BE1C6007C29C6 /* TopLevel */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C6C2D5BE1C6007C29C6 /* AppState.swift */,
+				41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */,
+				41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */,
+				41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */,
+				41E39C702D5BE1C6007C29C6 /* GameModelView.swift */,
+			);
+			path = TopLevel;
+			sourceTree = "<group>";
+		};
+		41E39C792D5BE1C6007C29C6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C722D5BE1C6007C29C6 /* BallView.swift */,
+				41E39C732D5BE1C6007C29C6 /* GameOver.swift */,
+				41E39C742D5BE1C6007C29C6 /* Lobby.swift */,
+				41E39C752D5BE1C6007C29C6 /* Play.swift */,
+				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
+				41E39C772D5BE1C6007C29C6 /* Start.swift */,
+				41E39C782D5BE1C6007C29C6 /* StartView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		41E39C7B2D5BE1C6007C29C6 /* MatheMagicApp */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C5D2D5BE1C6007C29C6 /* Components */,
+				41E39C602D5BE1C6007C29C6 /* Entities */,
+				41E39C622D5BE1C6007C29C6 /* Environment */,
+				41E39C672D5BE1C6007C29C6 /* GameEngine */,
+				41E39C692D5BE1C6007C29C6 /* Load */,
+				41E39C6B2D5BE1C6007C29C6 /* Preview Content */,
+				41E39C712D5BE1C6007C29C6 /* TopLevel */,
+				41E39C792D5BE1C6007C29C6 /* Views */,
+				41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */,
+			);
+			path = MatheMagicApp;
+			sourceTree = "<group>";
+		};
+		41E39C9C2D5BE1CE007C29C6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */,
+				41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */,
+				41E39C992D5BE1CE007C29C6 /* FantasyTown.skybox */,
+				41E39C9A2D5BE1CE007C29C6 /* FantasyTown2.mtlx */,
+				41E39C9B2D5BE1CE007C29C6 /* ImageBasedLighting.skybox */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		41E39CA32D5BE28B007C29C6 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				41E39CA22D5BE28B007C29C6 /* RealityKitContent */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05E9E6F92D1CF5A80008014C /* MatheMagic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 05E9E71E2D1CF5A90008014C /* Build configuration list for PBXNativeTarget "MatheMagic" */;
+			buildPhases = (
+				05E9E6F62D1CF5A80008014C /* Sources */,
+				05E9E6F72D1CF5A80008014C /* Frameworks */,
+				05E9E6F82D1CF5A80008014C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MatheMagic;
+			packageProductDependencies = (
+				41E39CA72D5BE546007C29C6 /* RealityKitContent */,
+			);
+			productName = FantasyAppGithub;
+			productReference = 05E9E6FA2D1CF5A80008014C /* MatheMagic.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		05E9E6F22D1CF5A80008014C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					05E9E6F92D1CF5A80008014C = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = 05E9E6F52D1CF5A80008014C /* Build configuration list for PBXProject "MatheMagic" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 05E9E6F12D1CF5A80008014C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 05E9E6FB2D1CF5A80008014C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				05E9E6F92D1CF5A80008014C /* MatheMagic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		05E9E6F82D1CF5A80008014C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41E39C9D2D5BE1CE007C29C6 /* FantasyCastle.skybox in Resources */,
+				41E39C9E2D5BE1CE007C29C6 /* FantasyTown.jpg in Resources */,
+				41E39C9F2D5BE1CE007C29C6 /* FantasyTown.skybox in Resources */,
+				41E39CA02D5BE1CE007C29C6 /* FantasyTown2.mtlx in Resources */,
+				41E39CA12D5BE1CE007C29C6 /* ImageBasedLighting.skybox in Resources */,
+				41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */,
+				41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		05E9E6F62D1CF5A80008014C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */,
+				41E39C7F2D5BE1C6007C29C6 /* GestureComponent.swift in Sources */,
+				41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */,
+				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
+				41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */,
+				41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */,
+				41E39C842D5BE1C6007C29C6 /* EntitySet.swift in Sources */,
+				41E39C852D5BE1C6007C29C6 /* SkyboxUtilities.swift in Sources */,
+				41E39C862D5BE1C6007C29C6 /* CustomButtonStyle.swift in Sources */,
+				41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */,
+				41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */,
+				41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */,
+				41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */,
+				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
+				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
+				41E39C8D2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift in Sources */,
+				41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */,
+				41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */,
+				41E39C902D5BE1C6007C29C6 /* BallView.swift in Sources */,
+				41E39C912D5BE1C6007C29C6 /* GameOver.swift in Sources */,
+				41E39C922D5BE1C6007C29C6 /* Lobby.swift in Sources */,
+				41E39C932D5BE1C6007C29C6 /* Play.swift in Sources */,
+				41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */,
+				41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */,
+				41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		05E9E71C2D1CF5A90008014C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		05E9E71D2D1CF5A90008014C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		05E9E71F2D1CF5A90008014C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = QVJVG7RWCN;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = NadiaGames.FantasyAppGithub;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		05E9E7202D1CF5A90008014C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = QVJVG7RWCN;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = NadiaGames.FantasyAppGithub;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		05E9E6F52D1CF5A80008014C /* Build configuration list for PBXProject "MatheMagic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05E9E71C2D1CF5A90008014C /* Debug */,
+				05E9E71D2D1CF5A90008014C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		05E9E71E2D1CF5A90008014C /* Build configuration list for PBXNativeTarget "MatheMagic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				05E9E71F2D1CF5A90008014C /* Debug */,
+				05E9E7202D1CF5A90008014C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../Desktop/Fantasy Game/Packages/RealityKitContent";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		41E39CA72D5BE546007C29C6 /* RealityKitContent */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */;
+			productName = RealityKitContent;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 05E9E6F22D1CF5A80008014C /* Project object */;
+}
