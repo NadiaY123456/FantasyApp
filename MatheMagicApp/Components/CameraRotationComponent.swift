@@ -56,7 +56,7 @@ class CameraRotationSystem: System {
                 let dt = currentTime - gestureState.lastDragUpdateTime
                 
                 processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, sharedView: sharedView)
-//                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) //DO NOT DELETE THIS COMMENT!
+                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) // DO NOT DELETE THIS COMMENT!
                 
                 gestureState.lastDragTranslation = currentTranslation
                 gestureState.lastDragUpdateTime = currentTime
@@ -102,7 +102,8 @@ class CameraRotationSystem: System {
         gestureState.lastDeltaX = deltaX
     }
     
-    /// Processes vertical drag to update pitch and zoom.
+    /// Processes vertical drag to update pitch only (with reversed direction),
+    /// leaving the target zoom (set by pinch) unchanged.
     @MainActor
     private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
                                      currentTranslation: CGSize,
@@ -111,25 +112,16 @@ class CameraRotationSystem: System {
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
         guard abs(deltaY) > 1.0 else { return }
         
-        if deltaY > 0 {
-            // Swiping downward: zoom in and tilt upward.
-            let newDistance = sharedView.camera.targetCameraDistance - Float(deltaY) * 0.01
-            sharedView.camera.targetCameraDistance = max(sharedView.camera.settings.minDistance, newDistance)
-            
-            let pitchUp = Double(deltaY) * 0.1
-            let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchUp
-            sharedView.camera.targetCameraPitch = .degrees(min(sharedView.camera.settings.maxPitch.degrees, nextPitch))
-        } else {
-            // Swiping upward: restore zoom (if needed) then tilt downward.
-            if sharedView.camera.targetCameraDistance < sharedView.camera.lastPinchDistance {
-                let newDistance = sharedView.camera.targetCameraDistance + Float(-deltaY) * 0.01
-                sharedView.camera.targetCameraDistance = min(sharedView.camera.lastPinchDistance, newDistance)
-            } else {
-                let pitchDown = Double(deltaY) * 0.1
-                let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchDown
-                sharedView.camera.targetCameraPitch = .degrees(max(sharedView.camera.settings.minPitch.degrees, nextPitch))
-            }
-        }
+        // Reverse the vertical swipe direction:
+        let pitchSensitivity = 0.1
+        let newPitchDegrees = sharedView.camera.targetCameraPitch.degrees - Double(deltaY) * pitchSensitivity
+        
+        // Clamp the pitch to remain within the allowed range.
+        sharedView.camera.targetCameraPitch = .degrees(min(max(newPitchDegrees,
+                                                               sharedView.camera.settings.minPitch.degrees),
+                                                           sharedView.camera.settings.maxPitch.degrees))
+        
+        // Do not modify targetCameraDistance here—this preserves the zoom level set by pinch.
     }
     
     /// Resets the drag state when no drag is occurring.
@@ -213,7 +205,8 @@ class CameraState {
         var maxDistance: Float = 6.0
         
         /// Offset for the pivot (e.g. center on a character’s knees rather than chest)
-        var pivotOffset: SIMD3<Float> = SIMD3(0, -0.5, 0)
+        /// pivot is the center point of camera rotation. by default, it is set at character position.
+        var pivotOffset: SIMD3<Float> = SIMD3(0, 0, 0)
         
         // MARK: Parameters that affect horizontal rotation speed
         
@@ -243,6 +236,11 @@ class CameraState {
 
         /// Sleep duration between animation frames in nanoseconds (approx. 60 fps).
         var animationFrameSleepNanoseconds: UInt64 = 16_000_000
+        
+        // Minimum allowed world Y position for the camera. Used for vertical rotation, so camera does not go underground.
+        var safetyMargin: Float = 0.1
+//        var verticalSafetyFactor: Float = 0.5 // Scales the effect of the targetDistance on the vertical offset.  (from 0 to 1) For example, a value of 0.5 reduces the downward pull by half. (If you’d like even less interference, try an even smaller value.)
+
     }
     
     // MARK: Camera State Properties
@@ -289,7 +287,7 @@ class CameraState {
     /// - Parameters:
     ///   - content: The RealityViewCameraContent to which the camera will be added.
     ///   - tracked: The entity that the camera will orbit.
-    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity) {
+    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = true) {
         trackedEntity = tracked
 
         // Create a pivot entity at the tracked character’s position.
@@ -311,18 +309,13 @@ class CameraState {
 
         // Immediately update the camera transform.
         updateCameraTransform()
+        
+        AppLogger.shared.debug("Camera Position: \(camera.transform.translation), and cameraPivot: \(pivot.transform.translation)", toPrint)
     }
     
     // MARK: - Camera Transform Update
 
-    /// Updates the camera and skydome transforms.
-    ///
-    /// - Note: This function:
-    ///   - Updates the pivot’s position (following the tracked entity),
-    ///   - Applies current yaw (cameraAngle) and pitch (cameraPitch),
-    ///   - Sets the camera’s position (height and zoom), and
-    ///   - Corrects the skydome rotation.
-    func updateCameraTransform() {
+    func updateCameraTransform(toPrint: Bool = true) {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
         // Follow the tracked entity.
@@ -335,15 +328,18 @@ class CameraState {
         let pitchRotation = simd_quatf(angle: Float(cameraPitch.radians), axis: [1, 0, 0])
         pivot.transform.rotation = yawRotation * pitchRotation
         
-        // Update camera’s local position (height and zoom) using settings.cameraHeight.
-        camera.transform.translation = SIMD3(0, settings.cameraHeight, cameraDistance)
+        // Use our helper to compute an adjusted distance so the camera stays above ground.
+        let effectiveDistance = adjustedCameraDistance()
+        camera.transform.translation = SIMD3(0, settings.cameraHeight, effectiveDistance)
         
         // Adjust skydome rotation if available.
         if let skydome = skydomeEntity {
             skydome.transform.rotation = yawRotation * skydomeBaseRotation
         }
+        
+        AppLogger.shared.debug("Camera Position: \(cameraEntity?.transform.translation ?? SIMD3<Float>(-100, -100, -100))", toPrint)
     }
-    
+
     // MARK: - Smooth Camera Animation
 
     /// Smoothly interpolates cameraAngle, cameraPitch, and cameraDistance toward their targets.
@@ -449,6 +445,40 @@ class CameraState {
     private func smoothStep(_ t: Double) -> Double {
         return t * t * (3 - 2 * t)
     }
+    
+    /// Computes an adjusted camera distance based on current pitch and pivot position
+    /// to ensure the camera stays above ground. If the target distance (set by pinch)
+    /// would cause ground clipping, we override it with a smaller safe distance.
+    private func adjustedCameraDistance(toPrint: Bool = true) -> Float {
+        let pivotY = cameraPivot?.transform.translation.y ?? 0
+        let safetyMargin = settings.safetyMargin
+        let pitch = Float(cameraPitch.radians)
+        let pitchDegrees = cameraPitch.degrees
+        let targetDistance = self.targetCameraDistance
+
+        // Compute the world-space Y position of the camera.
+        let worldCameraY = pivotY + settings.cameraHeight * cos(pitch) - targetDistance * sin(pitch)
+        
+        // Log the starting parameters.
+        AppLogger.shared.debug("AdjCam: pivotY=\(pivotY), pitch=\(pitchDegrees)°, targetDist=\(targetDistance), worldY=\(worldCameraY)", toPrint)
+
+        if pitch > 0 {
+            if worldCameraY < safetyMargin {
+                let computedSafeDistance = (pivotY + settings.cameraHeight * cos(pitch) - safetyMargin) / sin(pitch)
+                let safeDistance = max(0, computedSafeDistance)
+                let effectiveDistance = min(targetDistance, safeDistance)
+                AppLogger.shared.debug("AdjCam: worldY=\(worldCameraY) < \(safetyMargin) → safeDist=\(safeDistance), effectiveDist=\(effectiveDistance)", toPrint)
+                return effectiveDistance
+            }
+        }
+        
+        AppLogger.shared.debug("AdjCam: No adjustment needed; using targetDist", toPrint)
+        return targetDistance
+    }
+
+
+
+        
 }
 
 // MARK: Codable Conformance (moved to extension)

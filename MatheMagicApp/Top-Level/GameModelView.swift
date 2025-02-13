@@ -1,13 +1,7 @@
-//
-//  GameModelView.swift
-//
-
 import Combine
 import Foundation
 import RealityKit
 import SwiftUI
-
-// import RealityKitContent
 
 class GameModelView: ObservableObject {
     static let shared = GameModelView()
@@ -22,7 +16,8 @@ class GameModelView: ObservableObject {
     @Published var isFinished: Bool = false
     @Published var currentState: GameScreenState = .start
     @Published var score: Int = 0
-    @Published var timeLeft: Int = 0
+    @Published var elapsedTime: Double = 0
+
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
     @Published var joystickMagnitude: CGFloat = 0
@@ -35,9 +30,10 @@ class GameModelView: ObservableObject {
     @Published var isPinching: Bool = false
     @Published var rawPinchScale: CGFloat = 1.0
 
-    @Published var camera: CameraState =  CameraState()
-    
+    @Published var camera: CameraState = .init()
+
     private var timer: Timer?
+    private var startDate: Date?
 
     private init() {
         self.gameModel = GameModel()
@@ -47,7 +43,7 @@ class GameModelView: ObservableObject {
         startTimer()
     }
 
-    // update animationComponent with isPauses
+    // update animationComponent with isPaused
     var rootEntity: Entity? {
         didSet {
             Task { await updateIsPausedInComponents() }
@@ -62,11 +58,12 @@ class GameModelView: ObservableObject {
             Task {
                 let state = await self.gameModel.getGameScreenState()
                 let score = await self.gameModel.score
-                let timeLeft = await self.gameModel.timeLeft
                 await MainActor.run {
                     self.currentState = state
                     self.score = score
-                    self.timeLeft = timeLeft
+                    if let start = self.startDate {
+                        self.elapsedTime = Date().timeIntervalSince(start)
+                    }
                 }
             }
         }
@@ -87,12 +84,18 @@ class GameModelView: ObservableObject {
     }
 
     func play() {
+        // When starting a new game, record the start time.
+        startDate = Date()
         Task {
             await gameModel.play()
         }
     }
 
     func lobby() {
+        // Record the start time if not already set
+        if startDate == nil {
+            startDate = Date()
+        }
         Task {
             await gameModel.lobby()
         }
@@ -111,6 +114,8 @@ class GameModelView: ObservableObject {
     }
 
     func reset() {
+        // Reset the start time to now.
+        startDate = Date()
         Task {
             await gameModel.reset()
         }

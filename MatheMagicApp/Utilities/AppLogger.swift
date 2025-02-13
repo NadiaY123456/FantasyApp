@@ -4,9 +4,19 @@ class AppLogger {
     static let shared = AppLogger()
     
     // Common prefix for all messages.
-    private let prefix = "📱 "
+    private let prefix = "⌚️"
     
-    // Logger instances (renamed to avoid conflicts with methods).
+    // Computed property to retrieve the elapsed game time from GameModelView.
+    private var gameTime: Double {
+        GameModelView.shared.elapsedTime
+    }
+        
+    // Computed property to format gameTime with two decimal places.
+    private var formattedGameTime: String {
+        String(format: "%.2f", self.gameTime)
+    }
+    
+    // Logger instances.
     let debugLogger = Logger(subsystem: "com.matheMagic.app", category: "debug")
     let infoLogger = Logger(subsystem: "com.matheMagic.app", category: "info")
     let uiLogger = Logger(subsystem: "com.matheMagic.app", category: "ui")
@@ -14,40 +24,41 @@ class AppLogger {
     let warningLogger = Logger(subsystem: "com.matheMagic.app", category: "warning")
     let errorLogger = Logger(subsystem: "com.matheMagic.app", category: "error")
     
-    // MARK: - Logging Methods with Conditional Printing
+    // MARK: - Logging Methods with Elapsed Game Time and Icons
+
     func debug(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            debugLogger.debug("\(self.prefix)🔍 \(message)")
+            self.debugLogger.debug("\(self.prefix)\(self.formattedGameTime) 🔍 \(message)")
         }
     }
     
     func info(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            infoLogger.info("\(self.prefix)ℹ️ \(message)")
+            self.infoLogger.info("\(self.prefix)\(self.formattedGameTime) ℹ️ \(message)")
         }
     }
     
     func ui(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            uiLogger.debug("\(self.prefix)🎯 \(message)")
+            self.uiLogger.debug("\(self.prefix)\(self.formattedGameTime) 🎯 \(message)")
         }
     }
     
     func animation(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            animationLogger.debug("\(self.prefix)✨ \(message)")
+            self.animationLogger.debug("\(self.prefix)\(self.formattedGameTime) ✨ \(message)")
         }
     }
     
     func warning(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            warningLogger.notice("\(self.prefix)⚠️ \(message)")
+            self.warningLogger.notice("\(self.prefix)\(self.formattedGameTime) ⚠️ \(message)")
         }
     }
     
     func error(_ message: String, _ toPrint: Bool = true) {
         if toPrint {
-            errorLogger.error("\(self.prefix)❌ \(message)")
+            self.errorLogger.error("\(self.prefix)\(self.formattedGameTime)  ❌ \(message)")
         }
     }
     

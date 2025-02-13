@@ -1,24 +1,14 @@
-/*
-See the LICENSE.txt file for this sample’s licensing information.
-
-Abstract:
-The play screen for single player.
-*/
-
 import SwiftUI
 
 struct Play: View {
     @ObservedObject var gameModelView = GameModelView.shared
 
-    
     var body: some View {
         HStack(alignment: .top) {
             VStack(spacing: 0) {
-                let progress = Float(gameModelView.timeLeft) / Float(GameModel.gameTime)
+                // Top bar with Back button and Score display
                 HStack(alignment: .top) {
                     Button {
-                        Task {
-                        }
                         gameModelView.reset()
                     } label: {
                         Label("Back", systemImage: "chevron.backward")
@@ -27,7 +17,7 @@ struct Play: View {
                     .offset(x: -23)
 
                     VStack {
-                        Text(verbatim: "\(String(format: "%02d", gameModelView.score))")
+                        Text(String(format: "%02d", gameModelView.score))
                             .font(.system(size: 60))
                             .bold()
                             .accessibilityLabel(Text("Score"))
@@ -41,13 +31,16 @@ struct Play: View {
                     .padding(.leading, 0)
                     .padding(.trailing, 60)
                 }
+
+                // Display elapsed game time and Pause/Play button
                 HStack {
-                    ProgressView(value: (progress > 1.0 || progress < 0.0) ? 1.0 : progress)
-                        .contentShape(.accessibility, Capsule().offset(y: -3))
-                        .accessibilityLabel("")
-                        .accessibilityValue(Text("\(gameModelView.timeLeft) seconds remaining"))
-                        .tint(Color(uiColor: UIColor(red: 242 / 255, green: 68 / 255, blue: 206 / 255, alpha: 1.0)))
+                    // Replace the progress view (which used timeLeft) with elapsed time text.
+                    Text("Elapsed Time: \(gameModelView.elapsedTime) s")
+                        .font(.headline)
+                        .accessibilityLabel(Text("Elapsed time"))
+                        .accessibilityValue(Text("\(gameModelView.elapsedTime) seconds"))
                         .padding(.vertical, 30)
+
                     Button {
                         gameModelView.togglePause()
                     } label: {
@@ -80,4 +73,3 @@ struct Play: View {
         .frame(width: 260)
     }
 }
-

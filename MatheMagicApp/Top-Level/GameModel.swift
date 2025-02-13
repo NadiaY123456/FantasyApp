@@ -2,7 +2,6 @@ import AVKit
 import Combine
 import GameplayKit
 import RealityKit
-//import RealityKitContent
 import SwiftUI
 
 actor GameModel {
@@ -13,13 +12,11 @@ actor GameModel {
     private var _isFinished = false {
         didSet {
             if _isFinished == true {
-                Task { await clear() } 
+                Task { await clear() }
             }
         }
     }
 
-    static let gameTime = 100
-    var timeLeft = gameTime
     var score = 0
 
     func isPaused() -> Bool {
@@ -39,7 +36,7 @@ actor GameModel {
     }
 
     /// Removes 3D content when the game is over.
-    @MainActor // Dispatch the clear() method to the main actor since UI updates should occur on the main thread.
+    @MainActor
     func clear() {
         spaceOrigin.children.removeAll()
     }
@@ -48,7 +45,6 @@ actor GameModel {
     func reset() {
         _isPaused = false
         _isFinished = false
-        timeLeft = GameModel.gameTime
         score = 0
         Task { await clear() }
     }
@@ -77,13 +73,13 @@ actor GameModel {
         return _gameScreenState
     }
 
-    // Update _gameScreenState whenever the state changes
+    // Update _gameScreenState whenever the state changes.
     func load() {
         appStateMachine.enter(LoadState.self)
         if !(appStateMachine.currentState is LoadState) {
             AppLogger.shared.error("Error: Failed to transition to Load State")
         }
-        _gameScreenState = .loading//TODO: should be load once I have load view. Also, realityview supports progressiveview that shows up before content and update. search documentation.
+        _gameScreenState = .loading //TODO: should be load once I have load view. Also, realityview supports progressiveview that shows up before content and update. search documentation.
     }
 
     func readyToStart() {
@@ -92,7 +88,6 @@ actor GameModel {
             AppLogger.shared.error("Error: Failed to transition to Ready To Start State")
         }
         _gameScreenState = .start
-
     }
 
     func play() {
@@ -101,7 +96,6 @@ actor GameModel {
             AppLogger.shared.error("Error: Failed to transition to Play State")
         }
         _gameScreenState = .play
-
     }
     
     func lobby() {
@@ -110,7 +104,6 @@ actor GameModel {
             AppLogger.shared.error("Error: Failed to transition to Lobby State")
         }
         _gameScreenState = .lobby
-
     }
     
     func selection() {
@@ -119,7 +112,6 @@ actor GameModel {
             AppLogger.shared.error("Error: Failed to transition to Selection State")
         }
         _gameScreenState = .selection
-
     }
     
     func ball() {
@@ -128,11 +120,9 @@ actor GameModel {
             AppLogger.shared.error("Error: Failed to transition to Ball State")
         }
         _gameScreenState = .ball
-
     }
-    
-    
 }
+
 
 enum GameScreenState: Sendable {
     case start

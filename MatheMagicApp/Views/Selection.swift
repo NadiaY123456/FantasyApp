@@ -60,7 +60,12 @@ struct Selection: View {
                     // add environment
                     if let planeModel = entityModelDictionaryCore["plane"] {
                         spaceOrigin.addChild(planeModel.entity)
+                        // print plane position
+                        AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
                     }
+                    
+                   
+                    
 
                     // Add the character and create the camera pivot around it.
                     // For this example, we assume Flash is the default tracked character.
@@ -75,6 +80,8 @@ struct Selection: View {
                         GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel.entity)
                         // Optionally, add lighting to Flash.
                         sceneManager.addContentWithLight(entity: flashModel.entity, iblComponent: iblComponent)
+                        
+                        AppLogger.shared.info("Plane position: \(flashModel.entity.transform.translation)")
                     }
                     
                 }
