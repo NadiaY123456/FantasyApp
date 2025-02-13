@@ -14,6 +14,18 @@ class SceneManager: ObservableObject {
     @Published var cameraDistance: Float = 7.0
     @Published var targetCameraDistance: Float = 7.0
 
+    // MARK: - Pitch Control
+
+    @Published var cameraPitch: Angle = .degrees(0)
+    @Published var targetCameraPitch: Angle = .degrees(0)
+
+    // Clamp the pitch so you can’t spin the camera 360° vertically
+    let minPitch: Angle = .degrees(-45) // e.g. 45° from above
+    let maxPitch: Angle = .degrees(80) // e.g. 80° from below
+
+    // Store the final pinch-based distance so we can "return" to it when swiping up
+    var lastPinchDistance: Float = 7.0
+
     let minDistance: Float = 2.0
     let maxDistance: Float = 12.0
     /// Lower the zoom center by 0.5 m (so it centers on Flash’s knees rather than chest)
@@ -33,7 +45,7 @@ class SceneManager: ObservableObject {
     // Sensitivity parameters for motion sickness reduction
     var rotationSensitivity: Double = 0.01 // Adjust to control how fast the camera rotates
     var zoomSensitivity: Float = 1.0 // Adjust to control how much zoom occurs per pinch
-    
+
     // Easing duration (in seconds) to determine how quickly interpolation should occur.
     var easingDuration: Double = 0.1
 
@@ -82,43 +94,28 @@ class SceneManager: ObservableObject {
     func updateCameraTransform() {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
 
-        // Log BEFORE changes
-        AppLogger.shared.debug("updateCameraTransform() [BEFORE]:")
-        AppLogger.shared.debug("  pivot.transform = \(pivot.transform)")
-        AppLogger.shared.debug("  camera.transform = \(camera.transform)")
-        if let tracked = trackedEntity {
-            AppLogger.shared.debug("  trackedEntity.transform = \(tracked.transform)")
-        }
-
-        // --- Follow the tracked entity (with -0.5 offset) ---
+        // Follow the tracked entity
         if let tracked = trackedEntity {
             pivot.transform.translation = tracked.transform.translation + pivotOffset
         }
 
-        // Rotate pivot by cameraAngle
-        let cameraRotation = simd_quatf(angle: Float(cameraAngle.radians), axis: SIMD3(0, 1, 0))
-        pivot.transform.rotation = cameraRotation
+        // Combine yaw (cameraAngle) and pitch (cameraPitch)
+        let yawRotation = simd_quatf(angle: Float(cameraAngle.radians), axis: [0, 1, 0])
+        let pitchRotation = simd_quatf(angle: Float(cameraPitch.radians), axis: [1, 0, 0])
+        pivot.transform.rotation = yawRotation * pitchRotation
 
-        // Slight tilt on camera
-        camera.transform.rotation = simd_quatf(
-            angle: Float.pi * 0.05,
-            axis: SIMD3(1, 0, 0)
-        )
+
+        // If you want a slight downward tilt from the camera’s own local transform,
+        // you can keep or remove the small rotation below. For now, you can remove it
+        // if you are explicitly controlling pitch:
+        // camera.transform.rotation = simd_quatf(angle: Float.pi * 0.05, axis: SIMD3(1, 0, 0))
 
         // Update camera’s local position (height + zoom)
         camera.transform.translation = SIMD3(0, 1.6, cameraDistance)
 
-        // Fix the skydome’s rotation
+        // Fix the skydome’s rotation if needed
         if let skydome = skydomeEntity {
-            skydome.transform.rotation = cameraRotation * skydomeBaseRotation
-        }
-
-        // Log AFTER changes
-        AppLogger.shared.debug("updateCameraTransform() [AFTER]:")
-        AppLogger.shared.debug("  pivot.transform = \(pivot.transform)")
-        AppLogger.shared.debug("  camera.transform = \(camera.transform)")
-        if let tracked = trackedEntity {
-            AppLogger.shared.debug("  trackedEntity.transform = \(tracked.transform)")
+            skydome.transform.rotation = yawRotation * skydomeBaseRotation
         }
     }
 
@@ -138,43 +135,48 @@ class SceneManager: ObservableObject {
                 let clampedDeltaTime = min(deltaTime, 0.016) // Clamp to ~16ms maximum
                 AppLogger.shared.debug("Animation Loop: deltaTime = \(deltaTime), clampedDeltaTime = \(clampedDeltaTime)")
 
-                // Rotation with Easing & Inertial Dampening
+                // 1) Yaw smoothing
                 let angleDifference = targetCameraAngle.radians - cameraAngle.radians
                 let maxDelta = maxRotationSpeed * clampedDeltaTime
                 let limitedDelta = max(-maxDelta, min(angleDifference, maxDelta))
                 let t = min(1.0, clampedDeltaTime / easingDuration)
                 let easedT = smoothStep(t)
-                // Avoid division by zero when maxDelta is zero:
                 let stabilizationFactor = 1.0 - 0.5 * min(1.0, abs(angleDifference) / (maxDelta == 0 ? 1.0 : maxDelta))
                 let easedDelta = limitedDelta * easedT * stabilizationFactor
-                AppLogger.shared.debug("Rotation Debug: angleDifference = \(angleDifference), maxDelta = \(maxDelta), t = \(t), easedT = \(easedT), stabilizationFactor = \(stabilizationFactor), easedDelta = \(easedDelta)")
                 cameraAngle = Angle(radians: cameraAngle.radians + easedDelta)
 
-                // Zoom with Easing & Inertial Dampening
+                // 2) Pitch smoothing
+                let pitchDiff = targetCameraPitch.radians - cameraPitch.radians
+                let maxPitchDelta = maxRotationSpeed * clampedDeltaTime
+                let limitedPitchDelta = max(-maxPitchDelta, min(pitchDiff, maxPitchDelta))
+                let tPitch = min(1.0, clampedDeltaTime / easingDuration)
+                let easedTPitch = smoothStep(tPitch)
+                let stabilizationFactorPitch = 1.0 - 0.5 * min(1.0, abs(pitchDiff) / (maxPitchDelta == 0 ? 1.0 : maxPitchDelta))
+                let finalPitchDelta = limitedPitchDelta * easedTPitch * stabilizationFactorPitch
+                cameraPitch = Angle(radians: cameraPitch.radians + finalPitchDelta)
+
+                // 3) Zoom smoothing
                 let distanceDiff = targetCameraDistance - cameraDistance
                 let tZoom = min(1.0, clampedDeltaTime / easingDuration)
                 let easedTZoom = smoothStep(tZoom)
                 let stabilizationFactorZoom = 1.0 - 0.5 * min(1.0, abs(Double(distanceDiff)) / Double(maxDistance - minDistance))
                 let zoomDelta = distanceDiff * Float(easedTZoom * stabilizationFactorZoom)
-                AppLogger.shared.debug("Zoom Debug: distanceDiff = \(distanceDiff), tZoom = \(tZoom), easedTZoom = \(easedTZoom), stabilizationFactorZoom = \(stabilizationFactorZoom), zoomDelta = \(zoomDelta)")
                 cameraDistance += zoomDelta
 
                 updateCameraTransform()
 
-                // Break condition when changes are very small
-                if abs(angleDifference) < 0.001 && abs(distanceDiff) < 0.001 {
-                    AppLogger.shared.debug("Animation break: angleDifference and distanceDiff below threshold.")
+                // If everything is close enough, break
+                if abs(angleDifference) < 0.001 && abs(distanceDiff) < 0.001 && abs(pitchDiff) < 0.001 {
                     break
                 }
                 lastUpdateTime = currentTime
 
-                try? await Task.sleep(nanoseconds: 16_000_000) // ~60 fps
+                try? await Task.sleep(nanoseconds: 16000000) // ~60 fps
             }
             isAnimatingCamera = false
             AppLogger.shared.debug("Animation loop ended.")
         }
     }
-
 
     // MARK: Lights and Skyboxes
 
@@ -246,11 +248,10 @@ class SceneManager: ObservableObject {
         entity.components.set(ImageBasedLightReceiverComponent(imageBasedLight: entity)) // This one to receive light
         spaceOrigin.addChild(entity)
     }
-    
-    //Easing helper using a smoothstep function
+
+    // Easing helper using a smoothstep function
     private func smoothStep(_ t: Double) -> Double {
         // Cubic ease-in-out (smoothstep) function: maps 0→1 input to a smooth 0→1 output.
         return t * t * (3 - 2 * t)
     }
-
 }

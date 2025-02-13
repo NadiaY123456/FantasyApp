@@ -90,49 +90,74 @@ struct Selection: View {
                         .onChanged { value in
                             let now = CACurrentMediaTime()
                             let dt = now - lastDragUpdateTime
-                            // Compute the instantaneous change in horizontal translation.
+
+                            // --- Horizontal (Yaw) Logic ---
                             let deltaX = value.translation.width - lastDragTranslation.width
-                            
-                            // Detect stationary finger:
                             if abs(deltaX) < 1.0 || dt > 0.1 {
-                                // Finger is nearly stationary: immediately stop rotation.
+                                // Finger nearly stationary or too slow update: reset baseline.
                                 sceneManager.targetCameraAngle = sceneManager.cameraAngle
                                 dragStartAngle = sceneManager.cameraAngle
-                                // Reset the baseline so that subsequent movement is measured from here.
                                 dragBaseline = value.translation.width
-                                AppLogger.shared.debug("Finger stationary; targetCameraAngle set to \(sceneManager.cameraAngle)")
                             } else {
-                                // Detect if the movement direction changed (i.e. sign reversal in deltaX).
+                                // If direction changed, reset the baseline.
                                 if lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
-                                    // Direction change detected—reset the baseline.
                                     dragStartAngle = sceneManager.cameraAngle
                                     dragBaseline = value.translation.width
-                                    AppLogger.shared.debug("Direction change detected. Reset dragBaseline to \(dragBaseline), dragStartAngle = \(dragStartAngle)")
                                 }
-                                // Calculate the effective horizontal offset relative to the new baseline.
                                 let effectiveDrag = value.translation.width - dragBaseline
                                 sceneManager.targetCameraAngle = dragStartAngle +
                                     Angle(radians: -Double(effectiveDrag) * sceneManager.rotationSensitivity)
-                                AppLogger.shared.debug("Drag changed: translation = \(value.translation), effectiveDrag = \(effectiveDrag), updated targetCameraAngle = \(sceneManager.targetCameraAngle)")
                             }
-                            
-                            // Update the stored values for the next event.
                             lastDeltaX = deltaX
+
+                            // --- Vertical (Pitch & Zoom) Logic ---
+                            let deltaY = value.translation.height - lastDragTranslation.height
+                            if abs(deltaY) > 1.0 {
+                                if deltaY > 0 {
+                                    // Swiping downward: zoom in and tilt upward.
+                                    let newDistance = sceneManager.targetCameraDistance - Float(deltaY) * 0.01
+                                    sceneManager.targetCameraDistance = max(sceneManager.minDistance, newDistance)
+                                    
+                                    let pitchUp = Double(deltaY) * 0.1
+                                    let nextPitch = sceneManager.targetCameraPitch.degrees + pitchUp
+                                    sceneManager.targetCameraPitch = .degrees(
+                                        min(sceneManager.maxPitch.degrees, nextPitch)
+                                    )
+                                } else {
+                                    // Swiping upward: first restore zoom (if needed) then tilt downward.
+                                    if sceneManager.targetCameraDistance < sceneManager.lastPinchDistance {
+                                        let newDistance = sceneManager.targetCameraDistance + Float(-deltaY) * 0.01
+                                        sceneManager.targetCameraDistance = min(sceneManager.lastPinchDistance, newDistance)
+                                    } else {
+                                        let pitchDown = Double(deltaY) * 0.1
+                                        let nextPitch = sceneManager.targetCameraPitch.degrees + pitchDown
+                                        sceneManager.targetCameraPitch = .degrees(
+                                            max(sceneManager.minPitch.degrees, nextPitch)
+                                        )
+                                    }
+                                }
+                            }
+
+                            // Update tracking values
                             lastDragTranslation = value.translation
                             lastDragUpdateTime = now
                             sceneManager.startSmoothCameraAnimation()
                         }
+
                         .onEnded { _ in
-                            // Reset the tracking state when the gesture ends.
+                            // Reset your drag state
                             lastDragTranslation = .zero
                             lastDeltaX = 0.0
                             dragBaseline = 0.0
                             lastDragUpdateTime = CACurrentMediaTime()
+
+                            // Lock in final angles/distances
                             sceneManager.targetCameraAngle = sceneManager.cameraAngle
-                            dragStartAngle = sceneManager.cameraAngle
-                            AppLogger.shared.debug("Drag ended. Final targetCameraAngle = \(sceneManager.targetCameraAngle)")
+                            sceneManager.targetCameraPitch = sceneManager.cameraPitch
+                            sceneManager.targetCameraDistance = sceneManager.cameraDistance
                         }
                 )
+
 
                 // Pinch gesture for zooming.
                 .simultaneousGesture(
@@ -146,6 +171,7 @@ struct Selection: View {
                             sceneManager.startSmoothCameraAnimation()
                         }
                         .onEnded { _ in
+                            sceneManager.lastPinchDistance = sceneManager.cameraDistance
                             sceneManager.targetCameraDistance = sceneManager.cameraDistance
                             AppLogger.shared.debug("Pinch ended. Final targetCameraDistance = \(sceneManager.targetCameraDistance)")
                         }
