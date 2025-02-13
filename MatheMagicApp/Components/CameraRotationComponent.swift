@@ -29,7 +29,6 @@ public struct CameraRotationComponent: Component {
 
 // MARK: - Camera Rotation System
 
-/// A system that processes drag and pinch gestures to update camera rotation and zoom.
 class CameraRotationSystem: System {
     @MainActor private static let query = EntityQuery(where: .has(CameraRotationComponent.self))
     
@@ -38,84 +37,115 @@ class CameraRotationSystem: System {
 
     func update(context: SceneUpdateContext) {
         let sharedView = GameModelView.shared
-
-        // Process drag (rotation & pitch) updates.
+        let currentTime = CACurrentMediaTime()
+        
+        processDrag(in: context, sharedView: sharedView, currentTime: currentTime)
+        processPinch(in: context, sharedView: sharedView)
+    }
+    
+    // MARK: - Drag Processing
+    
+    /// Processes drag (rotation & pitch) updates.
+    @MainActor
+    private func processDrag(in context: SceneUpdateContext, sharedView: GameModelView, currentTime: TimeInterval) {
+        let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         if sharedView.isDragging, let currentTranslation = sharedView.rawDragTranslation {
-            let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
             for entity in entities {
                 var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
-                let now = CACurrentMediaTime()
-                let dt = now - gestureState.lastDragUpdateTime
-
-                // --- Horizontal (Yaw) Logic ---
-                let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
-                if abs(deltaX) < 1.0 || dt > 0.1 {
-                    sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
-                    gestureState.dragStartAngle = sharedView.camera.cameraYaw
-                    gestureState.dragBaseline = currentTranslation.width
-                } else {
-                    if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
-                        gestureState.dragStartAngle = sharedView.camera.cameraYaw
-                        gestureState.dragBaseline = currentTranslation.width
-                    }
-                    let effectiveDrag = currentTranslation.width - gestureState.dragBaseline
-                    sharedView.camera.targetCameraYaw = gestureState.dragStartAngle +
-                        Angle(radians: -Double(effectiveDrag) * sharedView.camera.settings.rotationSensitivity)
-                }
-                gestureState.lastDeltaX = deltaX
-
-                // --- Vertical (Pitch & Zoom) Logic ---
-                let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
-                if abs(deltaY) > 1.0 {
-                    if deltaY > 0 {
-                        // Swiping downward: zoom in and tilt upward.
-                        let newDistance = sharedView.camera.targetCameraDistance - Float(deltaY) * 0.01
-                        sharedView.camera.targetCameraDistance = max(sharedView.camera.settings.minDistance, newDistance)
-                        
-                        let pitchUp = Double(deltaY) * 0.1
-                        let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchUp
-                        sharedView.camera.targetCameraPitch = .degrees(min(sharedView.camera.settings.maxPitch.degrees, nextPitch))
-                    } else {
-                        // Swiping upward: restore zoom (if needed) then tilt downward.
-                        if sharedView.camera.targetCameraDistance < sharedView.camera.lastPinchDistance {
-                            let newDistance = sharedView.camera.targetCameraDistance + Float(-deltaY) * 0.01
-                            sharedView.camera.targetCameraDistance = min(sharedView.camera.lastPinchDistance, newDistance)
-                        } else {
-                            let pitchDown = Double(deltaY) * 0.1
-                            let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchDown
-                            sharedView.camera.targetCameraPitch = .degrees(max(sharedView.camera.settings.minPitch.degrees, nextPitch))
-                        }
-                    }
-                }
+                let dt = currentTime - gestureState.lastDragUpdateTime
+                
+                processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, sharedView: sharedView)
+//                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) //DO NOT DELETE THIS COMMENT!
                 
                 gestureState.lastDragTranslation = currentTranslation
-                gestureState.lastDragUpdateTime = now
+                gestureState.lastDragUpdateTime = currentTime
                 entity.components.set(gestureState)
                 
-                sharedView.camera.startSmoothCameraAnimation() // Uses default logging (toPrint: true)
+                sharedView.camera.startSmoothCameraAnimation()
             }
         } else {
-            // No drag—lock in final values.
+            // Lock in final values when not dragging.
             sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
             sharedView.camera.targetCameraPitch = sharedView.camera.cameraPitch
             sharedView.camera.targetCameraDistance = sharedView.camera.cameraDistance
-
-            let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+            
             for entity in entities {
                 var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
-                gestureState.lastDragTranslation = .zero
-                gestureState.lastDeltaX = 0.0
-                gestureState.dragBaseline = 0.0
-                gestureState.lastDragUpdateTime = CACurrentMediaTime()
+                resetDragState(&gestureState, currentTime: currentTime)
                 entity.components.set(gestureState)
             }
         }
+    }
+    
+    /// Processes horizontal drag to update yaw.
+    @MainActor
+    private func processHorizontalDrag(for gestureState: inout CameraRotationComponent,
+                                       currentTranslation: CGSize,
+                                       deltaTime dt: TimeInterval,
+                                       sharedView: GameModelView) {
+        let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
+        if abs(deltaX) < 1.0 || dt > 0.1 {
+            sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
+            gestureState.dragStartAngle = sharedView.camera.cameraYaw
+            gestureState.dragBaseline = currentTranslation.width
+        } else {
+            if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
+                gestureState.dragStartAngle = sharedView.camera.cameraYaw
+                gestureState.dragBaseline = currentTranslation.width
+            }
+            let effectiveDrag = currentTranslation.width - gestureState.dragBaseline
+            sharedView.camera.targetCameraYaw = gestureState.dragStartAngle +
+                Angle(radians: -Double(effectiveDrag) * sharedView.camera.settings.rotationSensitivity)
+        }
+        gestureState.lastDeltaX = deltaX
+    }
+    
+    /// Processes vertical drag to update pitch and zoom.
+    @MainActor
+    private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
+                                     currentTranslation: CGSize,
+                                     sharedView: GameModelView) {
+        let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
+        guard abs(deltaY) > 1.0 else { return }
         
-        // Process pinch (zoom) updates.
+        if deltaY > 0 {
+            // Swiping downward: zoom in and tilt upward.
+            let newDistance = sharedView.camera.targetCameraDistance - Float(deltaY) * 0.01
+            sharedView.camera.targetCameraDistance = max(sharedView.camera.settings.minDistance, newDistance)
+            
+            let pitchUp = Double(deltaY) * 0.1
+            let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchUp
+            sharedView.camera.targetCameraPitch = .degrees(min(sharedView.camera.settings.maxPitch.degrees, nextPitch))
+        } else {
+            // Swiping upward: restore zoom (if needed) then tilt downward.
+            if sharedView.camera.targetCameraDistance < sharedView.camera.lastPinchDistance {
+                let newDistance = sharedView.camera.targetCameraDistance + Float(-deltaY) * 0.01
+                sharedView.camera.targetCameraDistance = min(sharedView.camera.lastPinchDistance, newDistance)
+            } else {
+                let pitchDown = Double(deltaY) * 0.1
+                let nextPitch = sharedView.camera.targetCameraPitch.degrees + pitchDown
+                sharedView.camera.targetCameraPitch = .degrees(max(sharedView.camera.settings.minPitch.degrees, nextPitch))
+            }
+        }
+    }
+    
+    /// Resets the drag state when no drag is occurring.
+    @MainActor
+    private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval) {
+        gestureState.lastDragTranslation = .zero
+        gestureState.lastDeltaX = 0.0
+        gestureState.dragBaseline = 0.0
+        gestureState.lastDragUpdateTime = currentTime
+    }
+    
+    // MARK: - Pinch Processing
+    
+    /// Processes pinch (zoom) updates.
+    @MainActor
+    private func processPinch(in context: SceneUpdateContext, sharedView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
-            
             if sharedView.isPinching {
                 if gestureState.lastPinchScale == 1.0 {
                     gestureState.initialPinchDistance = sharedView.camera.cameraDistance
@@ -134,6 +164,7 @@ class CameraRotationSystem: System {
         }
     }
 }
+
 
 // MARK: - Camera State and Control
 
@@ -155,17 +186,19 @@ class CameraState {
         /// Offset for the pivot (e.g. center on a character’s knees rather than chest)
         var pivotOffset: SIMD3<Float> = SIMD3(0, -0.5, 0)
         
+        // MARK: Parameters that affect horizontal rotation speed
+        
         /// Smoothing and damping parameters
         var smoothingFactor: Float = 0.15 // Higher -> faster convergence
-        var dampingFactor: Float = 1.0    // Higher -> more damping
-        var maxRotationSpeed: Double = 6.0 // Maximum allowed rotation speed (radians per second)
+        var dampingFactor: Float = 0.01   // Higher -> more damping
+        var maxRotationSpeed: Double =   4 * .pi // Maximum allowed rotation speed (radians per second)
         
         /// Sensitivity parameters for camera motions
-        var rotationSensitivity: Double = 0.02 // Controls how fast the camera rotates based on drag
+        var rotationSensitivity: Double = 0.75 // Controls how fast the camera rotates based on drag
         var zoomSensitivity: Float = 2.0         // Controls how much zoom occurs per pinch
         
         /// Easing duration for interpolation (in seconds)
-        var easingDuration: Double = 0.1
+        var easingDuration: Double = 0.05
 
         // MARK: Additional Configurable Parameters
 
