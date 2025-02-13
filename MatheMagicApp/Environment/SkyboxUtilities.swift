@@ -35,7 +35,7 @@
 //            // Set the environment using RealityViewEnvironment.skybox
 //            realityView.environment = RealityViewEnvironment.skybox(skyboxResource)
 //        } catch {
-//            print("Error loading skybox resource: \(error)")
+//            AppLogger.shared.error("Error loading skybox resource: \(error)")
 //        }
 //    }
 //
@@ -169,7 +169,7 @@
 //        // Add the skybox entity to the RealityView content
 //        content.add(skyboxEntity)
 //    } catch {
-//        print("Error loading skybox resource: \(error)")
+//        AppLogger.shared.error("Error loading skybox resource: \(error)")
 //    }
 //}
 //

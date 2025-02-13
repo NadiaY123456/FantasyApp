@@ -10,12 +10,17 @@
 
 def Xform "Root"
 {
-    def "Flash" (
+    def "flash" (
         active = true
-        prepend references = @Flash/Flash.usdz@
+        customData = {
+            float3 rotationEulerHint = (-1.5707964, 0, 0)
+        }
+        prepend references = @Flash/flash.usda@
     )
     {
+        quatf xformOp:orient = (0.70710677, -0.70710677, 0, 0)
         float3 xformOp:scale = (0.01, 0.01, 0.01)
+        double3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }
