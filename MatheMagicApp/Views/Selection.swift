@@ -44,10 +44,10 @@ struct Selection: View {
                     guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
                     spaceOrigin.components.set(iblComponent) // space origin emits light
                     
-                    sceneManager.updateCameraTransform()
+                    GameModelView.shared.camera.updateCameraTransform()
 
                     // Skybox
-                    sceneManager.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
+                    GameModelView.shared.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
 
 //                     // This function loads proper skybox (i.e. .exr) and uses it as IBL light source
 //                     do {
@@ -70,9 +70,9 @@ struct Selection: View {
                             spaceOrigin.addChild(flashModel.entity)
                         }
                         // Set Flash as the tracked entity.
-                        sceneManager.trackedEntity = flashModel.entity
+                        GameModelView.shared.camera.trackedEntity = flashModel.entity
                         // Add the camera relative to Flash.
-                        sceneManager.addCamera(to: content, relativeTo: flashModel.entity)
+                        GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel.entity)
                         // Optionally, add lighting to Flash.
                         sceneManager.addContentWithLight(entity: flashModel.entity, iblComponent: iblComponent)
                     }
@@ -88,92 +88,23 @@ struct Selection: View {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
-                            let now = CACurrentMediaTime()
-                            let dt = now - lastDragUpdateTime
-
-                            // --- Horizontal (Yaw) Logic ---
-                            let deltaX = value.translation.width - lastDragTranslation.width
-                            if abs(deltaX) < 1.0 || dt > 0.1 {
-                                // Finger nearly stationary or too slow update: reset baseline.
-                                sceneManager.targetCameraAngle = sceneManager.cameraAngle
-                                dragStartAngle = sceneManager.cameraAngle
-                                dragBaseline = value.translation.width
-                            } else {
-                                // If direction changed, reset the baseline.
-                                if lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
-                                    dragStartAngle = sceneManager.cameraAngle
-                                    dragBaseline = value.translation.width
-                                }
-                                let effectiveDrag = value.translation.width - dragBaseline
-                                sceneManager.targetCameraAngle = dragStartAngle +
-                                    Angle(radians: -Double(effectiveDrag) * sceneManager.rotationSensitivity)
-                            }
-                            lastDeltaX = deltaX
-
-                            // --- Vertical (Pitch & Zoom) Logic ---
-                            let deltaY = value.translation.height - lastDragTranslation.height
-                            if abs(deltaY) > 1.0 {
-                                if deltaY > 0 {
-                                    // Swiping downward: zoom in and tilt upward.
-                                    let newDistance = sceneManager.targetCameraDistance - Float(deltaY) * 0.01
-                                    sceneManager.targetCameraDistance = max(sceneManager.minDistance, newDistance)
-                                    
-                                    let pitchUp = Double(deltaY) * 0.1
-                                    let nextPitch = sceneManager.targetCameraPitch.degrees + pitchUp
-                                    sceneManager.targetCameraPitch = .degrees(
-                                        min(sceneManager.maxPitch.degrees, nextPitch)
-                                    )
-                                } else {
-                                    // Swiping upward: first restore zoom (if needed) then tilt downward.
-                                    if sceneManager.targetCameraDistance < sceneManager.lastPinchDistance {
-                                        let newDistance = sceneManager.targetCameraDistance + Float(-deltaY) * 0.01
-                                        sceneManager.targetCameraDistance = min(sceneManager.lastPinchDistance, newDistance)
-                                    } else {
-                                        let pitchDown = Double(deltaY) * 0.1
-                                        let nextPitch = sceneManager.targetCameraPitch.degrees + pitchDown
-                                        sceneManager.targetCameraPitch = .degrees(
-                                            max(sceneManager.minPitch.degrees, nextPitch)
-                                        )
-                                    }
-                                }
-                            }
-
-                            // Update tracking values
-                            lastDragTranslation = value.translation
-                            lastDragUpdateTime = now
-                            sceneManager.startSmoothCameraAnimation()
+                            GameModelView.shared.rawDragTranslation = value.translation
+                            GameModelView.shared.isDragging = true
                         }
-
                         .onEnded { _ in
-                            // Reset your drag state
-                            lastDragTranslation = .zero
-                            lastDeltaX = 0.0
-                            dragBaseline = 0.0
-                            lastDragUpdateTime = CACurrentMediaTime()
-
-                            // Lock in final angles/distances
-                            sceneManager.targetCameraAngle = sceneManager.cameraAngle
-                            sceneManager.targetCameraPitch = sceneManager.cameraPitch
-                            sceneManager.targetCameraDistance = sceneManager.cameraDistance
+                            GameModelView.shared.isDragging = false
+                            GameModelView.shared.rawDragTranslation = .zero
                         }
                 )
-
-
-                // Pinch gesture for zooming.
                 .simultaneousGesture(
                     MagnificationGesture()
                         .onChanged { scale in
-                            AppLogger.shared.debug("Pinch changed: scale = \(scale)")
-                            let newDistance = sceneManager.cameraDistance * (1 - (Float(scale) - 1) * sceneManager.zoomSensitivity)
-                            sceneManager.targetCameraDistance = min(sceneManager.maxDistance,
-                                                                    max(sceneManager.minDistance, newDistance))
-                            AppLogger.shared.debug("Updated targetCameraDistance = \(sceneManager.targetCameraDistance)")
-                            sceneManager.startSmoothCameraAnimation()
+                            GameModelView.shared.isPinching = true
+                            GameModelView.shared.rawPinchScale = scale
                         }
                         .onEnded { _ in
-                            sceneManager.lastPinchDistance = sceneManager.cameraDistance
-                            sceneManager.targetCameraDistance = sceneManager.cameraDistance
-                            AppLogger.shared.debug("Pinch ended. Final targetCameraDistance = \(sceneManager.targetCameraDistance)")
+                            GameModelView.shared.isPinching = false
+                            GameModelView.shared.rawPinchScale = 1.0
                         }
                 )
 

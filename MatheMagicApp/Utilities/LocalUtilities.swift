@@ -121,3 +121,16 @@ func createSphere(color: UIColor = .blue, radius: Float = 1.0, position: SIMD3<F
 //    let worldTransform = entity.convert(transform: localTransform, from: parentEntity)
 //    return worldTransform
 //}
+
+extension Angle: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let radians = try container.decode(Double.self)
+        self = Angle(radians: radians)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.radians)
+    }
+}

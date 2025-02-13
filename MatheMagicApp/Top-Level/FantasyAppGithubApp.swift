@@ -11,13 +11,18 @@ struct FantasyAppGithubApp: App {
 //    var settings = Settings()
 
     init() {
-        // SYSTEMS
-        MoveSystem.registerSystem()
-        TapSystem.registerSystem()
-
+        
         // COMPONENTS
         MoveComponent.registerComponent()
         TapComponent.registerComponent()
+        CameraRotationComponent.registerComponent()
+        
+        // SYSTEMS
+        MoveSystem.registerSystem()
+        TapSystem.registerSystem()
+        CameraRotationSystem.registerSystem()
+
+        
         
         
 

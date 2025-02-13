@@ -31,8 +31,8 @@ class MoveSystem: RealityKit.System {
             var posx = moveComponent.posx
             var posz = moveComponent.posz
             if GameModelView.shared.isHoldingButton {
-                var xVar = deltaPos * Float(GameModelView.shared.joystickMagnitude) * cos(Float(GameModelView.shared.joystickAngle.radians))
-                var zVar = deltaPos * Float(GameModelView.shared.joystickMagnitude) * sin(Float(GameModelView.shared.joystickAngle.radians))
+                let xVar = deltaPos * Float(GameModelView.shared.joystickMagnitude) * cos(Float(GameModelView.shared.joystickAngle.radians))
+                let zVar = deltaPos * Float(GameModelView.shared.joystickMagnitude) * sin(Float(GameModelView.shared.joystickAngle.radians))
                 posx += xVar
                 posz += zVar
                 moveComponent.posx = posx
