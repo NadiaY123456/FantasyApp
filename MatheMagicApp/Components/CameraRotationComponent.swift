@@ -22,6 +22,7 @@ public struct CameraRotationComponent: Component {
     // MARK: Pinch (Zoom) State
 
     public var initialPinchDistance: Float = 0.0
+    public var pinchBaseline: CGFloat = 1.0
     public var lastPinchScale: CGFloat = 1.0
 
     public init() {}
@@ -82,7 +83,8 @@ class CameraRotationSystem: System {
     private func processHorizontalDrag(for gestureState: inout CameraRotationComponent,
                                        currentTranslation: CGSize,
                                        deltaTime dt: TimeInterval,
-                                       sharedView: GameModelView) {
+                                       sharedView: GameModelView)
+    {
         let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
         if abs(deltaX) < 1.0 || dt > 0.1 {
             sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
@@ -104,7 +106,8 @@ class CameraRotationSystem: System {
     @MainActor
     private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
                                      currentTranslation: CGSize,
-                                     sharedView: GameModelView) {
+                                     sharedView: GameModelView)
+    {
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
         guard abs(deltaY) > 1.0 else { return }
         
@@ -144,27 +147,52 @@ class CameraRotationSystem: System {
     @MainActor
     private func processPinch(in context: SceneUpdateContext, sharedView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+        // Define a small threshold for detecting significant pinch changes.
+        let pinchThreshold: CGFloat = 0.01
+        
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
             if sharedView.isPinching {
+                // If this is the start of a pinch gesture, set the baseline values.
                 if gestureState.lastPinchScale == 1.0 {
                     gestureState.initialPinchDistance = sharedView.camera.cameraDistance
+                    gestureState.pinchBaseline = sharedView.rawPinchScale
                 }
-                let scale = Float(sharedView.rawPinchScale)
-                let newDistance = gestureState.initialPinchDistance * (1 - (scale - 1) * sharedView.camera.settings.zoomSensitivity)
-                sharedView.camera.targetCameraDistance = min(sharedView.camera.settings.maxDistance,
-                                                             max(sharedView.camera.settings.minDistance, newDistance))
+                
+                // Calculate the change in pinch scale.
+                let pinchDelta = sharedView.rawPinchScale - gestureState.lastPinchScale
+                
+                // If the change is minimal, or if the pinch has just started,
+                // reset the baseline similar to horizontal drag.
+                if abs(pinchDelta) < pinchThreshold {
+                    sharedView.camera.targetCameraDistance = sharedView.camera.cameraDistance
+                    gestureState.initialPinchDistance = sharedView.camera.cameraDistance
+                    gestureState.pinchBaseline = sharedView.rawPinchScale
+                } else {
+                    // If the direction of the pinch has reversed (like a drag reversal),
+                    // reset the baseline.
+                    if (gestureState.lastPinchScale - gestureState.pinchBaseline) * (sharedView.rawPinchScale - gestureState.pinchBaseline) < 0 {
+                        gestureState.initialPinchDistance = sharedView.camera.cameraDistance
+                        gestureState.pinchBaseline = sharedView.rawPinchScale
+                    }
+                    // Compute effective pinch movement relative to the baseline.
+                    let effectivePinch = sharedView.rawPinchScale - gestureState.pinchBaseline
+                    let newDistance = gestureState.initialPinchDistance * (1 - Float(effectivePinch) * sharedView.camera.settings.zoomSensitivity)
+                    sharedView.camera.targetCameraDistance = min(sharedView.camera.settings.maxDistance,
+                                                                 max(sharedView.camera.settings.minDistance, newDistance))
+                }
                 gestureState.lastPinchScale = sharedView.rawPinchScale
                 sharedView.camera.startSmoothCameraAnimation()
             } else {
+                // Reset pinch state when not pinching.
                 gestureState.lastPinchScale = 1.0
                 gestureState.initialPinchDistance = sharedView.camera.cameraDistance
+                gestureState.pinchBaseline = 1.0
             }
             entity.components.set(gestureState)
         }
     }
 }
-
 
 // MARK: - Camera State and Control
 
@@ -177,7 +205,7 @@ class CameraState {
     struct Settings {
         /// Pitch boundaries (prevents 360° vertical spin)
         var minPitch: Angle = .degrees(-45) // e.g. 45° from above
-        var maxPitch: Angle = .degrees(80)  // e.g. 80° from below
+        var maxPitch: Angle = .degrees(80) // e.g. 80° from below
         
         /// Zoom boundaries
         var minDistance: Float = 2.0
@@ -189,16 +217,14 @@ class CameraState {
         // MARK: Parameters that affect horizontal rotation speed
         
         /// Smoothing and damping parameters
-        var smoothingFactor: Float = 0.15 // Higher -> faster convergence
-        var dampingFactor: Float = 0.01   // Higher -> more damping
-        var maxRotationSpeed: Double =   4 * .pi // Maximum allowed rotation speed (radians per second)
+        var maxRotationSpeed: Double = 10 * .pi // Maximum allowed rotation speed (radians per second)
         
         /// Sensitivity parameters for camera motions
         var rotationSensitivity: Double = 0.75 // Controls how fast the camera rotates based on drag
-        var zoomSensitivity: Float = 2.0         // Controls how much zoom occurs per pinch
+        var zoomSensitivity: Float = 1.0 // Controls how much zoom occurs per pinch
         
         /// Easing duration for interpolation (in seconds)
-        var easingDuration: Double = 0.05
+        var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed
 
         // MARK: Additional Configurable Parameters
 
@@ -219,13 +245,13 @@ class CameraState {
     }
     
     // MARK: Camera State Properties
+
     /// The current values are what the camera is actually using at any given frame. The target values are where you eventually want the camera to end up.
-    
     
     /// Should have the same default values to avoid a jump in the beginning
     var cameraDistance: Float = 4.0
     var targetCameraDistance: Float = 4.0
-    var lastPinchDistance: Float = 4.0  /// Final pinch-based distance so we can "return" to it when swiping up.
+    var lastPinchDistance: Float = 4.0 /// Final pinch-based distance so we can "return" to it when swiping up.
     
     var cameraYaw: Angle = .zero
     var targetCameraYaw: Angle = .zero
@@ -233,8 +259,6 @@ class CameraState {
     var cameraPitch: Angle = .degrees(-20)
     var targetCameraPitch: Angle = .degrees(-20)
     
-    
-
     /// Adjustable parameters for the camera.
     var settings = Settings()
 
@@ -373,7 +397,8 @@ class CameraState {
                 // Break if differences are negligible.
                 if abs(angleDifference) < settings.animationStopThreshold,
                    abs(pitchDiff) < settings.animationStopThreshold,
-                   abs(distanceDiff) < Float(settings.animationStopThreshold) {
+                   abs(distanceDiff) < Float(settings.animationStopThreshold)
+                {
                     break
                 }
                 lastUpdateTime = currentTime
