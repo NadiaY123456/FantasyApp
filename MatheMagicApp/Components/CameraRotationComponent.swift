@@ -182,45 +182,54 @@ class CameraRotationSystem: System {
     @MainActor
     private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+        // A small threshold to decide if the user has really moved their fingers.
         let pinchThreshold: CGFloat = 0.001
 
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
 
             if gameModelView.isPinching {
+                // At the start of a pinch, record the initial camera distance and baseline.
                 if gestureState.lastPinchScale == 1.0 {
                     gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
                 }
-                
+
                 let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
-                
+
                 if abs(scaleChange) < pinchThreshold {
-                    gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
+                    // Minimal movement: update baselines without changing zoom.
                     gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
                 } else {
+                    // Compute the effective scale and new distance.
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
                     let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
-                    gameModelView.camera.targetCameraDistance = min(gameModelView.camera.settings.maxDistance,
-                                                                    max(gameModelView.camera.settings.minDistance, newDistance))
+                    // Clamp newDistance to allowed zoom range.
+                    let clampedDistance = min(gameModelView.camera.settings.maxDistance,
+                                              max(gameModelView.camera.settings.minDistance, newDistance))
+                    gameModelView.camera.targetCameraDistance = clampedDistance
+                    // Continuously update lastPinchDistance so that updateCameraTransform uses the latest value.
+                    gameModelView.camera.lastPinchDistance = clampedDistance
                     gameModelView.camera.startSmoothCameraAnimation()
                 }
+                // Always update the last pinch scale while pinching.
+                gestureState.lastPinchScale = gameModelView.rawPinchScale
+
             } else {
-                // When not pinching, immediately stop zoom animation by aligning target and current distances.
-                gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
-                // Reset pinch state.
-                gestureState.lastPinchScale = 1.0
-                gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
-                gestureState.pinchBaseline = 1.0
-                // Store the original distance from the pivot (set right after the last pinch)
-                // so that updateCameraTransform can use it when the min height isn’t binding.
-                gameModelView.camera.lastPinchDistance = gameModelView.camera.cameraDistance
+                // On pinch release, do not override the targetCameraDistance.
+                // Simply reset the pinch state if needed.
+                if gestureState.lastPinchScale != 1.0 {
+                    gestureState.lastPinchScale = 1.0
+                    gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
+                    gestureState.pinchBaseline = 1.0
+                }
             }
-            gestureState.lastPinchScale = gameModelView.rawPinchScale
             entity.components.set(gestureState)
         }
     }
+
+
 }
 
 // MARK: - Camera State and Control
@@ -602,4 +611,3 @@ extension CameraRotationComponent: Codable {
         try container.encode(lastPinchScale, forKey: .lastPinchScale)
     }
 }
-
