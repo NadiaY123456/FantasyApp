@@ -1,6 +1,7 @@
 import RealityKit
 import RealityKitContent
 import SwiftUI
+import CoreLib
 
 struct BallView: View {
     @State var showQuestion = false // State to show the math question
@@ -55,15 +56,15 @@ struct BallView: View {
                     .transition(.opacity) // Opacity transition
                     .animation(.easeInOut(duration: 0.5), value: gameModelView.showQuestion) // Tie animation to showQuestion
                     .onChange(of: selectedOption) { _ in
-                        print("Debug: Answer selected")
+                        AppLogger.shared.debug("Debug: Answer selected")
                         guard let _ = selectedOption else { return }
 
                         // Fade out the question box after a short delay
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             withAnimation {
-                                print("Debug: Question box going away!!")
+                                AppLogger.shared.debug("Debug: Question box going away!!")
                                 gameModelView.showQuestion = false
-                                print("Value of showQuestion: \(gameModelView.showQuestion)")
+                                AppLogger.shared.info("Value of showQuestion: \(gameModelView.showQuestion)")
                             }
                         }
 
@@ -84,7 +85,7 @@ struct BallView: View {
             .background(Color.white.ignoresSafeArea()) // Ensure the background doesn't interfere
         }
         .onChange(of: gameModelView.showQuestion) { newValue in
-            print("BallView detected showQuestion change to \(newValue)")
+            AppLogger.shared.info("BallView detected showQuestion change to \(newValue)")
         }
     }
 
@@ -118,7 +119,7 @@ struct BallView: View {
                                 withAnimation {
                                     gameModelView.isHoldingButton = true
                                 }
-                                print("Joystick pressed down")
+                                AppLogger.shared.debug("Joystick pressed down")
                             }
 
                             // Define the maximum distance the handle can move (radius)
@@ -146,7 +147,7 @@ struct BallView: View {
                                 gameModelView.joystickMagnitude = 0
                                 gameModelView.joystickAngle = Angle(degrees: 0)
                             }
-                            print("Joystick released")
+                            AppLogger.shared.debug("Joystick released")
                         }
                 )
         }
@@ -233,14 +234,14 @@ struct RealityViewWithTap: View {
             }
 
             // Optionally add environment models:
-            if let meadowModel = entityModelDictionary["meadow"] {
+            if let meadowModel = entityModelDictionaryCore["meadow"] {
                 spaceOriginBall.addChild(meadowModel.entity)
             }
-            if let waterModel = entityModelDictionary["water"] {
+            if let waterModel = entityModelDictionaryCore["water"] {
                 spaceOriginBall.addChild(waterModel.entity)
             }
 
-            print("End of ball realityview")
+            AppLogger.shared.info("End of ball realityview")
         }
         update: { content in
             // This block runs each frame on the SwiftUI side.
@@ -252,7 +253,7 @@ struct RealityViewWithTap: View {
                var tapComponent = ball.components[TapComponent.self],
                var moveComponent = ball.components[MoveComponent.self]
             {
-                // print("Debug: Ball found")
+                // AppLogger.shared.debug("Debug: Ball found")
 
                 // 2) If the ball was tapped, show the question:
                 if tapComponent.didTap {
