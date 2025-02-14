@@ -178,38 +178,30 @@ class CameraRotationSystem: System {
     // MARK: - Pinch Processing
     
     /// Processes pinch (zoom) updates.
+
     @MainActor
     private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
-        // A small threshold to decide if the user has really moved their fingers.
         let pinchThreshold: CGFloat = 0.001
 
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
 
             if gameModelView.isPinching {
-                // If this is the start of a pinch gesture, record the initial camera distance and baseline.
                 if gestureState.lastPinchScale == 1.0 {
                     gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
                 }
-
-                // Calculate how much the pinch scale has changed since the last update.
+                
                 let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
-
+                
                 if abs(scaleChange) < pinchThreshold {
-                    // Minimal movement: freeze the zoom.
                     gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
-                    // Also reset the baseline so that any further movement starts from here.
                     gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
                 } else {
-                    // Compute the effective scale relative to the baseline.
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
-                    // Use a multiplicative formula for symmetric zoom:
-                    //   - When effectiveScale returns to 1.0, the distance returns to initialPinchDistance.
                     let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
-                    // Clamp the new distance to the allowed range.
                     gameModelView.camera.targetCameraDistance = min(gameModelView.camera.settings.maxDistance,
                                                                     max(gameModelView.camera.settings.minDistance, newDistance))
                     gameModelView.camera.startSmoothCameraAnimation()
@@ -221,8 +213,10 @@ class CameraRotationSystem: System {
                 gestureState.lastPinchScale = 1.0
                 gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                 gestureState.pinchBaseline = 1.0
+                // Store the original distance from the pivot (set right after the last pinch)
+                // so that updateCameraTransform can use it when the min height isn’t binding.
+                gameModelView.camera.lastPinchDistance = gameModelView.camera.cameraDistance
             }
-            // Update the last pinch scale for the next frame.
             gestureState.lastPinchScale = gameModelView.rawPinchScale
             entity.components.set(gestureState)
         }
@@ -366,7 +360,6 @@ class CameraState {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
         // Reset the pivot rotation to ensure no roll (z-axis rotation)
-        // (This locks the pivot so that it doesn’t accumulate any z-axis rotation.)
         pivot.transform.rotation = simd_quatf(angle: 0, axis: SIMD3(0, 0, 1))
         
         // Update pivot position based on the tracked entity.
@@ -374,29 +367,43 @@ class CameraState {
             pivot.transform.translation = tracked.transform.translation + settings.pivotOffset
         }
         
-        // Instead of rotating the pivot, we use its position as the orbit center.
         let pivotWorldPosition = pivot.transform.translation
-
-        // Spherical coordinate calculation using both yaw and pitch.
-        let r = cameraDistance
         let yaw = Float(cameraYaw.radians)
         let pitch = Float(cameraPitch.radians)
         
-        // Compute the offset from the pivot in world space.
-        // Yaw rotates around the Y‑axis and pitch moves the camera up/down.
+        // Use lastPinchDistance as the "original" desired distance from the pivot.
+        // (This value is updated when the pinch gesture ends.)
+        var desiredDistance = lastPinchDistance
+        
+        // Calculate the tentative world Y position of the camera using the desiredDistance.
+        let tentativeY = pivotWorldPosition.y + desiredDistance * sin(pitch)
+        
+        // If the tentative Y is below the allowed minimum, adjust desiredDistance so that
+        // the camera’s Y exactly equals settings.minCameraHeight.
+        if tentativeY < settings.minCameraHeight {
+            // Avoid division by zero; if sin(pitch) is very close to zero, skip adjustment.
+            if abs(sin(pitch)) > 0.0001 {
+                desiredDistance = (settings.minCameraHeight - pivotWorldPosition.y) / sin(pitch)
+            }
+        } else {
+            // Not binding; revert to the original desired distance.
+            desiredDistance = lastPinchDistance
+        }
+        
+        // Compute the offset using the (possibly adjusted) desiredDistance.
         let offset = SIMD3<Float>(
-            r * cos(pitch) * sin(yaw),
-            r * sin(pitch),
-            r * cos(pitch) * cos(yaw)
+            desiredDistance * cos(pitch) * sin(yaw),
+            desiredDistance * sin(pitch),
+            desiredDistance * cos(pitch) * cos(yaw)
         )
         
-        // Set the camera's world position to be offset from the pivot.
         let cameraWorldPosition = pivotWorldPosition + offset
-        camera.transform.translation = cameraWorldPosition - pivotWorldPosition // local to pivot
+        // Set camera translation relative to the pivot.
+        camera.transform.translation = cameraWorldPosition - pivotWorldPosition
         
         // Compute a look-at rotation for the camera that locks roll.
         let forward = simd_normalize(pivotWorldPosition - cameraWorldPosition)
-        let upWorld = SIMD3<Float>(0, 1, 0) // fixed up vector to lock out z rotation
+        let upWorld = SIMD3<Float>(0, 1, 0) // fixed up vector
         let right = simd_normalize(simd_cross(forward, upWorld))
         let up = simd_cross(right, forward)
         let rotationMatrix = float3x3(columns: (right, up, -forward))
@@ -404,17 +411,16 @@ class CameraState {
         
         // Update the skydome rotation if available.
         if let skydome = skydomeEntity {
-            // Use the yaw rotation from the camera for the skybox.
             let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
             skydome.transform.rotation = yawRotation * skydomeBaseRotation
         }
         
-        // Log the computed camera world position and pivot's world position.
         AppLogger.shared.debug(
             "Camera World Position: \(cameraWorldPosition) | Pivot Position: \(pivotWorldPosition) | Yaw: \(cameraYaw.degrees)° | Pitch: \(cameraPitch.degrees)°",
             toPrint
         )
     }
+
 
     // MARK: - Smooth Camera Animation
 
@@ -557,7 +563,9 @@ class CameraState {
 
 extension CameraRotationComponent: Codable {
     enum CodingKeys: String, CodingKey {
-        case dragStartAngle, dragBaseline, lastDragTranslation, lastDragUpdateTime, lastDeltaX, initialPinchDistance, lastPinchScale
+        case dragStartAngle, dragBaseline, lastDragTranslation, lastDragUpdateTime, lastDeltaX
+        case dragStartPitch, verticalDragBaseline, lastDeltaY
+        case initialPinchDistance, lastPinchScale
     }
     
     public init(from decoder: Decoder) throws {
@@ -567,6 +575,12 @@ extension CameraRotationComponent: Codable {
         lastDragTranslation = try container.decode(CGSize.self, forKey: .lastDragTranslation)
         lastDragUpdateTime = try container.decode(TimeInterval.self, forKey: .lastDragUpdateTime)
         lastDeltaX = try container.decode(CGFloat.self, forKey: .lastDeltaX)
+        
+        // New vertical drag properties.
+        dragStartPitch = try container.decode(Angle.self, forKey: .dragStartPitch)
+        verticalDragBaseline = try container.decode(CGFloat.self, forKey: .verticalDragBaseline)
+        lastDeltaY = try container.decode(CGFloat.self, forKey: .lastDeltaY)
+        
         initialPinchDistance = try container.decode(Float.self, forKey: .initialPinchDistance)
         lastPinchScale = try container.decode(CGFloat.self, forKey: .lastPinchScale)
     }
@@ -578,7 +592,14 @@ extension CameraRotationComponent: Codable {
         try container.encode(lastDragTranslation, forKey: .lastDragTranslation)
         try container.encode(lastDragUpdateTime, forKey: .lastDragUpdateTime)
         try container.encode(lastDeltaX, forKey: .lastDeltaX)
+        
+        // New vertical drag properties.
+        try container.encode(dragStartPitch, forKey: .dragStartPitch)
+        try container.encode(verticalDragBaseline, forKey: .verticalDragBaseline)
+        try container.encode(lastDeltaY, forKey: .lastDeltaY)
+        
         try container.encode(initialPinchDistance, forKey: .initialPinchDistance)
         try container.encode(lastPinchScale, forKey: .lastPinchScale)
     }
 }
+
