@@ -31,6 +31,7 @@ public struct CameraRotationComponent: Component {
     public var initialPinchDistance: Float = 0.0
     public var pinchBaseline: CGFloat = 1.0
     public var lastPinchScale: CGFloat = 1.0
+    public var pinchStartTime: TimeInterval = 0.0
 
     public init() {}
 }
@@ -182,51 +183,66 @@ class CameraRotationSystem: System {
     @MainActor
     private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
-        // A small threshold to decide if the user has really moved their fingers.
-        let pinchThreshold: CGFloat = 0.001
-
+        let settings = gameModelView.camera.settings
+        let currentTime = CACurrentMediaTime()
+        
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
+            
+            // Retrieve thresholds and sensitivity from settings.
+            let pinchThreshold = settings.pinchThreshold
+            let zoomChangeThreshold = settings.zoomChangeThreshold
+            let zoomSensitivity = settings.zoomSensitivity
+            let pinchDelay = settings.pinchDelay
 
             if gameModelView.isPinching {
-                // At the start of a pinch gesture, record initial values.
+                // When the pinch gesture starts, anchor using the current target distance.
                 if gestureState.lastPinchScale == 1.0 {
-                    gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
+                    gestureState.initialPinchDistance = gameModelView.camera.targetCameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
+                    gestureState.pinchStartTime = currentTime
                 }
-
+                
+                // If we're still within the pinch delay, update the last pinch scale and do nothing.
+                if currentTime - gestureState.pinchStartTime < pinchDelay {
+                    gestureState.lastPinchScale = gameModelView.rawPinchScale
+                    entity.components.set(gestureState)
+                    continue
+                }
+                
                 let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
-
-                // Only update zoom if the scale change exceeds the threshold.
+                
+                // Only update zoom if the change in scale exceeds the threshold.
                 if abs(scaleChange) >= pinchThreshold {
-                    // Compute the effective scale and new distance.
+                    // Compute effective scale relative to the pinch baseline.
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
-                    let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
+                    // Apply zoom sensitivity.
+                    let newDistanceUnclamped = gestureState.initialPinchDistance / (Float(effectiveScale) * zoomSensitivity)
                     // Clamp newDistance to allowed zoom range.
-                    let clampedDistance = min(gameModelView.camera.settings.maxDistance,
-                                              max(gameModelView.camera.settings.minDistance, newDistance))
-                    gameModelView.camera.targetCameraDistance = clampedDistance
-                    // Update the lastPinchDistance so that updateCameraTransform uses the latest value.
-                    gameModelView.camera.lastPinchDistance = clampedDistance
-                    gameModelView.camera.startSmoothCameraAnimation()
+                    let clampedDistance = min(settings.maxDistance,
+                                              max(settings.minDistance, newDistanceUnclamped))
+                    // Update zoom only if the change is significant.
+                    if abs(clampedDistance - gameModelView.camera.targetCameraDistance) >= zoomChangeThreshold {
+                        gameModelView.camera.targetCameraDistance = clampedDistance
+                        gameModelView.camera.lastPinchDistance = clampedDistance
+                        gameModelView.camera.startSmoothCameraAnimation()
+                    }
                 }
                 // Always update the last pinch scale.
                 gestureState.lastPinchScale = gameModelView.rawPinchScale
-
+                
             } else {
-                // On pinch release, simply reset the pinch state.
+                // When not pinching, reset the pinch state.
                 if gestureState.lastPinchScale != 1.0 {
                     gestureState.lastPinchScale = 1.0
                     gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
                     gestureState.pinchBaseline = 1.0
+                    gestureState.pinchStartTime = 0.0
                 }
             }
             entity.components.set(gestureState)
         }
     }
-
-
-
 }
 
 // MARK: - Camera State and Control
@@ -257,13 +273,21 @@ class CameraState {
             
         /// Sensitivity parameters for camera motions
         var rotationSensitivity: Double = 0.75 // Controls how fast the camera rotates based on drag
-        var zoomSensitivity: Float = 1.5 // Controls how much zoom occurs per pinch
         
         // Horizontal drag dead zone. Movements smaller than this will be ignored.
         var horizontalDragDeadZone: CGFloat = 2.0
         
         /// The maximum allowed delta time (in seconds) before the drag baseline is reset.
         var horizontalDragTimeThreshold: Double = 0.1
+        
+        /// Minimal change in pinch scale to consider the gesture as moving.
+        var pinchThreshold: CGFloat = 0.001
+        /// Minimal change in zoom distance to trigger an update.
+        var zoomChangeThreshold: Float = 0.01
+        /// A multiplier to adjust how sensitive zoom is to pinch changes.
+        var zoomSensitivity: Float = 1.0
+        /// Time (in seconds) to wait after pinch start before applying zoom changes.
+        var pinchDelay: TimeInterval = 0.05
 
         /// Easing duration for interpolation (in seconds)
         var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed
@@ -426,7 +450,6 @@ class CameraState {
             toPrint
         )
     }
-
 
     // MARK: - Smooth Camera Animation
 
