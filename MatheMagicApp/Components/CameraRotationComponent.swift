@@ -189,7 +189,7 @@ class CameraRotationSystem: System {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
 
             if gameModelView.isPinching {
-                // At the start of a pinch, record the initial camera distance and baseline.
+                // At the start of a pinch gesture, record initial values.
                 if gestureState.lastPinchScale == 1.0 {
                     gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                     gestureState.pinchBaseline = gameModelView.rawPinchScale
@@ -197,11 +197,8 @@ class CameraRotationSystem: System {
 
                 let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
 
-                if abs(scaleChange) < pinchThreshold {
-                    // Minimal movement: update baselines without changing zoom.
-                    gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
-                    gestureState.pinchBaseline = gameModelView.rawPinchScale
-                } else {
+                // Only update zoom if the scale change exceeds the threshold.
+                if abs(scaleChange) >= pinchThreshold {
                     // Compute the effective scale and new distance.
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
                     let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
@@ -209,16 +206,15 @@ class CameraRotationSystem: System {
                     let clampedDistance = min(gameModelView.camera.settings.maxDistance,
                                               max(gameModelView.camera.settings.minDistance, newDistance))
                     gameModelView.camera.targetCameraDistance = clampedDistance
-                    // Continuously update lastPinchDistance so that updateCameraTransform uses the latest value.
+                    // Update the lastPinchDistance so that updateCameraTransform uses the latest value.
                     gameModelView.camera.lastPinchDistance = clampedDistance
                     gameModelView.camera.startSmoothCameraAnimation()
                 }
-                // Always update the last pinch scale while pinching.
+                // Always update the last pinch scale.
                 gestureState.lastPinchScale = gameModelView.rawPinchScale
 
             } else {
-                // On pinch release, do not override the targetCameraDistance.
-                // Simply reset the pinch state if needed.
+                // On pinch release, simply reset the pinch state.
                 if gestureState.lastPinchScale != 1.0 {
                     gestureState.lastPinchScale = 1.0
                     gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
@@ -228,6 +224,7 @@ class CameraRotationSystem: System {
             entity.components.set(gestureState)
         }
     }
+
 
 
 }
