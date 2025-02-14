@@ -135,7 +135,7 @@ class CameraRotationSystem: System {
             let effectiveDrag = currentTranslation.height - gestureState.verticalDragBaseline
             let pitchSensitivity = 0.1
             // (An upward swipe (positive deltaY) will decrease pitch.)
-            let newPitchDegrees = gestureState.dragStartPitch.degrees - Double(effectiveDrag) * pitchSensitivity
+            let newPitchDegrees = gestureState.dragStartPitch.degrees + Double(effectiveDrag) * pitchSensitivity
 
             // Clamp the pitch to the allowed range.
             let clampedPitchDegrees = min(max(newPitchDegrees,
