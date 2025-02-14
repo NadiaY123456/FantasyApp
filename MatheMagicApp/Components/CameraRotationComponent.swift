@@ -32,6 +32,8 @@ public struct CameraRotationComponent: Component {
     public var pinchBaseline: CGFloat = 1.0
     public var lastPinchScale: CGFloat = 1.0
     public var pinchStartTime: TimeInterval = 0.0
+    // New property to store the last committed effective scale.
+    public var lastCommittedEffectiveScale: CGFloat = 1.0
 
     public init() {}
 }
@@ -181,7 +183,7 @@ class CameraRotationSystem: System {
     /// Processes pinch (zoom) updates.
 
     @MainActor
-    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView) {
+    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView, toPrint: Bool = false) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         let settings = gameModelView.camera.settings
         let currentTime = CACurrentMediaTime()
@@ -189,60 +191,86 @@ class CameraRotationSystem: System {
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
             
-            // Retrieve thresholds and sensitivity from settings.
             let pinchThreshold = settings.pinchThreshold
             let zoomChangeThreshold = settings.zoomChangeThreshold
             let zoomSensitivity = settings.zoomSensitivity
             let pinchDelay = settings.pinchDelay
 
             if gameModelView.isPinching {
-                // When the pinch gesture starts, anchor using the current target distance.
+                // NEW PINCH START: Use lastPinchDistance instead of targetCameraDistance.
                 if gestureState.lastPinchScale == 1.0 {
-                    gestureState.initialPinchDistance = gameModelView.camera.targetCameraDistance
-                    gestureState.pinchBaseline = gameModelView.rawPinchScale
+                    // Use the locked-in camera distance from the previous pinch (or the current value if none exists).
+                    gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
+                    gestureState.pinchBaseline = 1.0  // Always normalize the baseline.
                     gestureState.pinchStartTime = currentTime
+                    gestureState.lastCommittedEffectiveScale = 1.0
+                    AppLogger.shared.debug("Pinch start: initialPinchDistance = \(gestureState.initialPinchDistance), pinchBaseline = \(gestureState.pinchBaseline), lastPinchDistance = \(gameModelView.camera.lastPinchDistance)", toPrint)
                 }
                 
-                // If we're still within the pinch delay, update the last pinch scale and do nothing.
+                // If we're still within the pinch delay period, update lastPinchScale and exit.
                 if currentTime - gestureState.pinchStartTime < pinchDelay {
                     gestureState.lastPinchScale = gameModelView.rawPinchScale
                     entity.components.set(gestureState)
-                    continue
+                    return
                 }
                 
                 let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
+                AppLogger.shared.debug("Pinching: rawPinchScale = \(gameModelView.rawPinchScale), lastPinchScale = \(gestureState.lastPinchScale), scaleChange = \(scaleChange)", toPrint)
                 
-                // Only update zoom if the change in scale exceeds the threshold.
+                // Only update if the change in scale exceeds our threshold.
                 if abs(scaleChange) >= pinchThreshold {
-                    // Compute effective scale relative to the pinch baseline.
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
-                    // Apply zoom sensitivity.
-                    let newDistanceUnclamped = gestureState.initialPinchDistance / (Float(effectiveScale) * zoomSensitivity)
-                    // Clamp newDistance to allowed zoom range.
+                    let scaleDifference = abs(effectiveScale - gestureState.lastCommittedEffectiveScale)
+                    if scaleDifference >= pinchThreshold {
+                        gestureState.lastCommittedEffectiveScale = effectiveScale
+                    }
+                    AppLogger.shared.debug("Effective scale = \(effectiveScale)", toPrint)
+                    
+                    // Calculate the immediate target based on the effective scale.
+                    let immediateTarget = gestureState.initialPinchDistance / (Float(effectiveScale) * zoomSensitivity)
+                    AppLogger.shared.debug("Immediate target = \(immediateTarget)", toPrint)
+                    
+                    let elapsed = currentTime - gestureState.pinchStartTime
+                    let progress = min(1.0, elapsed / settings.pinchAccelerationDuration)
+                    let easedProgress = gameModelView.camera.smoothStep(progress)
+                    AppLogger.shared.debug("Elapsed time = \(elapsed), progress = \(progress), easedProgress = \(easedProgress)", toPrint)
+                    
+                    let interpolatedTarget = gestureState.initialPinchDistance +
+                        (immediateTarget - gestureState.initialPinchDistance) * Float(easedProgress)
+                    AppLogger.shared.debug("Interpolated target = \(interpolatedTarget)")
+                    
                     let clampedDistance = min(settings.maxDistance,
-                                              max(settings.minDistance, newDistanceUnclamped))
-                    // Update zoom only if the change is significant.
-                    if abs(clampedDistance - gameModelView.camera.targetCameraDistance) >= zoomChangeThreshold {
+                                              max(settings.minDistance, interpolatedTarget))
+                    AppLogger.shared.debug("Clamped target distance = \(clampedDistance)", toPrint)
+                    
+                    let previousTarget = gameModelView.camera.targetCameraDistance
+                    AppLogger.shared.debug("Previous targetCameraDistance = \(previousTarget)", toPrint)
+                    
+                    if abs(clampedDistance - previousTarget) >= zoomChangeThreshold {
                         gameModelView.camera.targetCameraDistance = clampedDistance
                         gameModelView.camera.lastPinchDistance = clampedDistance
+                        AppLogger.shared.debug("Updating targetCameraDistance from \(previousTarget) to \(clampedDistance)", toPrint)
                         gameModelView.camera.startSmoothCameraAnimation()
                     }
                 }
-                // Always update the last pinch scale.
                 gestureState.lastPinchScale = gameModelView.rawPinchScale
                 
             } else {
                 // When not pinching, reset the pinch state.
                 if gestureState.lastPinchScale != 1.0 {
                     gestureState.lastPinchScale = 1.0
+                    // Lock in the final pinch distance so that the next pinch starts from the last completed value.
                     gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
                     gestureState.pinchBaseline = 1.0
                     gestureState.pinchStartTime = 0.0
+                    gestureState.lastCommittedEffectiveScale = 1.0
+                    AppLogger.shared.debug("Resetting pinch state. Last pinch distance: \(gameModelView.camera.lastPinchDistance)", toPrint)
                 }
             }
             entity.components.set(gestureState)
         }
     }
+
 }
 
 // MARK: - Camera State and Control
@@ -288,6 +316,8 @@ class CameraState {
         var zoomSensitivity: Float = 1.0
         /// Time (in seconds) to wait after pinch start before applying zoom changes.
         var pinchDelay: TimeInterval = 0.05
+        /// Duration over which the zoom should accelerate (in seconds)
+        var pinchAccelerationDuration: TimeInterval = 0.2
 
         /// Easing duration for interpolation (in seconds)
         var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed
@@ -358,7 +388,7 @@ class CameraState {
     /// - Parameters:
     ///   - content: The RealityViewCameraContent to which the camera will be added.
     ///   - tracked: The entity that the camera will orbit.
-    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = true) {
+    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = false) {
         trackedEntity = tracked
 
         // Create a pivot entity at the tracked character’s position.
@@ -386,7 +416,7 @@ class CameraState {
     
     // MARK: - Camera Transform Update
 
-    func updateCameraTransform(toPrint: Bool = true) {
+    func updateCameraTransform(toPrint: Bool = false) {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
         // Reset the pivot rotation to ensure no roll (z-axis rotation)
@@ -553,14 +583,14 @@ class CameraState {
     ///
     /// - Parameter t: A value between 0 and 1.
     /// - Returns: A smoothly interpolated value between 0 and 1.
-    private func smoothStep(_ t: Double) -> Double {
+    func smoothStep(_ t: Double) -> Double {
         return t * t * (3 - 2 * t)
     }
     
     /// Computes an adjusted camera distance based on current pitch and pivot position
     /// to ensure the camera stays above ground. If the target distance (set by pinch)
     /// would cause ground clipping, we override it with a smaller safe distance.
-    private func adjustedCameraDistance(toPrint: Bool = true) -> Float {
+    private func adjustedCameraDistance(toPrint: Bool = false) -> Float {
         let pivotY = cameraPivot?.transform.translation.y ?? 0
         let safetyMargin = settings.minCameraHeight
         let pitch = Float(cameraPitch.radians)

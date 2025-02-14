@@ -14,7 +14,7 @@ struct Selection: View {
     @StateObject private var sceneManager = SceneManager() // Create a dedicated manager
     @State private var selectedCharacter: SelectedCharacter? = nil
     @EnvironmentObject var gameModelView: GameModelView
-    
+
     // This variable tracks the starting angle when a drag begins.
     @State private var dragStartAngle: Angle = .zero
     @GestureState private var dragOffset: CGSize = .zero
@@ -22,9 +22,6 @@ struct Selection: View {
     @State private var lastDragUpdateTime: TimeInterval = CACurrentMediaTime()
     @State private var lastDeltaX: CGFloat = 0.0
     @State private var dragBaseline: CGFloat = 0.0
-
-
-
 
     var body: some View {
         GeometryReader { geometry in
@@ -43,7 +40,7 @@ struct Selection: View {
                     // Image-based lighting (IBL)
                     guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
                     spaceOrigin.components.set(iblComponent) // space origin emits light
-                    
+
                     GameModelView.shared.camera.updateCameraTransform()
 
                     // Skybox
@@ -63,9 +60,6 @@ struct Selection: View {
                         // print plane position
                         AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
                     }
-                    
-                   
-                    
 
                     // Add the character and create the camera pivot around it.
                     // For this example, we assume Flash is the default tracked character.
@@ -80,10 +74,9 @@ struct Selection: View {
                         GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel.entity)
                         // Optionally, add lighting to Flash.
                         sceneManager.addContentWithLight(entity: flashModel.entity, iblComponent: iblComponent)
-                        
+
                         AppLogger.shared.info("Plane position: \(flashModel.entity.transform.translation)")
                     }
-                    
                 }
                 .id("SingleRealityView")
                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -106,6 +99,10 @@ struct Selection: View {
                 .simultaneousGesture(
                     MagnificationGesture()
                         .onChanged { scale in
+                            if !GameModelView.shared.isPinching {
+                                // Capture the baseline when pinch begins.
+                                GameModelView.shared.initialPinchScale = scale
+                            }
                             GameModelView.shared.isPinching = true
                             GameModelView.shared.rawPinchScale = scale
                         }
@@ -114,7 +111,6 @@ struct Selection: View {
                             GameModelView.shared.rawPinchScale = 1.0
                         }
                 )
-
 
                 // 2) Title Text Overlaid at the Top Center
                 VStack {

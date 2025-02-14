@@ -29,6 +29,7 @@ class GameModelView: ObservableObject {
 
     @Published var isPinching: Bool = false
     @Published var rawPinchScale: CGFloat = 1.0
+    var initialPinchScale: CGFloat = 1.0  // capture starting scale
 
     @Published var camera: CameraState = .init()
 
