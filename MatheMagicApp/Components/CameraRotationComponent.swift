@@ -129,9 +129,6 @@ class CameraRotationSystem: System {
         sharedView.camera.targetCameraPitch = .degrees(clampedPitchDegrees)
     }
 
-
-
-
     /// Resets the drag state when no drag is occurring.
     @MainActor
     private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval) {
@@ -325,12 +322,16 @@ class CameraState {
     func updateCameraTransform(toPrint: Bool = true) {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
-        // Update pivot position based on tracked entity.
+        // Reset the pivot rotation to ensure no roll (z-axis rotation)
+        // (This locks the pivot so that it doesn’t accumulate any z-axis rotation.)
+        pivot.transform.rotation = simd_quatf(angle: 0, axis: SIMD3(0, 0, 1))
+        
+        // Update pivot position based on the tracked entity.
         if let tracked = trackedEntity {
             pivot.transform.translation = tracked.transform.translation + settings.pivotOffset
         }
         
-        // Instead of rotating the pivot, we’ll use its position as the orbit center.
+        // Instead of rotating the pivot, we use its position as the orbit center.
         let pivotWorldPosition = pivot.transform.translation
 
         // Spherical coordinate calculation using both yaw and pitch.
@@ -339,7 +340,7 @@ class CameraState {
         let pitch = Float(cameraPitch.radians)
         
         // Compute the offset from the pivot in world space.
-        // Here, yaw rotates around the Y-axis and pitch moves the camera up/down.
+        // Yaw rotates around the Y‑axis and pitch moves the camera up/down.
         let offset = SIMD3<Float>(
             r * cos(pitch) * sin(yaw),
             r * sin(pitch),
@@ -350,12 +351,13 @@ class CameraState {
         let cameraWorldPosition = pivotWorldPosition + offset
         camera.transform.translation = cameraWorldPosition - pivotWorldPosition // local to pivot
         
-        // Compute the direction from the camera to the pivot.
-        let direction = simd_normalize(pivotWorldPosition - cameraWorldPosition)
-        
-        // Set the camera's rotation to look at the pivot.
-        // This creates a rotation that maps the camera’s forward vector (-z) onto the direction vector.
-        camera.transform.rotation = simd_quatf(from: SIMD3<Float>(0, 0, -1), to: direction)
+        // Compute a look-at rotation for the camera that locks roll.
+        let forward = simd_normalize(pivotWorldPosition - cameraWorldPosition)
+        let upWorld = SIMD3<Float>(0, 1, 0)  // fixed up vector to lock out z rotation
+        let right = simd_normalize(simd_cross(forward, upWorld))
+        let up = simd_cross(right, forward)
+        let rotationMatrix = float3x3(columns: (right, up, -forward))
+        camera.transform.rotation = simd_quatf(rotationMatrix)
         
         // Update the skydome rotation if available.
         if let skydome = skydomeEntity {
@@ -364,15 +366,12 @@ class CameraState {
             skydome.transform.rotation = yawRotation * skydomeBaseRotation
         }
         
-        // Log both the computed camera world position and the pivot's world position.
+        // Log the computed camera world position and pivot's world position.
         AppLogger.shared.debug(
             "Camera World Position: \(cameraWorldPosition) | Pivot Position: \(pivotWorldPosition) | Yaw: \(cameraYaw.degrees)° | Pitch: \(cameraPitch.degrees)°",
             toPrint
         )
     }
-
-
-
 
     // MARK: - Smooth Camera Animation
 
