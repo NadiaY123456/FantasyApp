@@ -92,29 +92,43 @@ class CameraRotationSystem: System {
                                        deltaTime dt: TimeInterval,
                                        gameModelView: GameModelView)
     {
+        // Calculate the change in x position.
         let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
-        if abs(deltaX) < 1.0 || dt > 0.1 {
+        
+        // Get dead zone and time threshold from settings.
+        let deadZone = gameModelView.camera.settings.horizontalDragDeadZone
+        let timeThreshold = gameModelView.camera.settings.horizontalDragTimeThreshold
+        
+        // If the change is too small or if too much time passed since the last update, reset the baseline.
+        if abs(deltaX) < deadZone || dt > timeThreshold {
             gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
             gestureState.dragStartAngle = gameModelView.camera.cameraYaw
             gestureState.dragBaseline = currentTranslation.width
         } else {
-            if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
+            // If the direction of the drag changes (and the movement is significant), reset the baseline.
+            if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > deadZone {
                 gestureState.dragStartAngle = gameModelView.camera.cameraYaw
                 gestureState.dragBaseline = currentTranslation.width
             }
+            
+            // Calculate the effective drag beyond the baseline.
             let effectiveDrag = currentTranslation.width - gestureState.dragBaseline
+            
+            // Update the target yaw using the effective drag multiplied by the rotation sensitivity.
             gameModelView.camera.targetCameraYaw = gestureState.dragStartAngle +
                 Angle(radians: -Double(effectiveDrag) * gameModelView.camera.settings.rotationSensitivity)
         }
+        
         gestureState.lastDeltaX = deltaX
     }
-    
+
     /// Processes vertical drag to update pitch only (with reversed direction),
     /// leaving the target zoom (set by pinch) unchanged.
     @MainActor
     private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
                                      currentTranslation: CGSize,
-                                     gameModelView: GameModelView) {
+                                     gameModelView: GameModelView)
+    {
         let currentTime = CACurrentMediaTime()
         let dt = currentTime - gestureState.lastDragUpdateTime
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
@@ -146,7 +160,6 @@ class CameraRotationSystem: System {
         gestureState.lastDeltaY = deltaY
     }
 
-
     /// Resets the drag state when no drag is occurring.
     @MainActor
     private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval, gameModelView: GameModelView) {
@@ -157,7 +170,7 @@ class CameraRotationSystem: System {
         // NEW: Reset vertical drag state
         gestureState.lastDeltaY = 0.0
         gestureState.verticalDragBaseline = 0.0
-        gestureState.dragStartPitch = gameModelView.camera.cameraPitch  // if you have access or pass it in
+        gestureState.dragStartPitch = gameModelView.camera.cameraPitch // if you have access or pass it in
 
         gestureState.lastDragUpdateTime = currentTime
     }
@@ -198,7 +211,7 @@ class CameraRotationSystem: System {
                     let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
                     // Clamp the new distance to the allowed range.
                     gameModelView.camera.targetCameraDistance = min(gameModelView.camera.settings.maxDistance,
-                                                                 max(gameModelView.camera.settings.minDistance, newDistance))
+                                                                    max(gameModelView.camera.settings.minDistance, newDistance))
                     gameModelView.camera.startSmoothCameraAnimation()
                 }
             } else {
@@ -245,7 +258,13 @@ class CameraState {
         /// Sensitivity parameters for camera motions
         var rotationSensitivity: Double = 0.75 // Controls how fast the camera rotates based on drag
         var zoomSensitivity: Float = 1.5 // Controls how much zoom occurs per pinch
-            
+        
+        // Horizontal drag dead zone. Movements smaller than this will be ignored.
+        var horizontalDragDeadZone: CGFloat = 2.0
+        
+        /// The maximum allowed delta time (in seconds) before the drag baseline is reset.
+        var horizontalDragTimeThreshold: Double = 0.1
+
         /// Easing duration for interpolation (in seconds)
         var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed
 
@@ -377,7 +396,7 @@ class CameraState {
         
         // Compute a look-at rotation for the camera that locks roll.
         let forward = simd_normalize(pivotWorldPosition - cameraWorldPosition)
-        let upWorld = SIMD3<Float>(0, 1, 0)  // fixed up vector to lock out z rotation
+        let upWorld = SIMD3<Float>(0, 1, 0) // fixed up vector to lock out z rotation
         let right = simd_normalize(simd_cross(forward, upWorld))
         let up = simd_cross(right, forward)
         let rotationMatrix = float3x3(columns: (right, up, -forward))
