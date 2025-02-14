@@ -1,3 +1,5 @@
+// old
+
 
 
 //
@@ -119,7 +121,7 @@ class CameraRotationSystem: System {
             
             // Update the target yaw using the effective drag multiplied by the rotation sensitivity.
             gameModelView.camera.targetCameraYaw = gestureState.dragStartAngle +
-                Angle(radians: -Double(effectiveDrag) * gameModelView.camera.settings.rotationSensitivity)
+                Angle(radians: -Double(effectiveDrag) * gameModelView.camera.settings.yawSensitivity)
         }
         
         gestureState.lastDeltaX = deltaX
@@ -137,7 +139,7 @@ class CameraRotationSystem: System {
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
 
         // Use a minimal threshold for vertical movement, similar to horizontal.
-        if abs(deltaY) < 1.0 || dt > 0.1 {
+        if abs(deltaY) < gameModelView.camera.settings.verticalDragDeadZone || dt > gameModelView.camera.settings.verticalDragTimeThreshold {
             // If movement is minimal or there's been a pause, "lock" the pitch.
             gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
             gestureState.dragStartPitch = gameModelView.camera.cameraPitch
@@ -150,9 +152,8 @@ class CameraRotationSystem: System {
             }
             
             let effectiveDrag = currentTranslation.height - gestureState.verticalDragBaseline
-            let pitchSensitivity = 0.1
             // (An upward swipe (positive deltaY) will decrease pitch.)
-            let newPitchDegrees = gestureState.dragStartPitch.degrees + Double(effectiveDrag) * pitchSensitivity
+            let newPitchDegrees = gestureState.dragStartPitch.degrees + Double(effectiveDrag) * gameModelView.camera.settings.pitchSensitivity
 
             // Clamp the pitch to the allowed range.
             let clampedPitchDegrees = min(max(newPitchDegrees,
@@ -300,13 +301,17 @@ class CameraState {
         var maxRotationSpeed: Double = 10 * .pi // Maximum allowed rotation speed (radians per second)
             
         /// Sensitivity parameters for camera motions
-        var rotationSensitivity: Double = 0.75 // Controls how fast the camera rotates based on drag
+        var yawSensitivity: Double = 0.1 // Controls how fast the camera rotates based on drag
         
         // Horizontal drag dead zone. Movements smaller than this will be ignored.
-        var horizontalDragDeadZone: CGFloat = 2.0
+        var horizontalDragDeadZone: CGFloat = 1.0
         
         /// The maximum allowed delta time (in seconds) before the drag baseline is reset.
         var horizontalDragTimeThreshold: Double = 0.1
+        
+        let verticalDragDeadZone = 1.0
+        let verticalDragTimeThreshold = 0.1
+        
         
         /// Minimal change in pinch scale to consider the gesture as moving.
         var pinchThreshold: CGFloat = 0.001
@@ -314,10 +319,12 @@ class CameraState {
         var zoomChangeThreshold: Float = 0.01
         /// A multiplier to adjust how sensitive zoom is to pinch changes.
         var zoomSensitivity: Float = 1.0
+        
         /// Time (in seconds) to wait after pinch start before applying zoom changes.
         var pinchDelay: TimeInterval = 0.05
         /// Duration over which the zoom should accelerate (in seconds)
         var pinchAccelerationDuration: TimeInterval = 0.2
+        let pitchSensitivity = 0.1
 
         /// Easing duration for interpolation (in seconds)
         var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed

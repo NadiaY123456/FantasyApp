@@ -56,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		412ADE192D5FAEAF007BDE16 /* AnimLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AnimLib; path = ../../NexTaleLibraries/AnimationLibrary/AnimLib; sourceTree = SOURCE_ROOT; };
 		4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEntity.swift; sourceTree = "<group>"; };
 		4138F1422D5D10EB00EE27CF /* FantasyCastle_orig.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle_orig.exr; sourceTree = "<group>"; };
 		4138F1462D5D145600EE27CF /* FantasyCastle.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle.exr; sourceTree = "<group>"; };
@@ -281,6 +282,7 @@
 		41E39CA32D5BE28B007C29C6 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				412ADE192D5FAEAF007BDE16 /* AnimLib */,
 				41E3EBA92D5C18B5004752C9 /* CoreLib */,
 				41E39CA22D5BE28B007C29C6 /* RealityKitContent */,
 			);
