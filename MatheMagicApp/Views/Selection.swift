@@ -120,22 +120,22 @@ struct Selection: View {
                 }
                 .frame(width: geometry.size.width)
 
-                // 3) Two Character Buttons at the Bottom
-                VStack {
-                    Spacer()
-                    HStack(spacing: 300) {
-                        // Left (Raven) Button
-                        CharacterButton(title: "Raven") {
-                            selectCharacter(.left)
-                        }
-
-                        // Right (Flash) Button
-                        CharacterButton(title: "Flash") {
-                            selectCharacter(.right)
-                        }
-                    }
-                    .padding(.bottom, 50)
-                }
+//                // 3) Two Character Buttons at the Bottom
+//                VStack {
+//                    Spacer()
+//                    HStack(spacing: 300) {
+//                        // Left (Raven) Button
+//                        CharacterButton(title: "Raven") {
+//                            selectCharacter(.left)
+//                        }
+//
+//                        // Right (Flash) Button
+//                        CharacterButton(title: "Flash") {
+//                            selectCharacter(.right)
+//                        }
+//                    }
+//                    .padding(.bottom, 50)
+//                }
             }
             .background(Color.white.ignoresSafeArea())
         }
@@ -182,11 +182,11 @@ struct Selection: View {
             if let flash = spaceOrigin.getSelfOrDescendent(withName: "flash") {
                 spaceOrigin.removeChild(flash)
             }
-            // Add Raven entity with an adjusted position
-            if let ravenModel = entityModelDictionaryCore["raven"] {
-                ravenModel.entity.transform.translation = simd_float3(0, -1, 0)
-                spaceOrigin.addChild(ravenModel.entity)
-            }
+//            // Add Raven entity with an adjusted position
+//            if let ravenModel = entityModelDictionaryCore["raven"] {
+//                ravenModel.entity.transform.translation = simd_float3(0, -1, 0)
+//                spaceOrigin.addChild(ravenModel.entity)
+//            }
         case .right:
             AppLogger.shared.info("Right character selected")
             // Remove any existing Raven entity

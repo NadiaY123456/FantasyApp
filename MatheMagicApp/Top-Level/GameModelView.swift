@@ -15,6 +15,8 @@ class GameModelView: ObservableObject {
 
     @Published var isFinished: Bool = false
     @Published var currentState: GameScreenState = .start
+    
+    @Published var assetsLoaded: Bool = false // property to track asset loading
     @Published var score: Int = 0
     @Published var elapsedTime: Double = 0
 
@@ -29,7 +31,7 @@ class GameModelView: ObservableObject {
 
     @Published var isPinching: Bool = false
     @Published var rawPinchScale: CGFloat = 1.0
-    var initialPinchScale: CGFloat = 1.0  // capture starting scale
+    var initialPinchScale: CGFloat = 1.0 // capture starting scale
 
     @Published var camera: CameraState = .init()
 

@@ -87,11 +87,11 @@ extension EntitySet {
                     AppLogger.shared.info("ModelEntity set for \(name) using first available entity \(entityNames[0]).")
                 } else {
                     // Otherwise, log an error
-                    AppLogger.shared.error("ErrOR: ModelEntity with name \(modelEntityName) or any other name not found for \(name).")
+                    AppLogger.shared.error("Error: ModelEntity with name \(modelEntityName) or any other name not found for \(name).")
                 }
             } else {
                 // Log an error if casting fails
-                AppLogger.shared.error("ErrOR: Unable to cast descendants to [ModelEntity].")
+                AppLogger.shared.error("Error: Unable to cast descendants to [ModelEntity].")
             }
         }
     }

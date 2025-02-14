@@ -6,27 +6,27 @@ import Spatial
     -> [String: EntitySet]
 {
     
-    let ravenModel = EntitySet(
-        name: "Raven",
-        modelEntityName: "BoneRoot",
-        entityType: .character,
-        loadSource: .realityComposerPro,
-        realityComposerName: "Raven",
-        realityComposerScene: "RavenScene",
-        usdzName: "",
-        realityComposerAnimationResourceName: "raven",
-        jsonPathsToAnimData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/animMeta/"],
-        jsonPathsToTransformData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/transforms/"],
-        jsonPathsToJointNamesList: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/raven_joints.json"],
-        isAnimated: true,
-        isMoving: true,
-        position: SIMD3(x: 0, y: 0, z: -2.5),
-        orientation: simd_quatf(
-            Rotation3D(angle: .degrees(0), axis: .x)
-                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
-        ),
-        spawnScaleFactor: SIMD3<Float>(0.1, 0.1, 0.1)
-    )
+//    let ravenModel = EntitySet(
+//        name: "Raven",
+//        modelEntityName: "BoneRoot",
+//        entityType: .character,
+//        loadSource: .realityComposerPro,
+//        realityComposerName: "Raven",
+//        realityComposerScene: "RavenScene",
+//        usdzName: "",
+//        realityComposerAnimationResourceName: "raven",
+//        jsonPathsToAnimData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/animMeta/"],
+//        jsonPathsToTransformData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/transforms/"],
+//        jsonPathsToJointNamesList: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/raven_joints.json"],
+//        isAnimated: true,
+//        isMoving: true,
+//        position: SIMD3(x: 0, y: 0, z: -2.5),
+//        orientation: simd_quatf(
+//            Rotation3D(angle: .degrees(0), axis: .x)
+//                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
+//        ),
+//        spawnScaleFactor: SIMD3<Float>(0.1, 0.1, 0.1)
+//    )
     
     let flashModel = EntitySet(
         name: "flash",
@@ -37,9 +37,9 @@ import Spatial
         realityComposerScene: "FlashScene",
         usdzName: "",
         realityComposerAnimationResourceName: "flash",
-        jsonPathsToAnimData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/animMeta/"],
-        jsonPathsToTransformData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/transforms/"],
-        jsonPathsToJointNamesList: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/raven_joints.json"],
+        jsonPathsToAnimData: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/animMeta/"],
+        jsonPathsToTransformData: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/transforms/"],
+        jsonPathsToJointNamesList: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/flash_joints.json"],
         isAnimated: true,
         isMoving: true,
         position: SIMD3(x: 0, y: 0, z: -2.5),
@@ -113,7 +113,7 @@ import Spatial
     // Create the dictionary
     let entityModelDictionary: [String: EntitySet] = Dictionary(uniqueKeysWithValues: [
         ("flash", flashModel),
-        ("raven", ravenModel),
+//        ("raven", ravenModel),
         ("plane", planeModel),
         ("meadow", meadowModel),
         ("water", waterModel)

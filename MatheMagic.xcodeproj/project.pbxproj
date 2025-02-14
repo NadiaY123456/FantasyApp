@@ -43,7 +43,6 @@
 		41E39C932D5BE1C6007C29C6 /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C752D5BE1C6007C29C6 /* Play.swift */; };
 		41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C762D5BE1C6007C29C6 /* Selection.swift */; };
 		41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C772D5BE1C6007C29C6 /* Start.swift */; };
-		41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C782D5BE1C6007C29C6 /* StartView.swift */; };
 		41E39C9D2D5BE1CE007C29C6 /* FantasyCastle.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */; };
 		41E39C9E2D5BE1CE007C29C6 /* FantasyTown.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */; };
 		41E39C9F2D5BE1CE007C29C6 /* FantasyTown.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C992D5BE1CE007C29C6 /* FantasyTown.skybox */; };
@@ -92,7 +91,6 @@
 		41E39C752D5BE1C6007C29C6 /* Play.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
 		41E39C762D5BE1C6007C29C6 /* Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selection.swift; sourceTree = "<group>"; };
 		41E39C772D5BE1C6007C29C6 /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
-		41E39C782D5BE1C6007C29C6 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = FantasyCastle.skybox; sourceTree = "<group>"; };
 		41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FantasyTown.jpg; sourceTree = "<group>"; };
@@ -242,7 +240,6 @@
 				41E39C752D5BE1C6007C29C6 /* Play.swift */,
 				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
 				41E39C772D5BE1C6007C29C6 /* Start.swift */,
-				41E39C782D5BE1C6007C29C6 /* StartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -408,7 +405,6 @@
 				41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */,
 				41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */,
 				419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */,
-				41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
