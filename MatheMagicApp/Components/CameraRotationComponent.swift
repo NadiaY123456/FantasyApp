@@ -1,3 +1,5 @@
+
+
 //
 //  CameraRotationComponent.swift
 //  MatheMagic
@@ -56,7 +58,7 @@ class CameraRotationSystem: System {
                 let dt = currentTime - gestureState.lastDragUpdateTime
                 
                 processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, sharedView: sharedView)
-                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) 
+                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) // DO NOT DELETE THIS COMMENT!
                 
                 gestureState.lastDragTranslation = currentTranslation
                 gestureState.lastDragUpdateTime = currentTime
@@ -260,8 +262,8 @@ class CameraState {
     var cameraYaw: Angle = .zero
     var targetCameraYaw: Angle = .zero
     
-    var cameraPitch: Angle = .degrees(20)
-    var targetCameraPitch: Angle = .degrees(20)
+    var cameraPitch: Angle = .degrees(-20)
+    var targetCameraPitch: Angle = .degrees(-20)
     
     /// Adjustable parameters for the camera.
     var settings = Settings()
@@ -328,44 +330,47 @@ class CameraState {
             pivot.transform.translation = tracked.transform.translation + settings.pivotOffset
         }
         
-        // Apply yaw rotation on the pivot.
-        let yawRotation = simd_quatf(angle: Float(cameraYaw.radians), axis: SIMD3(0, 1, 0))
-        pivot.transform.rotation = yawRotation
-        
-        // Use spherical coordinates for the camera’s local position relative to the pivot.
-        let r = cameraDistance
-        // When pitch == 0, the camera is horizontal; positive pitch moves the camera up.
-        let pitch = Float(cameraPitch.radians)
-        let localY = r * sin(pitch)
-        let localZ = r * cos(pitch)
-        
-        // Get the pivot’s world position.
+        // Instead of rotating the pivot, we’ll use its position as the orbit center.
         let pivotWorldPosition = pivot.transform.translation
+
+        // Spherical coordinate calculation using both yaw and pitch.
+        let r = cameraDistance
+        let yaw = Float(cameraYaw.radians)
+        let pitch = Float(cameraPitch.radians)
         
-        // Clamp the world camera Y position so that pivotWorldPosition.y + localY >= minCameraHeight.
-        // This ensures the camera does not go below the configured minCameraHeight.
-        let clampedLocalY = max(localY, settings.minCameraHeight - pivotWorldPosition.y)
+        // Compute the offset from the pivot in world space.
+        // Here, yaw rotates around the Y-axis and pitch moves the camera up/down.
+        let offset = SIMD3<Float>(
+            r * cos(pitch) * sin(yaw),
+            r * sin(pitch),
+            r * cos(pitch) * cos(yaw)
+        )
         
-        // Set the camera’s local translation using the clamped Y.
-        camera.transform.translation = SIMD3(0, clampedLocalY, localZ)
-        
-        // Compute the world camera position.
-        let rotatedCameraOffset = pivot.transform.rotation.act(camera.transform.translation)
-        let cameraWorldPosition = pivotWorldPosition + rotatedCameraOffset
+        // Set the camera's world position to be offset from the pivot.
+        let cameraWorldPosition = pivotWorldPosition + offset
+        camera.transform.translation = cameraWorldPosition - pivotWorldPosition // local to pivot
         
         // Compute the direction from the camera to the pivot.
         let direction = simd_normalize(pivotWorldPosition - cameraWorldPosition)
         
-        // Create a rotation that aligns the camera's forward (-z) with that direction.
-        camera.transform.rotation = simd_quatf(from: SIMD3(0, 0, -1), to: direction)
+        // Set the camera's rotation to look at the pivot.
+        // This creates a rotation that maps the camera’s forward vector (-z) onto the direction vector.
+        camera.transform.rotation = simd_quatf(from: SIMD3<Float>(0, 0, -1), to: direction)
         
-        // Adjust the skydome rotation if available.
+        // Update the skydome rotation if available.
         if let skydome = skydomeEntity {
+            // Use the yaw rotation from the camera for the skybox.
+            let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
             skydome.transform.rotation = yawRotation * skydomeBaseRotation
         }
         
-        AppLogger.shared.debug("Camera Position: \(cameraWorldPosition) | Yaw: \(cameraYaw.degrees)° | Pitch: \(cameraPitch.degrees)°", toPrint)
+        // Log both the computed camera world position and the pivot's world position.
+        AppLogger.shared.debug(
+            "Camera World Position: \(cameraWorldPosition) | Pivot Position: \(pivotWorldPosition) | Yaw: \(cameraYaw.degrees)° | Pitch: \(cameraPitch.degrees)°",
+            toPrint
+        )
     }
+
 
 
 
