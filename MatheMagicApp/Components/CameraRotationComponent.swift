@@ -21,6 +21,11 @@ public struct CameraRotationComponent: Component {
     public var lastDragUpdateTime: TimeInterval = CACurrentMediaTime()
     public var lastDeltaX: CGFloat = 0.0
 
+    // NEW: For vertical drag
+    public var dragStartPitch: Angle = .zero
+    public var verticalDragBaseline: CGFloat = 0.0
+    public var lastDeltaY: CGFloat = 0.0
+
     // MARK: Pinch (Zoom) State
 
     public var initialPinchDistance: Float = 0.0
@@ -39,42 +44,42 @@ class CameraRotationSystem: System {
     static var dependencies: [SystemDependency] { [] }
 
     func update(context: SceneUpdateContext) {
-        let sharedView = GameModelView.shared
+        let gameModelView = GameModelView.shared
         let currentTime = CACurrentMediaTime()
         
-        processDrag(in: context, sharedView: sharedView, currentTime: currentTime)
-        processPinch(in: context, sharedView: sharedView)
+        processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime)
+        processPinch(in: context, gameModelView: gameModelView)
     }
     
     // MARK: - Drag Processing
     
     /// Processes drag (rotation & pitch) updates.
     @MainActor
-    private func processDrag(in context: SceneUpdateContext, sharedView: GameModelView, currentTime: TimeInterval) {
+    private func processDrag(in context: SceneUpdateContext, gameModelView: GameModelView, currentTime: TimeInterval) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
-        if sharedView.isDragging, let currentTranslation = sharedView.rawDragTranslation {
+        if gameModelView.isDragging, let currentTranslation = gameModelView.rawDragTranslation {
             for entity in entities {
                 var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
                 let dt = currentTime - gestureState.lastDragUpdateTime
                 
-                processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, sharedView: sharedView)
-                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, sharedView: sharedView) // DO NOT DELETE THIS COMMENT!
+                processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, gameModelView: gameModelView)
+                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, gameModelView: gameModelView) // DO NOT DELETE THIS COMMENT!
                 
                 gestureState.lastDragTranslation = currentTranslation
                 gestureState.lastDragUpdateTime = currentTime
                 entity.components.set(gestureState)
                 
-                sharedView.camera.startSmoothCameraAnimation()
+                gameModelView.camera.startSmoothCameraAnimation()
             }
         } else {
             // Lock in final values when not dragging.
-            sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
-            sharedView.camera.targetCameraPitch = sharedView.camera.cameraPitch
-            sharedView.camera.targetCameraDistance = sharedView.camera.cameraDistance
+            gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
+            gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
+            gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
             
             for entity in entities {
                 var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
-                resetDragState(&gestureState, currentTime: currentTime)
+                resetDragState(&gestureState, currentTime: currentTime, gameModelView: gameModelView)
                 entity.components.set(gestureState)
             }
         }
@@ -85,21 +90,21 @@ class CameraRotationSystem: System {
     private func processHorizontalDrag(for gestureState: inout CameraRotationComponent,
                                        currentTranslation: CGSize,
                                        deltaTime dt: TimeInterval,
-                                       sharedView: GameModelView)
+                                       gameModelView: GameModelView)
     {
         let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
         if abs(deltaX) < 1.0 || dt > 0.1 {
-            sharedView.camera.targetCameraYaw = sharedView.camera.cameraYaw
-            gestureState.dragStartAngle = sharedView.camera.cameraYaw
+            gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
+            gestureState.dragStartAngle = gameModelView.camera.cameraYaw
             gestureState.dragBaseline = currentTranslation.width
         } else {
             if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > 1.0 {
-                gestureState.dragStartAngle = sharedView.camera.cameraYaw
+                gestureState.dragStartAngle = gameModelView.camera.cameraYaw
                 gestureState.dragBaseline = currentTranslation.width
             }
             let effectiveDrag = currentTranslation.width - gestureState.dragBaseline
-            sharedView.camera.targetCameraYaw = gestureState.dragStartAngle +
-                Angle(radians: -Double(effectiveDrag) * sharedView.camera.settings.rotationSensitivity)
+            gameModelView.camera.targetCameraYaw = gestureState.dragStartAngle +
+                Angle(radians: -Double(effectiveDrag) * gameModelView.camera.settings.rotationSensitivity)
         }
         gestureState.lastDeltaX = deltaX
     }
@@ -109,32 +114,51 @@ class CameraRotationSystem: System {
     @MainActor
     private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
                                      currentTranslation: CGSize,
-                                     sharedView: GameModelView)
-    {
-        // Calculate the vertical movement.
+                                     gameModelView: GameModelView) {
+        let currentTime = CACurrentMediaTime()
+        let dt = currentTime - gestureState.lastDragUpdateTime
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
-        guard abs(deltaY) > 1.0 else { return }
-        
-        // Use a sensitivity value to control the pitch adjustment.
-        let pitchSensitivity = 0.1
-        // Update the target pitch.
-        // (An upward swipe (positive deltaY) will decrease pitch, moving the camera downward.)
-        let newPitchDegrees = sharedView.camera.targetCameraPitch.degrees - Double(deltaY) * pitchSensitivity
-        
-        // Clamp the pitch to a desired range.
-        let clampedPitchDegrees = min(max(newPitchDegrees,
-                                          sharedView.camera.settings.minPitch.degrees),
-                                      sharedView.camera.settings.maxPitch.degrees)
-        
-        sharedView.camera.targetCameraPitch = .degrees(clampedPitchDegrees)
+
+        // Use a minimal threshold for vertical movement, similar to horizontal.
+        if abs(deltaY) < 1.0 || dt > 0.1 {
+            // If movement is minimal or there's been a pause, "lock" the pitch.
+            gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
+            gestureState.dragStartPitch = gameModelView.camera.cameraPitch
+            gestureState.verticalDragBaseline = currentTranslation.height
+        } else {
+            // If the direction of drag changes (and the movement is significant), reset the baseline.
+            if gestureState.lastDeltaY * deltaY < 0 && abs(deltaY) > 1.0 {
+                gestureState.dragStartPitch = gameModelView.camera.cameraPitch
+                gestureState.verticalDragBaseline = currentTranslation.height
+            }
+            
+            let effectiveDrag = currentTranslation.height - gestureState.verticalDragBaseline
+            let pitchSensitivity = 0.1
+            // (An upward swipe (positive deltaY) will decrease pitch.)
+            let newPitchDegrees = gestureState.dragStartPitch.degrees - Double(effectiveDrag) * pitchSensitivity
+
+            // Clamp the pitch to the allowed range.
+            let clampedPitchDegrees = min(max(newPitchDegrees,
+                                              gameModelView.camera.settings.minPitch.degrees),
+                                          gameModelView.camera.settings.maxPitch.degrees)
+            gameModelView.camera.targetCameraPitch = .degrees(clampedPitchDegrees)
+        }
+        gestureState.lastDeltaY = deltaY
     }
+
 
     /// Resets the drag state when no drag is occurring.
     @MainActor
-    private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval) {
+    private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval, gameModelView: GameModelView) {
         gestureState.lastDragTranslation = .zero
         gestureState.lastDeltaX = 0.0
         gestureState.dragBaseline = 0.0
+
+        // NEW: Reset vertical drag state
+        gestureState.lastDeltaY = 0.0
+        gestureState.verticalDragBaseline = 0.0
+        gestureState.dragStartPitch = gameModelView.camera.cameraPitch  // if you have access or pass it in
+
         gestureState.lastDragUpdateTime = currentTime
     }
     
@@ -142,7 +166,7 @@ class CameraRotationSystem: System {
     
     /// Processes pinch (zoom) updates.
     @MainActor
-    private func processPinch(in context: SceneUpdateContext, sharedView: GameModelView) {
+    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         // A small threshold to decide if the user has really moved their fingers.
         let pinchThreshold: CGFloat = 0.001
@@ -150,43 +174,43 @@ class CameraRotationSystem: System {
         for entity in entities {
             var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
 
-            if sharedView.isPinching {
+            if gameModelView.isPinching {
                 // If this is the start of a pinch gesture, record the initial camera distance and baseline.
                 if gestureState.lastPinchScale == 1.0 {
-                    gestureState.initialPinchDistance = sharedView.camera.cameraDistance
-                    gestureState.pinchBaseline = sharedView.rawPinchScale
+                    gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
+                    gestureState.pinchBaseline = gameModelView.rawPinchScale
                 }
 
                 // Calculate how much the pinch scale has changed since the last update.
-                let scaleChange = sharedView.rawPinchScale - gestureState.lastPinchScale
+                let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
 
                 if abs(scaleChange) < pinchThreshold {
                     // Minimal movement: freeze the zoom.
-                    sharedView.camera.targetCameraDistance = sharedView.camera.cameraDistance
+                    gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
                     // Also reset the baseline so that any further movement starts from here.
-                    gestureState.initialPinchDistance = sharedView.camera.cameraDistance
-                    gestureState.pinchBaseline = sharedView.rawPinchScale
+                    gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
+                    gestureState.pinchBaseline = gameModelView.rawPinchScale
                 } else {
                     // Compute the effective scale relative to the baseline.
-                    let effectiveScale = sharedView.rawPinchScale / gestureState.pinchBaseline
+                    let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
                     // Use a multiplicative formula for symmetric zoom:
                     //   - When effectiveScale returns to 1.0, the distance returns to initialPinchDistance.
                     let newDistance = gestureState.initialPinchDistance / Float(effectiveScale)
                     // Clamp the new distance to the allowed range.
-                    sharedView.camera.targetCameraDistance = min(sharedView.camera.settings.maxDistance,
-                                                                 max(sharedView.camera.settings.minDistance, newDistance))
-                    sharedView.camera.startSmoothCameraAnimation()
+                    gameModelView.camera.targetCameraDistance = min(gameModelView.camera.settings.maxDistance,
+                                                                 max(gameModelView.camera.settings.minDistance, newDistance))
+                    gameModelView.camera.startSmoothCameraAnimation()
                 }
             } else {
                 // When not pinching, immediately stop zoom animation by aligning target and current distances.
-                sharedView.camera.targetCameraDistance = sharedView.camera.cameraDistance
+                gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
                 // Reset pinch state.
                 gestureState.lastPinchScale = 1.0
-                gestureState.initialPinchDistance = sharedView.camera.cameraDistance
+                gestureState.initialPinchDistance = gameModelView.camera.cameraDistance
                 gestureState.pinchBaseline = 1.0
             }
             // Update the last pinch scale for the next frame.
-            gestureState.lastPinchScale = sharedView.rawPinchScale
+            gestureState.lastPinchScale = gameModelView.rawPinchScale
             entity.components.set(gestureState)
         }
     }
