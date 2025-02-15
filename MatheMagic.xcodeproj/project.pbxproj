@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
+		413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */; };
+		413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */; };
 		4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */; };
 		4138F1432D5D10EB00EE27CF /* FantasyCastle_orig.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1422D5D10EB00EE27CF /* FantasyCastle_orig.exr */; };
 		4138F1472D5D145600EE27CF /* FantasyCastle.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1462D5D145600EE27CF /* FantasyCastle.exr */; };
@@ -17,6 +19,7 @@
 		4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */; };
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
 		419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF82D5C2767001CF47A /* LocalUtilities.swift */; };
+		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
 		41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */; };
 		41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */; };
@@ -56,6 +59,8 @@
 /* Begin PBXFileReference section */
 		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		412ADE192D5FAEAF007BDE16 /* AnimLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AnimLib; path = ../../NexTaleLibraries/AnimationLibrary/AnimLib; sourceTree = SOURCE_ROOT; };
+		4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveVew.swift; sourceTree = "<group>"; };
+		413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setupCharacterWithComponents.swift; sourceTree = "<group>"; };
 		4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEntity.swift; sourceTree = "<group>"; };
 		4138F1422D5D10EB00EE27CF /* FantasyCastle_orig.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle_orig.exr; sourceTree = "<group>"; };
 		4138F1462D5D145600EE27CF /* FantasyCastle.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle.exr; sourceTree = "<group>"; };
@@ -65,6 +70,7 @@
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
 		419EDCF82D5C2767001CF47A /* LocalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUtilities.swift; sourceTree = "<group>"; };
+		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
 		41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureComponent.swift; sourceTree = "<group>"; };
 		41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveComponent.swift; sourceTree = "<group>"; };
@@ -119,11 +125,12 @@
 			isa = PBXGroup;
 			children = (
 				41E39C7B2D5BE1C6007C29C6 /* MatheMagicApp */,
-				41E39C9C2D5BE1CE007C29C6 /* Resources */,
 				41E39CA32D5BE28B007C29C6 /* Packages */,
+				41E39C9C2D5BE1CE007C29C6 /* Resources */,
 				05E9E74F2D1D3C5B0008014C /* Frameworks */,
 				41E39C6B2D5BE1C6007C29C6 /* Preview Content */,
 				05E9E6FB2D1CF5A80008014C /* Products */,
+				41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */,
 			);
 			sourceTree = "<group>";
 		};
@@ -145,6 +152,7 @@
 		4138F14E2D5D2F5F00EE27CF /* Scene Functions */ = {
 			isa = PBXGroup;
 			children = (
+				413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */,
 				4138F14F2D5D2FBD00EE27CF /* SceneManager.swift */,
 			);
 			path = "Scene Functions";
@@ -233,6 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				4138F14E2D5D2F5F00EE27CF /* Scene Functions */,
+				4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */,
 				41E39C722D5BE1C6007C29C6 /* BallView.swift */,
 				41E39C732D5BE1C6007C29C6 /* GameOver.swift */,
 				41E39C742D5BE1C6007C29C6 /* Lobby.swift */,
@@ -366,6 +375,7 @@
 				4138F1432D5D10EB00EE27CF /* FantasyCastle_orig.exr in Resources */,
 				4138F1492D5D147200EE27CF /* ImageBasedLight_orig.exr in Resources */,
 				41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */,
+				41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,9 +386,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */,
 				41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */,
 				41E39C7F2D5BE1C6007C29C6 /* GestureComponent.swift in Sources */,
 				41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */,
+				413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */,
 				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
 				41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */,
 				41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */,
