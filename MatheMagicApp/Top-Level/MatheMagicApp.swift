@@ -1,5 +1,7 @@
 import RealityKit
 import SwiftUI
+import AnimLib
+import CoreLib
 
 
 @main
@@ -12,16 +14,35 @@ struct FantasyAppGithubApp: App {
 
     init() {
         
-        // COMPONENTS
+        // MARK: COMPONENTS
         MoveComponent.registerComponent()
         TapComponent.registerComponent()
         CameraRotationComponent.registerComponent()
         
-        // SYSTEMS
+        //coreLib
+        DataCenterComponent.registerComponent()
+        
+        //animLib
+        EventComponent.registerComponent()
+        BrainComponent.registerComponent()
+        TravelComponent.registerComponent()
+        CustomAnimationComponent.registerComponent()
+        AnimationComponent.registerComponent()
+        
+        // MARK: SYSTEMS
         MoveSystem.registerSystem()
         TapSystem.registerSystem()
         CameraRotationSystem.registerSystem()
-
+        
+        //coreLib
+        DataCenterSystem.registerSystem()
+        
+        //animLib
+        EventSystem.registerSystem()
+        BrainSystem.registerSystem()
+        TravelSystem.registerSystem()
+        CustomAnimationSystem.registerSystem()
+        AnimationSystem.registerSystem()
         
         
         

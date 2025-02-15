@@ -105,6 +105,9 @@ class GameModelView: ObservableObject {
     }
 
     func selection() {
+        if startDate == nil {
+            startDate = Date()
+        }
         Task {
             await gameModel.selection()
         }

@@ -1,4 +1,6 @@
+import AnimLib
 import CoreLib
+
 import RealityKit
 import RealityKitContent
 import SwiftUI
@@ -63,20 +65,21 @@ struct Selection: View {
 
                     // Add the character and create the camera pivot around it.
                     // For this example, we assume Flash is the default tracked character.
-                    if let flashModel = entityModelDictionaryCore["flash"] {
-                        // Ensure Flash is added to the scene.
-                        if flashModel.entity.parent == nil {
-                            spaceOrigin.addChild(flashModel.entity)
-                        }
-                        // Set Flash as the tracked entity.
-                        GameModelView.shared.camera.trackedEntity = flashModel.entity
-                        // Add the camera relative to Flash.
-                        GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel.entity)
-                        // Optionally, add lighting to Flash.
-                        sceneManager.addContentWithLight(entity: flashModel.entity, iblComponent: iblComponent)
+                    // Initialize character here and set him up with components
+                    let flashModel = setupCharacterWithComponents(entityDictionaryID: "flash")
 
-                        AppLogger.shared.info("Plane position: \(flashModel.entity.transform.translation)")
+                    // Ensure Flash is added to the scene.
+                    if flashModel.parent == nil {
+                        spaceOrigin.addChild(flashModel)
                     }
+                    // Set Flash as the tracked entity.
+                    GameModelView.shared.camera.trackedEntity = flashModel
+                    // Add the camera relative to Flash.
+                    GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel)
+                    // Optionally, add lighting to Flash.
+                    sceneManager.addContentWithLight(entity: flashModel, iblComponent: iblComponent)
+
+                    AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
                 }
                 .id("SingleRealityView")
                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -194,11 +197,40 @@ struct Selection: View {
                 spaceOrigin.removeChild(raven)
             }
             // Add Flash entity
-            if let flashModel = entityModelDictionaryCore["flash"] {
-                spaceOrigin.addChild(flashModel.entity)
-            }
+            // Initialize character and set him up with components
+            let flashModel = setupCharacterWithComponents(entityDictionaryID: "flash")
+            spaceOrigin.addChild(flashModel)
         }
     }
+}
+
+@MainActor func setupCharacterWithComponents(entityDictionaryID: String) -> Entity {
+    var entity = Entity()
+    if let template = entityModelDictionaryCore[entityDictionaryID] {
+        entity = template.entity
+
+        // Event Component
+        entity.components[EventComponent.self] = EventComponent()
+
+        // Data Center Component
+        if let dataManager = template.dataManager {
+            entity.components[DataCenterComponent.self] = DataCenterComponent(dataManager: dataManager)
+        }
+
+        // Brain Component
+        entity.components[BrainComponent.self] = BrainComponent()
+
+        // Travel Component
+        entity.components[TravelComponent.self] = TravelComponent()
+
+        // Custom Animation Component
+        entity.components[CustomAnimationComponent.self] = CustomAnimationComponent()
+
+        // Animation Component
+        entity.components.set(AnimationComponent())
+
+    } else { print("Error: did not find \(entityDictionaryID) key in entityTemplateDictionary") }
+    return entity
 }
 
 // MARK: - Reusable Character Button
