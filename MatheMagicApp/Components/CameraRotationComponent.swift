@@ -1,14 +1,10 @@
-// old
-
-
-
-//
 //  CameraRotationComponent.swift
 //  MatheMagic
 //
 
 import RealityKit
 import SwiftUI
+import CoreLib
 
 // MARK: - Camera Rotation Component
 

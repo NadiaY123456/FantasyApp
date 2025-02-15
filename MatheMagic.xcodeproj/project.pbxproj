@@ -13,7 +13,6 @@
 		4138F1472D5D145600EE27CF /* FantasyCastle.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1462D5D145600EE27CF /* FantasyCastle.exr */; };
 		4138F1492D5D147200EE27CF /* ImageBasedLight_orig.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1482D5D147200EE27CF /* ImageBasedLight_orig.exr */; };
 		4138F14B2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 4138F14A2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox */; };
-		4138F14D2D5D287100EE27CF /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F14C2D5D286A00EE27CF /* AppLogger.swift */; };
 		4138F1502D5D2FC300EE27CF /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F14F2D5D2FBD00EE27CF /* SceneManager.swift */; };
 		4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */; };
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
@@ -62,7 +61,6 @@
 		4138F1462D5D145600EE27CF /* FantasyCastle.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle.exr; sourceTree = "<group>"; };
 		4138F1482D5D147200EE27CF /* ImageBasedLight_orig.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = ImageBasedLight_orig.exr; sourceTree = "<group>"; };
 		4138F14A2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = kloofendal_48d_partly_cloudy_puresky.skybox; sourceTree = "<group>"; };
-		4138F14C2D5D286A00EE27CF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		4138F14F2D5D2FBD00EE27CF /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
@@ -155,7 +153,6 @@
 		419EDCF52D5C2744001CF47A /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				4138F14C2D5D286A00EE27CF /* AppLogger.swift */,
 				4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */,
 				419EDCF82D5C2767001CF47A /* LocalUtilities.swift */,
 			);
@@ -397,7 +394,6 @@
 				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
 				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
 				41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */,
-				4138F14D2D5D287100EE27CF /* AppLogger.swift in Sources */,
 				41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */,
 				41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */,
 				4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */,

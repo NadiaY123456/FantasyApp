@@ -1,8 +1,7 @@
-import RealityKit
-import SwiftUI
 import AnimLib
 import CoreLib
-
+import RealityKit
+import SwiftUI
 
 @main
 struct FantasyAppGithubApp: App {
@@ -13,40 +12,45 @@ struct FantasyAppGithubApp: App {
 //    var settings = Settings()
 
     init() {
-        
+
         // MARK: COMPONENTS
+
         MoveComponent.registerComponent()
         TapComponent.registerComponent()
         CameraRotationComponent.registerComponent()
+
+        // MARK: SYSTEMS
+
+        MoveSystem.registerSystem()
+        TapSystem.registerSystem()
+        CameraRotationSystem.registerSystem()
         
-        //coreLib
+        //MARK: CoreLIB
+        
+        // Component-System
         DataCenterComponent.registerComponent()
+        DataCenterSystem.registerSystem()
         
-        //animLib
+        // AppLogger's elapsedTimeProvider:
+        AppLogger.shared.clockTimeProvider = {
+            GameModelView.shared.clockTime
+        }
+        
+        //MARK: AnimLib
+        
+        // components
         EventComponent.registerComponent()
         BrainComponent.registerComponent()
         TravelComponent.registerComponent()
         CustomAnimationComponent.registerComponent()
         AnimationComponent.registerComponent()
         
-        // MARK: SYSTEMS
-        MoveSystem.registerSystem()
-        TapSystem.registerSystem()
-        CameraRotationSystem.registerSystem()
-        
-        //coreLib
-        DataCenterSystem.registerSystem()
-        
-        //animLib
+        // systems
         EventSystem.registerSystem()
         BrainSystem.registerSystem()
         TravelSystem.registerSystem()
         CustomAnimationSystem.registerSystem()
         AnimationSystem.registerSystem()
-        
-        
-        
-
         
     }
 
@@ -62,7 +66,6 @@ struct FantasyAppGithubApp: App {
 //                    windowScreen.requestGeometryUpdate(.Vision(resizingRestrictions: UIWindowScene.ResizingRestrictions.none))
 //                }
         }
-
     }
 }
 

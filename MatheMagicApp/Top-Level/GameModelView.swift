@@ -18,7 +18,7 @@ class GameModelView: ObservableObject {
     
     @Published var assetsLoaded: Bool = false // property to track asset loading
     @Published var score: Int = 0
-    @Published var elapsedTime: Double = 0
+    @Published var clockTime: Double = 0
 
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
@@ -65,7 +65,7 @@ class GameModelView: ObservableObject {
                     self.currentState = state
                     self.score = score
                     if let start = self.startDate {
-                        self.elapsedTime = Date().timeIntervalSince(start)
+                        self.clockTime = Date().timeIntervalSince(start)
                     }
                 }
             }

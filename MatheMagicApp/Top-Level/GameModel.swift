@@ -3,6 +3,7 @@ import Combine
 import GameplayKit
 import RealityKit
 import SwiftUI
+import CoreLib
 
 actor GameModel {
     let playData = PlayData()

@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import RealityKit
 import RealityKitContent
+import CoreLib
 
 
 struct LoadUtilities {
