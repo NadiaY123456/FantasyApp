@@ -15,9 +15,9 @@ import Spatial
 //        realityComposerScene: "RavenScene",
 //        usdzName: "",
 //        realityComposerAnimationResourceName: "raven",
-//        jsonPathsToAnimData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/animMeta/"],
-//        jsonPathsToTransformData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/transforms/"],
-//        jsonPathsToJointNamesList: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport/raven/raven_joints.json"],
+//        jsonPathsToAnimData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport.bundle/raven/animMeta/"],
+//        jsonPathsToTransformData: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport.bundle/raven/transforms/"],
+//        jsonPathsToJointNamesList: ["/Users/nata/GitHub/NextTaleApp/NataRestart/DataToImport.bundle/raven/raven_joints.json"],
 //        isAnimated: true,
 //        isMoving: true,
 //        position: SIMD3(x: 0, y: 0, z: -2.5),
@@ -37,14 +37,14 @@ import Spatial
         realityComposerScene: "FlashScene",
         usdzName: "",
         realityComposerAnimationResourceName: "flash",
-        jsonPathsToAnimData: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/animMeta/"],
-        jsonPathsToTransformData: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/transforms/"],
-        jsonPathsToJointNamesList: ["/Users/nata/GitHub/iPadApp/FantasyApp/DataToImport/flash/flash_joints.json"],
+        jsonPathsToAnimData: ["DataToImport.bundle/flash/animMeta/"],
+        jsonPathsToTransformData: ["DataToImport.bundle/flash/transforms/"],
+        jsonPathsToJointNamesList: ["DataToImport.bundle/flash/flash_joints.json"],
         isAnimated: true,
         isMoving: true,
         position: SIMD3(x: 0, y: 0, z: -2.5),
         orientation: simd_quatf(
-            Rotation3D(angle: .degrees(-90), axis: .x)
+            Rotation3D(angle: .degrees(0), axis: .x)
                 .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
         ),
         spawnScaleFactor: SIMD3<Float>(0.1, 0.1, 0.1)
@@ -102,7 +102,7 @@ import Spatial
         jsonPathsToAnimData: [""],
         isAnimated: false,
         isMoving: false,
-        position: SIMD3(x: 0, y: 0, z: 0),
+        position: SIMD3(x: 0, y: -0.1, z: 0),
         orientation: simd_quatf(
             Rotation3D(angle: .degrees(0), axis: .y)
                 .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))

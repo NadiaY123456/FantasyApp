@@ -2,9 +2,9 @@
 //  MatheMagic
 //
 
+import CoreLib
 import RealityKit
 import SwiftUI
-import CoreLib
 
 // MARK: - Camera Rotation Component
 
@@ -50,6 +50,9 @@ class CameraRotationSystem: System {
         
         processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime)
         processPinch(in: context, gameModelView: gameModelView)
+        
+        // Update pivot transform each frame so camera follows the character even without gestures
+        GameModelView.shared.camera.updateCameraTransform()
     }
     
     // MARK: - Drag Processing
@@ -198,7 +201,7 @@ class CameraRotationSystem: System {
                 if gestureState.lastPinchScale == 1.0 {
                     // Use the locked-in camera distance from the previous pinch (or the current value if none exists).
                     gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
-                    gestureState.pinchBaseline = 1.0  // Always normalize the baseline.
+                    gestureState.pinchBaseline = 1.0 // Always normalize the baseline.
                     gestureState.pinchStartTime = currentTime
                     gestureState.lastCommittedEffectiveScale = 1.0
                     AppLogger.shared.debug("Pinch start: initialPinchDistance = \(gestureState.initialPinchDistance), pinchBaseline = \(gestureState.pinchBaseline), lastPinchDistance = \(gameModelView.camera.lastPinchDistance)", toPrint)
@@ -267,7 +270,6 @@ class CameraRotationSystem: System {
             entity.components.set(gestureState)
         }
     }
-
 }
 
 // MARK: - Camera State and Control
@@ -307,7 +309,6 @@ class CameraState {
         
         let verticalDragDeadZone = 1.0
         let verticalDragTimeThreshold = 0.1
-        
         
         /// Minimal change in pinch scale to consider the gesture as moving.
         var pinchThreshold: CGFloat = 0.001
@@ -425,9 +426,21 @@ class CameraState {
         // Reset the pivot rotation to ensure no roll (z-axis rotation)
         pivot.transform.rotation = simd_quatf(angle: 0, axis: SIMD3(0, 0, 1))
         
-        // Update pivot position based on the tracked entity.
+        // Smoothly update pivot position based on the tracked entity's current position.
         if let tracked = trackedEntity {
-            pivot.transform.translation = tracked.transform.translation + settings.pivotOffset
+            // The target position is the character's position plus the desired offset.
+            let targetPos = tracked.transform.translation + settings.pivotOffset
+            
+            // Get the current pivot position.
+            let currentPos = pivot.transform.translation
+            
+            // Interpolate between the current and target positions.
+            // The factor (0.1) can be adjusted for faster or slower smoothing.
+            let smoothingFactor: Float = 0.1
+            let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: smoothingFactor))
+            
+            // Update the pivot's translation with the smoothed position.
+            pivot.transform.translation = smoothedPos
         }
         
         let pivotWorldPosition = pivot.transform.translation
@@ -473,9 +486,11 @@ class CameraState {
         camera.transform.rotation = simd_quatf(rotationMatrix)
         
         // Update the skydome rotation if available.
-        if let skydome = skydomeEntity {
-            let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
-            skydome.transform.rotation = yawRotation * skydomeBaseRotation
+        if GameModelView.shared.isDragging || GameModelView.shared.isPinching {
+            if let skydome = skydomeEntity {
+                let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
+                skydome.transform.rotation = yawRotation * skydomeBaseRotation
+            }
         }
         
         AppLogger.shared.debug(
