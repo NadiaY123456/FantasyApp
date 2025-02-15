@@ -2,6 +2,7 @@ import ARKit
 import Combine
 import RealityKit
 import SwiftUI
+import CoreLib
 
 // for gestures
 extension SIMD4 {

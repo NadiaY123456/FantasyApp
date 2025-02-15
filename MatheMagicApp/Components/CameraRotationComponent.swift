@@ -1,14 +1,10 @@
-// old
-
-
-
-//
 //  CameraRotationComponent.swift
 //  MatheMagic
 //
 
 import RealityKit
 import SwiftUI
+import CoreLib
 
 // MARK: - Camera Rotation Component
 
@@ -363,8 +359,8 @@ class CameraState {
     var cameraYaw: Angle = .zero
     var targetCameraYaw: Angle = .zero
     
-    var cameraPitch: Angle = .degrees(-20)
-    var targetCameraPitch: Angle = .degrees(-20)
+    var cameraPitch: Angle = .degrees(10)
+    var targetCameraPitch: Angle = .degrees(10)
     
     /// Adjustable parameters for the camera.
     var settings = Settings()

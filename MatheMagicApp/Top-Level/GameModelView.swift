@@ -15,8 +15,10 @@ class GameModelView: ObservableObject {
 
     @Published var isFinished: Bool = false
     @Published var currentState: GameScreenState = .start
+    
+    @Published var assetsLoaded: Bool = false // property to track asset loading
     @Published var score: Int = 0
-    @Published var elapsedTime: Double = 0
+    @Published var clockTime: Double = 0
 
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
@@ -29,7 +31,7 @@ class GameModelView: ObservableObject {
 
     @Published var isPinching: Bool = false
     @Published var rawPinchScale: CGFloat = 1.0
-    var initialPinchScale: CGFloat = 1.0  // capture starting scale
+    var initialPinchScale: CGFloat = 1.0 // capture starting scale
 
     @Published var camera: CameraState = .init()
 
@@ -63,7 +65,7 @@ class GameModelView: ObservableObject {
                     self.currentState = state
                     self.score = score
                     if let start = self.startDate {
-                        self.elapsedTime = Date().timeIntervalSince(start)
+                        self.clockTime = Date().timeIntervalSince(start)
                     }
                 }
             }
@@ -103,6 +105,9 @@ class GameModelView: ObservableObject {
     }
 
     func selection() {
+        if startDate == nil {
+            startDate = Date()
+        }
         Task {
             await gameModel.selection()
         }

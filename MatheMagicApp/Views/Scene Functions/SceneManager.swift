@@ -5,6 +5,7 @@
 
 import RealityKit
 import SwiftUI
+import CoreLib
 
 class SceneManager: ObservableObject {
 

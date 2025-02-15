@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
 		4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */; };
 		4138F1432D5D10EB00EE27CF /* FantasyCastle_orig.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1422D5D10EB00EE27CF /* FantasyCastle_orig.exr */; };
 		4138F1472D5D145600EE27CF /* FantasyCastle.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1462D5D145600EE27CF /* FantasyCastle.exr */; };
 		4138F1492D5D147200EE27CF /* ImageBasedLight_orig.exr in Resources */ = {isa = PBXBuildFile; fileRef = 4138F1482D5D147200EE27CF /* ImageBasedLight_orig.exr */; };
 		4138F14B2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 4138F14A2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox */; };
-		4138F14D2D5D287100EE27CF /* AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F14C2D5D286A00EE27CF /* AppLogger.swift */; };
 		4138F1502D5D2FC300EE27CF /* SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F14F2D5D2FBD00EE27CF /* SceneManager.swift */; };
 		4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */; };
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
@@ -34,7 +34,7 @@
 		41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */; };
 		41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6C2D5BE1C6007C29C6 /* AppState.swift */; };
 		41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */; };
-		41E39C8D2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */; };
+		41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6E2D5BE1C6007C29C6 /* MatheMagicApp.swift */; };
 		41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */; };
 		41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C702D5BE1C6007C29C6 /* GameModelView.swift */; };
 		41E39C902D5BE1C6007C29C6 /* BallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C722D5BE1C6007C29C6 /* BallView.swift */; };
@@ -43,7 +43,6 @@
 		41E39C932D5BE1C6007C29C6 /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C752D5BE1C6007C29C6 /* Play.swift */; };
 		41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C762D5BE1C6007C29C6 /* Selection.swift */; };
 		41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C772D5BE1C6007C29C6 /* Start.swift */; };
-		41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C782D5BE1C6007C29C6 /* StartView.swift */; };
 		41E39C9D2D5BE1CE007C29C6 /* FantasyCastle.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */; };
 		41E39C9E2D5BE1CE007C29C6 /* FantasyTown.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */; };
 		41E39C9F2D5BE1CE007C29C6 /* FantasyTown.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C992D5BE1CE007C29C6 /* FantasyTown.skybox */; };
@@ -62,7 +61,6 @@
 		4138F1462D5D145600EE27CF /* FantasyCastle.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = FantasyCastle.exr; sourceTree = "<group>"; };
 		4138F1482D5D147200EE27CF /* ImageBasedLight_orig.exr */ = {isa = PBXFileReference; lastKnownFileType = file; path = ImageBasedLight_orig.exr; sourceTree = "<group>"; };
 		4138F14A2D5D1B1C00EE27CF /* kloofendal_48d_partly_cloudy_puresky.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = kloofendal_48d_partly_cloudy_puresky.skybox; sourceTree = "<group>"; };
-		4138F14C2D5D286A00EE27CF /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		4138F14F2D5D2FBD00EE27CF /* SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneManager.swift; sourceTree = "<group>"; };
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
@@ -83,7 +81,7 @@
 		41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41E39C6C2D5BE1C6007C29C6 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FantasyAppGithubApp.swift; sourceTree = "<group>"; };
+		41E39C6E2D5BE1C6007C29C6 /* MatheMagicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicApp.swift; sourceTree = "<group>"; };
 		41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		41E39C702D5BE1C6007C29C6 /* GameModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModelView.swift; sourceTree = "<group>"; };
 		41E39C722D5BE1C6007C29C6 /* BallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallView.swift; sourceTree = "<group>"; };
@@ -92,7 +90,6 @@
 		41E39C752D5BE1C6007C29C6 /* Play.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
 		41E39C762D5BE1C6007C29C6 /* Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selection.swift; sourceTree = "<group>"; };
 		41E39C772D5BE1C6007C29C6 /* Start.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Start.swift; sourceTree = "<group>"; };
-		41E39C782D5BE1C6007C29C6 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		41E39C972D5BE1CE007C29C6 /* FantasyCastle.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = FantasyCastle.skybox; sourceTree = "<group>"; };
 		41E39C982D5BE1CE007C29C6 /* FantasyTown.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = FantasyTown.jpg; sourceTree = "<group>"; };
@@ -111,6 +108,7 @@
 				41E3EBAC2D5C19B3004752C9 /* CoreLib in Frameworks */,
 				41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */,
 				41E3EBA52D5C15C5004752C9 /* CoreLib in Frameworks */,
+				4135079E2D6026440048FE53 /* AnimLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +153,6 @@
 		419EDCF52D5C2744001CF47A /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				4138F14C2D5D286A00EE27CF /* AppLogger.swift */,
 				4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */,
 				419EDCF82D5C2767001CF47A /* LocalUtilities.swift */,
 			);
@@ -223,7 +220,7 @@
 		41E39C712D5BE1C6007C29C6 /* Top-Level */ = {
 			isa = PBXGroup;
 			children = (
-				41E39C6E2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift */,
+				41E39C6E2D5BE1C6007C29C6 /* MatheMagicApp.swift */,
 				41E39C6C2D5BE1C6007C29C6 /* AppState.swift */,
 				41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */,
 				41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */,
@@ -242,7 +239,6 @@
 				41E39C752D5BE1C6007C29C6 /* Play.swift */,
 				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
 				41E39C772D5BE1C6007C29C6 /* Start.swift */,
-				41E39C782D5BE1C6007C29C6 /* StartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -309,6 +305,7 @@
 				41E39CA72D5BE546007C29C6 /* RealityKitContent */,
 				41E3EBA42D5C15C5004752C9 /* CoreLib */,
 				41E3EBAB2D5C19B3004752C9 /* CoreLib */,
+				4135079D2D6026440048FE53 /* AnimLib */,
 			);
 			productName = FantasyAppGithub;
 			productReference = 05E9E6FA2D1CF5A80008014C /* MatheMagic.app */;
@@ -341,6 +338,7 @@
 			packageReferences = (
 				05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */,
 				41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */,
+				4135079C2D6026440048FE53 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AnimationLibrary/AnimLib" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 05E9E6FB2D1CF5A80008014C /* Products */;
@@ -395,8 +393,7 @@
 				41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */,
 				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
 				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
-				41E39C8D2D5BE1C6007C29C6 /* FantasyAppGithubApp.swift in Sources */,
-				4138F14D2D5D287100EE27CF /* AppLogger.swift in Sources */,
+				41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */,
 				41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */,
 				41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */,
 				4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */,
@@ -408,7 +405,6 @@
 				41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */,
 				41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */,
 				419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */,
-				41E39C962D5BE1C6007C29C6 /* StartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,6 +624,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../../../Desktop/Fantasy Game/Packages/RealityKitContent";
 		};
+		4135079C2D6026440048FE53 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AnimationLibrary/AnimLib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
+		};
 		41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/CoreLibrary/CoreLib;
@@ -635,6 +635,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4135079D2D6026440048FE53 /* AnimLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AnimLib;
+		};
 		41E39CA72D5BE546007C29C6 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */;

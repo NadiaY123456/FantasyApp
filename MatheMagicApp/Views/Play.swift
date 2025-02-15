@@ -35,10 +35,10 @@ struct Play: View {
                 // Display elapsed game time and Pause/Play button
                 HStack {
                     // Replace the progress view (which used timeLeft) with elapsed time text.
-                    Text("Elapsed Time: \(gameModelView.elapsedTime) s")
+                    Text("Elapsed Time: \(gameModelView.clockTime) s")
                         .font(.headline)
                         .accessibilityLabel(Text("Elapsed time"))
-                        .accessibilityValue(Text("\(gameModelView.elapsedTime) seconds"))
+                        .accessibilityValue(Text("\(gameModelView.clockTime) seconds"))
                         .padding(.vertical, 30)
 
                     Button {

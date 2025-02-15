@@ -1,5 +1,6 @@
 import GameplayKit
 import RealityKit
+import CoreLib
 //import OrderedCollections
 
 
@@ -11,11 +12,13 @@ class LoadState: GKState {
         AppLogger.shared.info("Entered Loading State")
 
         Task { @MainActor in
-            
-            await preLoadAssetsDict()
+            await preLoadAssetsDict()  // Await asset loading
             setupEntities()
             
             //clearFileContent(at: dataExportJsonPath) // for debug purposes TODO: drop when disable dataExport
+            // Update the view model once assets are loaded.
+            GameModelView.shared.assetsLoaded = true
+            GameModelView.shared.currentState = .start  // or a dedicated ready state
         }
     }
 
@@ -23,6 +26,7 @@ class LoadState: GKState {
         return stateClass is ReadyToStartState.Type
     }
 }
+
 
 class ReadyToStartState: GKState {
     override func didEnter(from previousState: GKState?) {
@@ -32,7 +36,8 @@ class ReadyToStartState: GKState {
     }
 
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return stateClass is LobbyState.Type
+//        return stateClass is LobbyState.Type
+        return stateClass is SelectionState.Type || stateClass is LobbyState.Type // DEBUG
     }
 }
 
