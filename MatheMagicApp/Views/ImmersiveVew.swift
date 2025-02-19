@@ -39,7 +39,7 @@ struct Selection: View {
                     spaceOrigin.components.set(iblComponent) // space origin emits light
 
                     // position the camera immeditely on load to avoid a blink
-                    GameModelView.shared.camera.updateCameraTransform()
+                    GameModelView.shared.camera.updateCameraTransform(deltaTime: 0.0)
 
                     // Skybox
                     GameModelView.shared.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
@@ -66,7 +66,7 @@ struct Selection: View {
                     // Set Flash as the tracked entity.
                     GameModelView.shared.camera.trackedEntity = flashModel
                     // Add the camera relative to Flash.
-                    GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel)
+                    GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel, deltaTime: 0)
                     
 
                     AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")

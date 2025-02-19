@@ -44,22 +44,23 @@ class CameraRotationSystem: System {
     required init(scene: RealityKit.Scene) {}
     static var dependencies: [SystemDependency] { [] }
 
-    func update(context: SceneUpdateContext) {
+    public func update(context: SceneUpdateContext) {
+        let deltaTime = context.deltaTime
         let gameModelView = GameModelView.shared
         let currentTime = CACurrentMediaTime()
         
-        processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime)
-        processPinch(in: context, gameModelView: gameModelView)
+        processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime, deltaTime: deltaTime)
+        processPinch(in: context, gameModelView: gameModelView, deltaTime: deltaTime)
         
         // Update pivot transform each frame so camera follows the character even without gestures
-        GameModelView.shared.camera.updateCameraTransform()
+        GameModelView.shared.camera.updateCameraTransform(deltaTime: deltaTime)
     }
     
     // MARK: - Drag Processing
     
     /// Processes drag (rotation & pitch) updates.
     @MainActor
-    private func processDrag(in context: SceneUpdateContext, gameModelView: GameModelView, currentTime: TimeInterval) {
+    private func processDrag(in context: SceneUpdateContext, gameModelView: GameModelView, currentTime: TimeInterval, deltaTime: TimeInterval) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         if gameModelView.isDragging, let currentTranslation = gameModelView.rawDragTranslation {
             for entity in entities {
@@ -73,7 +74,7 @@ class CameraRotationSystem: System {
                 gestureState.lastDragUpdateTime = currentTime
                 entity.components.set(gestureState)
                 
-                gameModelView.camera.startSmoothCameraAnimation()
+                gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime)
             }
         } else {
             // Lock in final values when not dragging.
@@ -145,7 +146,7 @@ class CameraRotationSystem: System {
             gestureState.verticalDragBaseline = currentTranslation.height
         } else {
             // If the direction of drag changes (and the movement is significant), reset the baseline.
-            if gestureState.lastDeltaY * deltaY < 0 && abs(deltaY) > 1.0 {
+            if gestureState.lastDeltaY * deltaY < 0 && abs(deltaY) > gameModelView.camera.settings.verticalDirectionChangeThreshold {
                 gestureState.dragStartPitch = gameModelView.camera.cameraPitch
                 gestureState.verticalDragBaseline = currentTranslation.height
             }
@@ -183,7 +184,7 @@ class CameraRotationSystem: System {
     /// Processes pinch (zoom) updates.
 
     @MainActor
-    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView, toPrint: Bool = false) {
+    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView, toPrint: Bool = false, deltaTime: TimeInterval) {
         let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
         let settings = gameModelView.camera.settings
         let currentTime = CACurrentMediaTime()
@@ -250,7 +251,7 @@ class CameraRotationSystem: System {
                         gameModelView.camera.targetCameraDistance = clampedDistance
                         gameModelView.camera.lastPinchDistance = clampedDistance
                         AppLogger.shared.debug("Updating targetCameraDistance from \(previousTarget) to \(clampedDistance)", toPrint)
-                        gameModelView.camera.startSmoothCameraAnimation()
+                        gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime)
                     }
                 }
                 gestureState.lastPinchScale = gameModelView.rawPinchScale
@@ -309,6 +310,7 @@ class CameraState {
         
         let verticalDragDeadZone = 1.0
         let verticalDragTimeThreshold = 0.1
+        let verticalDirectionChangeThreshold = 1.0
         
         /// Minimal change in pinch scale to consider the gesture as moving.
         var pinchThreshold: CGFloat = 0.001
@@ -346,6 +348,9 @@ class CameraState {
         // Minimum allowed world Y position for the camera. Used for vertical rotation, so camera does not go underground.
         var minCameraHeight: Float = 0.1
         //        var verticalSafetyFactor: Float = 0.5 // Scales the effect of the targetDistance on the vertical offset.  (from 0 to 1) For example, a value of 0.5 reduces the downward pull by half. (If you’d like even less interference, try an even smaller value.)
+        
+        /// Controls how quickly the pivot position interpolates to the target.
+        var pivotSmoothTime: Float = 0.2
     }
 
     // MARK: Camera State Properties
@@ -392,7 +397,7 @@ class CameraState {
     /// - Parameters:
     ///   - content: The RealityViewCameraContent to which the camera will be added.
     ///   - tracked: The entity that the camera will orbit.
-    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = false) {
+    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = false, deltaTime: TimeInterval) {
         trackedEntity = tracked
 
         // Create a pivot entity at the tracked character’s position.
@@ -413,60 +418,50 @@ class CameraState {
         cameraEntity = camera
 
         // Immediately update the camera transform.
-        updateCameraTransform()
+        updateCameraTransform(deltaTime: deltaTime, toPrint: toPrint)
         
         AppLogger.shared.debug("Camera world Position: \(camera.transform.translation + pivot.transform.translation), and cameraPivot: \(pivot.transform.translation)", toPrint)
     }
     
     // MARK: - Camera Transform Update
 
-    func updateCameraTransform(toPrint: Bool = false) {
+    func updateCameraTransform(deltaTime dt: TimeInterval, toPrint: Bool = false) {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
-        // Reset the pivot rotation to ensure no roll (z-axis rotation)
+        // Reset any undesired rotations on the pivot.
         pivot.transform.rotation = simd_quatf(angle: 0, axis: SIMD3(0, 0, 1))
         
         // Smoothly update pivot position based on the tracked entity's current position.
         if let tracked = trackedEntity {
-            // The target position is the character's position plus the desired offset.
+            // Target pivot position.
             let targetPos = tracked.transform.translation + settings.pivotOffset
-            
-            // Get the current pivot position.
             let currentPos = pivot.transform.translation
             
-            // Interpolate between the current and target positions.
-            // The factor (0.1) can be adjusted for faster or slower smoothing.
-            let smoothingFactor: Float = 0.1
-            let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: smoothingFactor))
+            // Convert dt to Float.
+            let dtFloat = Float(dt)
+
+            // Compute the smoothing factor based on exponential decay.
+            let t = 1 - exp(-dtFloat / settings.pivotSmoothTime)
             
-            // Update the pivot's translation with the smoothed position.
+            // Use simd_mix to blend between the current and target positions.
+            let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: t))
             pivot.transform.translation = smoothedPos
         }
         
+        // Continue with the rest of your camera transform update...
         let pivotWorldPosition = pivot.transform.translation
         let yaw = Float(cameraYaw.radians)
         let pitch = Float(cameraPitch.radians)
         
         // Use lastPinchDistance as the "original" desired distance from the pivot.
-        // (This value is updated when the pinch gesture ends.)
         var desiredDistance = lastPinchDistance
-        
-        // Calculate the tentative world Y position of the camera using the desiredDistance.
         let tentativeY = pivotWorldPosition.y + desiredDistance * sin(pitch)
-        
-        // If the tentative Y is below the allowed minimum, adjust desiredDistance so that
-        // the camera’s Y exactly equals settings.minCameraHeight.
-        if tentativeY < settings.minCameraHeight {
-            // Avoid division by zero; if sin(pitch) is very close to zero, skip adjustment.
-            if abs(sin(pitch)) > 0.0001 {
-                desiredDistance = (settings.minCameraHeight - pivotWorldPosition.y) / sin(pitch)
-            }
+        if tentativeY < settings.minCameraHeight, abs(sin(pitch)) > 0.0001 {
+            desiredDistance = (settings.minCameraHeight - pivotWorldPosition.y) / sin(pitch)
         } else {
-            // Not binding; revert to the original desired distance.
             desiredDistance = lastPinchDistance
         }
         
-        // Compute the offset using the (possibly adjusted) desiredDistance.
         let offset = SIMD3<Float>(
             desiredDistance * cos(pitch) * sin(yaw),
             desiredDistance * sin(pitch),
@@ -474,18 +469,17 @@ class CameraState {
         )
         
         let cameraWorldPosition = pivotWorldPosition + offset
-        // Set camera translation relative to the pivot.
         camera.transform.translation = cameraWorldPosition - pivotWorldPosition
         
-        // Compute a look-at rotation for the camera that locks roll.
+        // Compute a look-at rotation for the camera (locking out roll).
         let forward = simd_normalize(pivotWorldPosition - cameraWorldPosition)
-        let upWorld = SIMD3<Float>(0, 1, 0) // fixed up vector
+        let upWorld = SIMD3<Float>(0, 1, 0)
         let right = simd_normalize(simd_cross(forward, upWorld))
         let up = simd_cross(right, forward)
         let rotationMatrix = float3x3(columns: (right, up, -forward))
         camera.transform.rotation = simd_quatf(rotationMatrix)
         
-        // Update the skydome rotation if available.
+        // Optionally update skydome rotation.
         if GameModelView.shared.isDragging || GameModelView.shared.isPinching {
             if let skydome = skydomeEntity {
                 let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
@@ -504,7 +498,7 @@ class CameraState {
     /// Smoothly interpolates cameraAngle, cameraPitch, and cameraDistance toward their targets.
     ///
     /// - Parameter toPrint: Pass `true` to print debug statements; defaults to `false`.
-    func startSmoothCameraAnimation(_ toPrint: Bool = false) {
+    func startSmoothCameraAnimation(deltaTime: TimeInterval, toPrint: Bool = false) {
         guard !isAnimatingCamera else {
             AppLogger.shared.debug("Animation already in progress. Skipping new call.", toPrint)
             return
@@ -514,8 +508,6 @@ class CameraState {
         Task { @MainActor in
             lastUpdateTime = CACurrentMediaTime()
             while true {
-                let currentTime = CACurrentMediaTime()
-                let deltaTime = currentTime - lastUpdateTime
                 // Clamp deltaTime to settings.maxDeltaTime (approx. 60 fps)
                 let clampedDeltaTime = min(deltaTime, settings.maxDeltaTime)
                 AppLogger.shared.debug("Animation Loop: deltaTime = \(deltaTime), clampedDeltaTime = \(clampedDeltaTime)", toPrint)
@@ -548,7 +540,7 @@ class CameraState {
                 let zoomDelta = distanceDiff * Float(easedTZoom * stabilizationFactorZoom)
                 cameraDistance += zoomDelta
                 
-                updateCameraTransform()
+                updateCameraTransform(deltaTime: deltaTime)
                 
                 // Break if differences are negligible.
                 if abs(angleDifference) < settings.animationStopThreshold,
@@ -557,7 +549,6 @@ class CameraState {
                 {
                     break
                 }
-                lastUpdateTime = currentTime
                 try? await Task.sleep(nanoseconds: settings.animationFrameSleepNanoseconds)
             }
             isAnimatingCamera = false
