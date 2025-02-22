@@ -22,8 +22,10 @@ class GameModelView: ObservableObject {
 
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
+    
     @Published var joystickMagnitude: CGFloat = 0
     @Published var joystickAngle: Angle = .degrees(0)
+    @Published var joystickIsTouching = false
 
     /// Generic gesture state accessible to various systems.
     @Published var isDragging: Bool = false

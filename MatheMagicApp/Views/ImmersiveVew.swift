@@ -1,11 +1,10 @@
 import AnimLib
 import CoreLib
 
+import joystickController
 import RealityKit
 import RealityKitContent
 import SwiftUI
-
-
 
 struct Selection: View {
     // State variable to track the selected character
@@ -67,7 +66,6 @@ struct Selection: View {
                     GameModelView.shared.camera.trackedEntity = flashModel
                     // Add the camera relative to Flash.
                     GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel, deltaTime: 0)
-                    
 
                     AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
                 }
@@ -104,14 +102,30 @@ struct Selection: View {
                             GameModelView.shared.rawPinchScale = 1.0
                         }
                 )
-
+                // 2) Overlay the JoystickView at the bottom left
+                VStack {
+                    Spacer()
+                    HStack {
+                        JoystickView(
+                            onChange: { magnitude, angle in
+                                // Update the game model with the joystick's values.
+                                GameModelView.shared.joystickMagnitude = magnitude
+                                GameModelView.shared.joystickAngle = angle
+                                GameModelView.shared.joystickIsTouching = true
+                            },
+                            onEnd: {
+                                // Reset the joystick values when the user releases the joystick.
+                                GameModelView.shared.joystickMagnitude = 0
+                                GameModelView.shared.joystickAngle = .zero
+                                GameModelView.shared.joystickIsTouching = false
+                            }
+                        )
+                        .padding([.bottom, .leading], 20)
+                        Spacer()
+                    }
+                }
             }
             .background(Color.white.ignoresSafeArea())
         }
     }
-
 }
-
-
-
-

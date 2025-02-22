@@ -20,21 +20,26 @@ import RealityKit
 
                 let dataManager = DataManager() // Create a DataManager instance for this entity
 
-                // Load data
-                dataManager.loadData(from: entitySet.jsonPathsToAnimData, as: AnimDataPoint.self) // populate animData for the entity from the external json
-                dataManager.loadData(from: entitySet.jsonPathsToTransformData, as: TransformDataPoint.self) // populate transformData for the entity from the external json, which is replacement for usdz animation data
+                // Load all data types from the single .lzfse file using jsonPaths
+                let dataPath = entitySet.jsonPaths.first ?? ""
+                if !dataPath.isEmpty {
+                    
+                    dataManager.loadAllData(from: dataPath)
 
-                // Load JointsNameList (this sets hierarchyManager)
-                dataManager.loadData(from: entitySet.jsonPathsToJointNamesList, as: JointsNameList.self) // populate jointNamesList for the entity that corresponds to Transforms above (which are unnamed to save on space
+                    // Initialize side-dependent data after loading joints
+                    dataManager.initializeSideDependentData()
 
-                // Now that hierarchyManager is set, initialize side-dependent data. // Now boneIndices and bonePaths are cached and ready.
-                dataManager.initializeSideDependentData() // caching bone paths
+                    // Assign the DataManager to the entity's property
+                    entitySet.dataManager = dataManager
 
-                // Assign the DataManager to the entity's property
-                entitySet.dataManager = dataManager
+                    // Clear the cache since data loading for this entity is complete
+                    dataManager.clearDecompressedDataCache()
 
-//                // Optional: print loaded data for debugging
-//                dataManager.printLoadedData(maxEntries: 3)
+                    // Optional: Print loaded data for debugging
+                    // dataManager.printLoadedData(maxEntries: 3)
+                } else {
+                    AppLogger.shared.warning("No data path provided for animated entity \(key)")
+                }
             }
 //            entitySet.colliderData = dataManager.loadData(from: entitySet.jsonPathsToColliderData, as: MapDataPoint.self) // populate colliderData for the entity from the external json
 //            if let colliderDataSet = dataManager.mapDataSet {
@@ -98,7 +103,7 @@ extension EntitySet {
 }
 
 // to pre-load root animations. Runs in gameModel init()
-//extension EntitySet {
+// extension EntitySet {
 //    mutating func loadRootAnimationAssets() async { // TODO: append animations from all sources together
 //        guard isAnimated else { return }
 //
@@ -117,4 +122,4 @@ extension EntitySet {
 //            AppLogger.shared.info("Loaded \(name) animations from Reality Composer Pro project.")
 //        }
 //    }
-//}
+// }
