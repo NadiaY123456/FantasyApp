@@ -19,6 +19,11 @@
 		4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */; };
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
 		419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF82D5C2767001CF47A /* LocalUtilities.swift */; };
+		41D1447F2D6D7C6E00BBA700 /* inertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D1447C2D6D7C6E00BBA700 /* inertManager.swift */; };
+		41D144802D6D7C6E00BBA700 /* inertMathUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D1447D2D6D7C6E00BBA700 /* inertMathUtils.swift */; };
+		41D144812D6D7C6E00BBA700 /* inertMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D1447B2D6D7C6E00BBA700 /* inertMain.swift */; };
+		41D144822D6D7C6E00BBA700 /* usage-examples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D1447E2D6D7C6E00BBA700 /* usage-examples.swift */; };
+		41D144832D6D7C6E00BBA700 /* inertCaching.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41D1447A2D6D7C6E00BBA700 /* inertCaching.swift */; };
 		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
@@ -69,6 +74,11 @@
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
 		419EDCF82D5C2767001CF47A /* LocalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUtilities.swift; sourceTree = "<group>"; };
+		41D1447A2D6D7C6E00BBA700 /* inertCaching.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inertCaching.swift; sourceTree = "<group>"; };
+		41D1447B2D6D7C6E00BBA700 /* inertMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inertMain.swift; sourceTree = "<group>"; };
+		41D1447C2D6D7C6E00BBA700 /* inertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inertManager.swift; sourceTree = "<group>"; };
+		41D1447D2D6D7C6E00BBA700 /* inertMathUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inertMathUtils.swift; sourceTree = "<group>"; };
+		41D1447E2D6D7C6E00BBA700 /* usage-examples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "usage-examples.swift"; sourceTree = "<group>"; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
 		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
@@ -166,6 +176,18 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		41D144792D6D7C3900BBA700 /* Inertialization */ = {
+			isa = PBXGroup;
+			children = (
+				41D1447B2D6D7C6E00BBA700 /* inertMain.swift */,
+				41D1447A2D6D7C6E00BBA700 /* inertCaching.swift */,
+				41D1447C2D6D7C6E00BBA700 /* inertManager.swift */,
+				41D1447D2D6D7C6E00BBA700 /* inertMathUtils.swift */,
+				41D1447E2D6D7C6E00BBA700 /* usage-examples.swift */,
+			);
+			path = Inertialization;
+			sourceTree = "<group>";
+		};
 		41E39C5D2D5BE1C6007C29C6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,6 +274,7 @@
 		41E39C7B2D5BE1C6007C29C6 /* MatheMagicApp */ = {
 			isa = PBXGroup;
 			children = (
+				41D144792D6D7C3900BBA700 /* Inertialization */,
 				41E39C712D5BE1C6007C29C6 /* Top-Level */,
 				41E39C672D5BE1C6007C29C6 /* Game Engine */,
 				41E39C792D5BE1C6007C29C6 /* Views */,
@@ -411,6 +434,11 @@
 				4138F1502D5D2FC300EE27CF /* SceneManager.swift in Sources */,
 				41E39C912D5BE1C6007C29C6 /* GameOver.swift in Sources */,
 				41E39C922D5BE1C6007C29C6 /* Lobby.swift in Sources */,
+				41D1447F2D6D7C6E00BBA700 /* inertManager.swift in Sources */,
+				41D144802D6D7C6E00BBA700 /* inertMathUtils.swift in Sources */,
+				41D144812D6D7C6E00BBA700 /* inertMain.swift in Sources */,
+				41D144822D6D7C6E00BBA700 /* usage-examples.swift in Sources */,
+				41D144832D6D7C6E00BBA700 /* inertCaching.swift in Sources */,
 				41E39C932D5BE1C6007C29C6 /* Play.swift in Sources */,
 				41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */,
 				41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */,

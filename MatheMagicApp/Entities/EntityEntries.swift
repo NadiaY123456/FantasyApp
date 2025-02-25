@@ -37,10 +37,10 @@ import Spatial
         realityComposerScene: "FlashScene",
         usdzName: "",
         realityComposerAnimationResourceName: "flash",
-        jsonPaths: ["DataToImport.bundle/flash"], //["DataToImport.bundle/flash.lzfse"],
+        jsonPaths: ["DataToImport.bundle/flash/flash.lzfse"], //["DataToImport.bundle/flash"]
         isAnimated: true,
         isMoving: true,
-        position: SIMD3(x: 0, y: 0, z: -2.5),
+        position: SIMD3(x: 0, y: 0, z: 0),
         orientation: simd_quatf(
             Rotation3D(angle: .degrees(0), axis: .x)
                 .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
