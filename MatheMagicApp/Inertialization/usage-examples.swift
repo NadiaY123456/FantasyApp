@@ -29,7 +29,7 @@ func transformInertializationExample() {
     // Initialize inertialization data
     let deltaTime: Float = 1.0/60.0
     
-    // Example 1: Polynomial magnitude approach (O3 approach with C3 prevention)
+    // Example 1: Polynomial magnitude approach 
     var polyConfig = InertializationConfig.smooth
     polyConfig.method = .magnitude
     polyConfig.positionMethod = .polynomial
@@ -42,7 +42,7 @@ func transformInertializationExample() {
         config: polyConfig
     )
     
-    // Example 2: Spring-damper approach (C3 extension)
+    // Example 2: Spring-damper approach
     var springConfig = InertializationConfig.smooth
     springConfig.method = .magnitude
     springConfig.positionMethod = .springDamper

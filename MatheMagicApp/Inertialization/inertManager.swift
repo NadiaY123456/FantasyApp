@@ -1,7 +1,39 @@
 import RealityKit
 import simd
 
+// MARK: - How These Classes Work Together
+
+// 1. Input & Query Creation:
+//    • The EnhancedMotionMatchingManager takes user input (e.g., controls) and uses the
+//      SpringDamperSystem to predict a smooth future trajectory.
+//    • It then creates a MotionFeature query that includes this trajectory and the character's
+//      current pose.
+//
+// 2. Matching:
+//    • The manager uses the WeightedLossFunction to compare the MotionFeature query with
+//      animations in the database (2D or 3D), finding the closest match based on weighted
+//      trajectory and pose differences.
+//
+// 3. Transition:
+//    • Once a match is found, the manager uses inertialization to blend the current animation into
+//      the new one smoothly.
+//    • For skeletal animations, the SkeletonInertializer and BoneInertializer ensure each
+//      bone transitions naturally, maintaining the integrity of the character's movement.
+
+
+
+
 /// Manager for enhanced motion matching with spring-damper, 3D support, and weighted loss
+/*
+ Purpose: This is the central class that ties everything together, managing the entire motion matching process, trajectory prediction, and animation transitions.
+ Key Responsibilities:
+    - Database Management: Maintains separate databases for 2D and 3D motions, storing all possible animations.
+    - Query Creation: Takes user input (e.g., controls) and uses the SpringDamperSystem to predict a smooth future trajectory. It then builds a MotionFeature query that includes this trajectory and the current pose.
+    - Matching: Uses the WeightedLossFunction to compare the query MotionFeature with animations in the database, finding the best match based on trajectory and pose.
+    - Inertialization: Manages smooth transitions between animations using inertialization techniques for both transforms (overall movement) and skeletons (joint-level movement).
+ 
+ */
+
 class EnhancedMotionMatchingManager {
     // MARK: - Properties
     
@@ -226,11 +258,10 @@ class EnhancedMotionMatchingManager {
         bones: [String: Transform],
         deltaTime: Float
     ) -> [String: Transform] {
-        guard let skeleton = skeletonInertializers[skeletonId] else {
-            return bones
-        }
-        
-        return skeleton.update(targetTransforms: bones, deltaTime: deltaTime)
+        return skeletonInertializers[skeletonId]?.update(
+                targetTransforms: bones,
+                deltaTime: deltaTime
+            ) ?? bones
     }
     
     // MARK: - Utility Methods
@@ -263,6 +294,12 @@ class EnhancedMotionMatchingManager {
 
 /// Spring damper system for trajectory prediction
 /// Implements equations for more natural motion transitions
+/*
+ Purpose: This class predicts smooth and physically plausible future trajectories using a spring-damper model, which simulates natural movement.
+ How It Works:
+    - Instead of abruptly changing the character's position or velocity, it uses a damped spring model to gradually bring the character to its target state (e.g., slowing down to a stop or changing direction).
+    -It calculates future positions based on the character's current velocity, target position, and a decay rate, ensuring smooth deceleration or acceleration.
+ */
 class SpringDamperSystem {
     /// Parameter controlling decay rate
     var decayRate: Float = 4.0
@@ -335,6 +372,12 @@ class SpringDamperSystem {
 
 /// Weighted loss function for motion matching
 /// Prioritizes trajectory features over pose features for better motion alignment
+/*
+ Purpose: This class computes the "distance" or difference between two MotionFeature vectors, helping the system decide which animation is the best match.
+Key Features:
+ - It assigns higher weight to trajectory features (e.g., 80%) compared to pose features (e.g., 20%). This means the system prioritizes matching the character's intended path over its exact joint positions.
+ - By focusing on trajectory, it ensures that the selected animation keeps the character on the correct path, even if the joint positions aren't perfectly aligned.
+*/
 struct WeightedLossFunction {
     /// Weight for trajectory features (higher means more importance on following trajectory)
     var trajectoryWeight: Float = 0.8
@@ -368,18 +411,12 @@ struct WeightedLossFunction {
         let candidatePose = candidate.getPoseFeatures(use3D: use3D)
         
         // Calculate squared differences for trajectory features
-        var trajectoryDistance: Float = 0
-        for i in 0..<min(queryTrajectory.count, candidateTrajectory.count) {
-            let diff = queryTrajectory[i] - candidateTrajectory[i]
-            trajectoryDistance += diff * diff
-        }
+        let trajectoryDistance = zip(queryTrajectory, candidateTrajectory)
+            .reduce(0) { $0 + pow($1.0 - $1.1, 2) }
         
         // Calculate squared differences for pose features
-        var poseDistance: Float = 0
-        for i in 0..<min(queryPose.count, candidatePose.count) {
-            let diff = queryPose[i] - candidatePose[i]
-            poseDistance += diff * diff
-        }
+        let poseDistance = zip(queryPose, candidatePose)
+            .reduce(0) { $0 + pow($1.0 - $1.1, 2) }
         
         // Apply weights
         let distance = trajectoryWeight * trajectoryDistance + poseWeight * poseDistance
@@ -400,8 +437,10 @@ struct WeightedLossFunction {
 // MARK: - Motion Feature Vector
 
 /// Feature vector for motion matching with full 3D support
+/// Goal: data needed to describe a specific motion state
+
 struct MotionFeature {
-    // Future trajectory points (positions in 3D)
+    // Future trajectory points (positions in 3D) [character's intended path]
     var trajectoryPositions: [SIMD3<Float>] = []
     
     // Future trajectory directions (normalized directions in 3D)
@@ -493,6 +532,12 @@ struct MotionFeature {
 // MARK: - Bone and Skeleton Inertializers
 
 /// Bone inertializer for more granular control over skeletal animation
+/*
+ Purpose: Handles inertialization for individual bones in a character's skeleton, ensuring smooth transitions during animation changes.
+ How It Works:
+    - Each bone has its own inertialization data to smoothly transition its transform (position, rotation, scale) over time.
+    - It uses quintic interpolation (a smooth curve) to blend the bone's current state into the target state, ensuring gradual and natural movement.
+*/
 class BoneInertializer {
     private let config: InertializationConfig
     private var transformData: TransformInertialData?
@@ -541,6 +586,12 @@ class BoneInertializer {
 }
 
 /// Controls multiple bones in a skeleton for cohesive animation
+/*
+ Purpose: Manages a collection of BoneInertializer objects for an entire skeleton, ensuring cohesive transitions across all bones.
+ How It Works:
+     - It coordinates the initialization and updating of inertialization for all bones in the skeleton.
+     - Ensures that all bones transition smoothly together, maintaining the overall coherence of the skeleton's movement.
+*/
 class SkeletonInertializer {
     private var boneInertializers: [String: BoneInertializer] = [:]
     private let config: InertializationConfig
@@ -652,195 +703,3 @@ func basicExample() {
     
     print("Character at position: \(resultTransform.translation)")
 }
-
-/* G3 version:
- import RealityKit
- import simd
-
- // MARK: - Spring-Damper System for Trajectory Prediction
-
- struct SpringDamperSystem {
-     var decayRate: Float = 4.0
-     private var cache: [String: SIMD3<Float>] = [:]
-
-     mutating func predictPosition(currentPosition: SIMD3<Float>, currentVelocity: SIMD3<Float>, targetPosition: SIMD3<Float>, deltaTime: Float) -> SIMD3<Float> {
-         let key = "\(currentPosition),\(currentVelocity),\(targetPosition),\(deltaTime)"
-         if let cached = cache[key] { return cached }
-         let x0 = currentPosition - targetPosition
-         let v0 = currentVelocity
-         let y = decayRate / 2
-         let result = (x0 + (v0 + x0 * y) * deltaTime) * exp(-y * deltaTime) + targetPosition
-         if cache.count > 100 { cache.removeAll(keepingCapacity: true) }
-         cache[key] = result
-         return result
-     }
-
-     mutating func predictTrajectory(currentPosition: SIMD3<Float>, currentVelocity: SIMD3<Float>, targetPosition: SIMD3<Float>, timePoints: [Float]) -> [SIMD3<Float>] {
-         timePoints.map { predictPosition(currentPosition: currentPosition, currentVelocity: currentVelocity, targetPosition: targetPosition, deltaTime: $0) }
-     }
-
-     mutating func clearCache() {
-         cache.removeAll(keepingCapacity: true)
-     }
- }
-
- // MARK: - Motion Feature
-
- struct MotionFeature {
-     var trajectoryPositions: [SIMD3<Float>] = []
-     var trajectoryDirections: [SIMD3<Float>] = []
-     var footLeftPosition: SIMD3<Float> = .zero
-     var footRightPosition: SIMD3<Float> = .zero
-     var footLeftVelocity: SIMD3<Float> = .zero
-     var footRightVelocity: SIMD3<Float> = .zero
-     var hipVelocity: SIMD3<Float> = .zero
-
-     func getTrajectoryFeatures(use3D: Bool) -> [Float] {
-         var features: [Float] = []
-         for pos in trajectoryPositions {
-             features.append(pos.x)
-             if use3D { features.append(pos.y) }
-             features.append(pos.z)
-         }
-         for dir in trajectoryDirections {
-             features.append(dir.x)
-             if use3D { features.append(dir.y) }
-             features.append(dir.z)
-         }
-         return features
-     }
-
-     func getPoseFeatures(use3D: Bool) -> [Float] {
-         use3D ? [
-             footLeftPosition.x, footLeftPosition.y, footLeftPosition.z,
-             footRightPosition.x, footRightPosition.y, footRightPosition.z,
-             footLeftVelocity.x, footLeftVelocity.y, footLeftVelocity.z,
-             footRightVelocity.x, footRightVelocity.y, footRightVelocity.z,
-             hipVelocity.x, hipVelocity.y, hipVelocity.z
-         ] : [
-             footLeftPosition.x, footLeftPosition.z,
-             footRightPosition.x, footRightPosition.z,
-             footLeftVelocity.x, footLeftVelocity.z,
-             footRightVelocity.x, footRightVelocity.z,
-             hipVelocity.x, hipVelocity.z
-         ]
-     }
- }
-
- // MARK: - Weighted Loss Function
-
- struct WeightedLossFunction {
-     var trajectoryWeight: Float = 0.8
-     var poseWeight: Float = 0.2
-     private var distanceCache: [String: Float] = [:]
-
-     mutating func calculateDistance(query: MotionFeature, candidate: MotionFeature, use3D: Bool) -> Float {
-         let key = "\(query.trajectoryPositions.hashValue),\(candidate.trajectoryPositions.hashValue),\(use3D)"
-         if let cached = distanceCache[key] { return cached }
-         let queryTraj = query.getTrajectoryFeatures(use3D: use3D)
-         let candTraj = candidate.getTrajectoryFeatures(use3D: use3D)
-         let queryPose = query.getPoseFeatures(use3D: use3D)
-         let candPose = candidate.getPoseFeatures(use3D: use3D)
-         let trajDist = zip(queryTraj, candTraj).reduce(0) { $0 + pow($1.0 - $1.1, 2) }
-         let poseDist = zip(queryPose, candPose).reduce(0) { $0 + pow($1.0 - $1.1, 2) }
-         let distance = trajectoryWeight * trajDist + poseWeight * poseDist
-         if distanceCache.count > 1000 { distanceCache.removeAll(keepingCapacity: true) }
-         distanceCache[key] = distance
-         return distance
-     }
-
-     mutating func clearCache() {
-         distanceCache.removeAll(keepingCapacity: true)
-     }
- }
-
- // MARK: - Motion Matching Manager
-
- class EnhancedMotionMatchingManager {
-     private var springDamper = SpringDamperSystem()
-     private var lossFunction = WeightedLossFunction()
-     private var database2D: [MotionFeature] = []
-     private var database3D: [MotionFeature] = []
-     private var use3DMode: Bool = false
-     private var inertializationData: [String: TransformInertialData] = [:]
-     private var skeletonInertializers: [String: SkeletonInertializer] = [:]
-
-     init(database2D: [MotionFeature] = [], database3D: [MotionFeature] = []) {
-         self.database2D = database2D
-         self.database3D = database3D
-     }
-
-     func configure(trajectoryWeight: Float? = nil, use3DMode: Bool? = nil) {
-         if let weight = trajectoryWeight {
-             lossFunction.trajectoryWeight = weight
-             lossFunction.poseWeight = 1 - weight
-         }
-         if let mode = use3DMode { self.use3DMode = mode }
-     }
-
-     func findBestMatch(query: MotionFeature) -> (index: Int, feature: MotionFeature) {
-         let database = use3DMode ? database3D : database2D
-         guard !database.isEmpty else { return (0, MotionFeature()) }
-         var bestIndex = 0
-         var bestDistance = Float.greatestFiniteMagnitude
-         for (i, candidate) in database.enumerated() {
-             let distance = lossFunction.calculateDistance(query: query, candidate: candidate, use3D: use3DMode)
-             if distance < bestDistance {
-                 bestDistance = distance
-                 bestIndex = i
-             }
-         }
-         return (bestIndex, database[bestIndex])
-     }
-
-     func predictTrajectory(currentPosition: SIMD3<Float>, currentVelocity: SIMD3<Float>, targetPosition: SIMD3<Float>, timePoints: [Float] = [0.33, 0.67, 1.0]) -> [SIMD3<Float>] {
-         springDamper.predictTrajectory(currentPosition: currentPosition, currentVelocity: currentVelocity, targetPosition: targetPosition, timePoints: timePoints)
-     }
-
-     func createQueryFeature(currentPosition: SIMD3<Float>, currentVelocity: SIMD3<Float>, targetPosition: SIMD3<Float>, footLeftPosition: SIMD3<Float>, footRightPosition: SIMD3<Float>, footLeftVelocity: SIMD3<Float>, footRightVelocity: SIMD3<Float>, hipVelocity: SIMD3<Float>) -> MotionFeature {
-         let trajPos = predictTrajectory(currentPosition: currentPosition, currentVelocity: currentVelocity, targetPosition: targetPosition)
-         let trajDir = (1..<trajPos.count).map { i in
-             let dir = trajPos[i] - trajPos[i - 1]
-             return simd_length(dir) > Epsilon.position ? simd_normalize(dir) : SIMD3<Float>(1, 0, 0)
-         }
-         return MotionFeature(trajectoryPositions: trajPos, trajectoryDirections: trajDir, footLeftPosition: footLeftPosition, footRightPosition: footRightPosition, footLeftVelocity: footLeftVelocity, footRightVelocity: footRightVelocity, hipVelocity: hipVelocity)
-     }
-
-     func initializeOrUpdateInertialization(for id: String, targetTransform: Transform, currentTransform: Transform, previousTransform: Transform, deltaTime: Float, config: InertializationConfig, blendTime: Float? = nil) {
-         var modConfig = config
-         if let blend = blendTime { modConfig.blendTime = blend }
-         if inertializationData[id]?.isActive ?? false { return }
-         inertializationData[id] = initializeTransformInertialData(targetTransform: targetTransform, prevTransform: currentTransform, oldPrevTransform: previousTransform, deltaTime: deltaTime, config: modConfig)
-     }
-
-     func applyInertialization(for id: String, targetTransform: Transform, deltaTime: Float) -> Transform {
-         guard var data = inertializationData[id], data.isActive else { return targetTransform }
-         let result = applyTransformInertial(data: &data, targetTransform: targetTransform, deltaTime: deltaTime)
-         inertializationData[id] = data
-         if !data.isActive { inertializationData.removeValue(forKey: id) }
-         return result
-     }
-
-     func getSkeletonInertializer(for id: String, config: InertializationConfig) -> SkeletonInertializer {
-         if let existing = skeletonInertializers[id] { return existing }
-         let newSkeleton = SkeletonInertializer(config: config)
-         skeletonInertializers[id] = newSkeleton
-         return newSkeleton
-     }
-
-     func initializeBonesForSkeleton(skeletonId: String, bones: [String: Transform], deltaTime: Float, config: InertializationConfig) {
-         getSkeletonInertializer(for: skeletonId, config: config).initializeBones(targetTransforms: bones, deltaTime: deltaTime)
-     }
-
-     func updateBonesForSkeleton(skeletonId: String, bones: [String: Transform], deltaTime: Float) -> [String: Transform] {
-         skeletonInertializers[skeletonId]?.update(targetTransforms: bones, deltaTime: deltaTime) ?? bones
-     }
-
-     func clearCaches() {
-         springDamper.clearCache()
-         lossFunction.clearCache()
-         PolynomialCache.shared.clear()
-         QuaternionCache.shared.clear()
-     }
- }
- */
