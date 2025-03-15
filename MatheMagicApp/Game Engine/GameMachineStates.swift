@@ -21,9 +21,7 @@ class LoadState: GKState {
             // Calculate elapsed time
             let elapsedTime = Date().timeIntervalSince(startTime)
             AppLogger.shared.info("Asset loading completed in \(elapsedTime) seconds")
-            
-//            // Store the elapsed time in GameModelView if needed
-//            GameModelView.shared.clockTime = elapsedTime
+        
             
             // Continue with remaining setup
             setupEntities()

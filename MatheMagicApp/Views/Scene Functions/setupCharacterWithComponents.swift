@@ -13,7 +13,7 @@ import AnimLib
         entity = template.entity
 
         // Event Component
-        entity.components[EventComponent.self] = EventComponent()
+        entity.components[EventComponent.self] = EventComponent(dataProvider: GameModelView.shared)
 
         // Data Center Component
         if let dataManager = template.dataManager {

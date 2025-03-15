@@ -2,8 +2,10 @@ import Combine
 import Foundation
 import RealityKit
 import SwiftUI
+import AnimLib
 
-class GameModelView: ObservableObject {
+
+class GameModelView: ObservableObject, JoystickDataProvider {
     static let shared = GameModelView()
     let gameModel: GameModel
 
@@ -23,6 +25,7 @@ class GameModelView: ObservableObject {
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
     
+    // MARK: Joystick data
     @Published var joystickMagnitude: CGFloat = 0
     @Published var joystickAngle: Angle = .degrees(0)
     @Published var joystickIsTouching = false
@@ -59,7 +62,7 @@ class GameModelView: ObservableObject {
     func updateIsPausedInComponents() {}
 
     private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.001, repeats: true) { _ in
             Task {
                 let state = await self.gameModel.getGameScreenState()
                 let score = await self.gameModel.score
