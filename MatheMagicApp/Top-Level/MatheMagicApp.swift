@@ -43,7 +43,6 @@ struct FantasyAppGithubApp: App {
         BrainComponent.registerComponent()
         CustomAnimationComponent.registerComponent()
         AnimationComponent.registerComponent()
-        BonePosesComponent.registerComponent()
         TravelComponent.registerComponent()
         
         // systems
@@ -51,7 +50,6 @@ struct FantasyAppGithubApp: App {
         BrainSystem.registerSystem()
         CustomAnimationSystem.registerSystem()
         AnimationSystem.registerSystem()
-        SkeletalPosesSystem.registerSystem()
         TravelSystem.registerSystem()
 
 
