@@ -41,16 +41,18 @@ struct FantasyAppGithubApp: App {
         // components
         EventComponent.registerComponent()
         BrainComponent.registerComponent()
-        TravelComponent.registerComponent()
         CustomAnimationComponent.registerComponent()
         AnimationComponent.registerComponent()
+        TravelComponent.registerComponent()
         
         // systems
         EventSystem.registerSystem()
         BrainSystem.registerSystem()
-        TravelSystem.registerSystem()
         CustomAnimationSystem.registerSystem()
         AnimationSystem.registerSystem()
+        TravelSystem.registerSystem()
+
+
         
     }
 

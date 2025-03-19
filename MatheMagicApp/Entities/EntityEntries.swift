@@ -37,12 +37,10 @@ import Spatial
         realityComposerScene: "FlashScene",
         usdzName: "",
         realityComposerAnimationResourceName: "flash",
-        jsonPathsToAnimData: ["DataToImport.bundle/flash/animMeta/"],
-        jsonPathsToTransformData: ["DataToImport.bundle/flash/transforms/"],
-        jsonPathsToJointNamesList: ["DataToImport.bundle/flash/flash_joints.json"],
+        jsonPaths: ["DataToImport.bundle/flash/flash.lzfse"], //["DataToImport.bundle/flash"]
         isAnimated: true,
         isMoving: true,
-        position: SIMD3(x: 0, y: 0, z: -2.5),
+        position: SIMD3(x: 0, y: 0, z: 0),
         orientation: simd_quatf(
             Rotation3D(angle: .degrees(0), axis: .x)
                 .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
@@ -59,7 +57,7 @@ import Spatial
         realityComposerScene: "Garden",
         usdzName: "",
         realityComposerAnimationResourceName: "",
-        jsonPathsToAnimData: [""],
+        jsonPaths: [""],
         isAnimated: false,
         isMoving: false,
         position: SIMD3(x: 0, y: -0.2, z: 0),
@@ -79,7 +77,7 @@ import Spatial
         realityComposerScene: "Garden",
         usdzName: "",
         realityComposerAnimationResourceName: "",
-        jsonPathsToAnimData: [""],
+        jsonPaths: [""],
         isAnimated: false,
         isMoving: false,
         position: SIMD3(x: 0, y: -0.2, z: 0),
@@ -99,7 +97,7 @@ import Spatial
         realityComposerScene: "planeScene",
         usdzName: "",
         realityComposerAnimationResourceName: "",
-        jsonPathsToAnimData: [""],
+        jsonPaths: [""],
         isAnimated: false,
         isMoving: false,
         position: SIMD3(x: 0, y: -0.1, z: 0),

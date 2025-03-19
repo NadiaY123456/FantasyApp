@@ -21,7 +21,7 @@ class MoveSystem: RealityKit.System {
 
     func update(context: SceneUpdateContext) {
         // get the entities that have animation and motion component
-        let characters = context.entities(matching: Self.query, updatingSystemWhen: .rendering) // Used context.entities(matching:updatingSystemWhen:) instead of performQuery for better performance. TODO: update like this everywhere: https://forums.developer.apple.com/forums/thread/749064
+        let characters = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
 
         let deltaPos : Float = 0.03
         for character in characters {

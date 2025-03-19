@@ -20,10 +20,10 @@
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
 		419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF82D5C2767001CF47A /* LocalUtilities.swift */; };
 		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
+		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
 		41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */; };
 		41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */; };
-		41E39C7F2D5BE1C6007C29C6 /* GestureComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */; };
 		41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */; };
 		41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */; };
 		41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */; };
@@ -34,7 +34,6 @@
 		41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */; };
 		41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */; };
 		41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C662D5BE1C6007C29C6 /* PlayData.swift */; };
-		41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */; };
 		41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6C2D5BE1C6007C29C6 /* AppState.swift */; };
 		41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */; };
 		41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C6E2D5BE1C6007C29C6 /* MatheMagicApp.swift */; };
@@ -70,9 +69,10 @@
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
 		419EDCF82D5C2767001CF47A /* LocalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUtilities.swift; sourceTree = "<group>"; };
+		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
+		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
 		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
-		41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureComponent.swift; sourceTree = "<group>"; };
 		41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveComponent.swift; sourceTree = "<group>"; };
 		41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityViewExtensions.swift; sourceTree = "<group>"; };
 		41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapComponent.swift; sourceTree = "<group>"; };
@@ -83,7 +83,6 @@
 		41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMachineStates.swift; sourceTree = "<group>"; };
 		41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEntities.swift; sourceTree = "<group>"; };
 		41E39C662D5BE1C6007C29C6 /* PlayData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayData.swift; sourceTree = "<group>"; };
-		41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadUtilities.swift; sourceTree = "<group>"; };
 		41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		41E39C6C2D5BE1C6007C29C6 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -115,6 +114,7 @@
 				41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */,
 				41E3EBA52D5C15C5004752C9 /* CoreLib in Frameworks */,
 				4135079E2D6026440048FE53 /* AnimLib in Frameworks */,
+				41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,7 +172,6 @@
 			children = (
 				4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */,
 				41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */,
-				41E39C592D5BE1C6007C29C6 /* GestureComponent.swift */,
 				41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */,
 				41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */,
 				41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */,
@@ -212,7 +211,6 @@
 			isa = PBXGroup;
 			children = (
 				419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */,
-				41E39C682D5BE1C6007C29C6 /* LoadUtilities.swift */,
 			);
 			path = Load;
 			sourceTree = "<group>";
@@ -287,6 +285,8 @@
 		41E39CA32D5BE28B007C29C6 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				41D144932D6E3B2000BBA700 /* Inertialization */,
+				41D2E5102D667D1A00A8FA8F /* joystickController */,
 				412ADE192D5FAEAF007BDE16 /* AnimLib */,
 				41E3EBA92D5C18B5004752C9 /* CoreLib */,
 				41E39CA22D5BE28B007C29C6 /* RealityKitContent */,
@@ -315,6 +315,7 @@
 				41E3EBA42D5C15C5004752C9 /* CoreLib */,
 				41E3EBAB2D5C19B3004752C9 /* CoreLib */,
 				4135079D2D6026440048FE53 /* AnimLib */,
+				41D2E5122D667DDF00A8FA8F /* joystickController */,
 			);
 			productName = FantasyAppGithub;
 			productReference = 05E9E6FA2D1CF5A80008014C /* MatheMagic.app */;
@@ -348,6 +349,7 @@
 				05E9E74E2D1D3BB90008014C /* XCLocalSwiftPackageReference "../../../../Desktop/Fantasy Game/Packages/RealityKitContent" */,
 				41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */,
 				4135079C2D6026440048FE53 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AnimationLibrary/AnimLib" */,
+				41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 05E9E6FB2D1CF5A80008014C /* Products */;
@@ -388,7 +390,6 @@
 			files = (
 				413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */,
 				41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */,
-				41E39C7F2D5BE1C6007C29C6 /* GestureComponent.swift in Sources */,
 				41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */,
 				413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */,
 				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
@@ -402,7 +403,6 @@
 				41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */,
 				41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */,
 				41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */,
-				41E39C8A2D5BE1C6007C29C6 /* LoadUtilities.swift in Sources */,
 				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
 				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
 				41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */,
@@ -640,6 +640,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
 		};
+		41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/joystickController;
+		};
 		41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/CoreLibrary/CoreLib;
@@ -650,6 +654,10 @@
 		4135079D2D6026440048FE53 /* AnimLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;
+		};
+		41D2E5122D667DDF00A8FA8F /* joystickController */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = joystickController;
 		};
 		41E39CA72D5BE546007C29C6 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;

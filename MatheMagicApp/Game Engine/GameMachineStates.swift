@@ -12,11 +12,21 @@ class LoadState: GKState {
         AppLogger.shared.info("Entered Loading State")
 
         Task { @MainActor in
-            await preLoadAssetsDict()  // Await asset loading
+            // Start timing
+            let startTime = Date()
+            
+            // Perform asset loading
+            await preLoadAssetsDict()
+            
+            // Calculate elapsed time
+            let elapsedTime = Date().timeIntervalSince(startTime)
+            AppLogger.shared.info("Asset loading completed in \(elapsedTime) seconds")
+        
+            
+            // Continue with remaining setup
             setupEntities()
             
             //clearFileContent(at: dataExportJsonPath) // for debug purposes TODO: drop when disable dataExport
-            // Update the view model once assets are loaded.
             GameModelView.shared.assetsLoaded = true
             GameModelView.shared.currentState = .start  // or a dedicated ready state
         }
