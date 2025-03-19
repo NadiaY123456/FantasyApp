@@ -31,6 +31,9 @@ import AnimLib
 
         // Animation Component
         entity.components.set(AnimationComponent())
+        
+        // BonePosesComponent
+        entity.components[BonePosesComponent.self] = BonePosesComponent()
 
     } else { AppLogger.shared.error("Error: did not find \(entityDictionaryID) key in entityTemplateDictionary") }
     return entity

@@ -19,12 +19,20 @@ import RealityKit
 //                await entitySet.loadRootAnimationAssets() // load associated root animations
 
                 let dataManager = DataManager() // Create a DataManager instance for this entity
+                
 
                 // Load all data types from the single .lzfse file using jsonPaths
                 let dataPath = entitySet.jsonPaths.first ?? ""
                 if !dataPath.isEmpty {
                     
                     dataManager.loadAllData(from: dataPath)
+                    
+                    // send corrent joint path to data manager and reorder all transforms and jointNameList accordingle
+
+                    let modelJointNames = entitySet.modelEntity.jointNames
+                    dataManager.setModelJointNames(modelJointNames)
+                    dataManager.reorderTransformsAndJointList(with: modelJointNames)
+
 
                     // Initialize side-dependent data after loading joints
                     dataManager.initializeSideDependentData()
