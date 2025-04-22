@@ -3,6 +3,7 @@ import Foundation
 import RealityKit
 import SwiftUI
 import AnimLib
+import joystickController
 
 
 class GameModelView: ObservableObject, JoystickDataProvider {
