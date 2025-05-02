@@ -28,25 +28,8 @@
       [
         "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
         "Root",
-        "Watcher_27"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
-        "Root",
         "Watcher_27",
         "Head"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
-        "Root"
       ],
       {
         "isExpanded" : true,
@@ -58,6 +41,23 @@
         "Watcher_27",
         "Head",
         "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root",
+        "Watcher_27"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "1AA4DE8D-BECD-471C-9CDB-A34B0BC3DCE6",
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -89,15 +89,7 @@
       [
         "1D572CEB-057A-41C3-B575-04C37501A3C0",
         "Root",
-        "Explosion"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "1D572CEB-057A-41C3-B575-04C37501A3C0",
-        "Root"
+        "Sphere_Right"
       ],
       {
         "isExpanded" : true,
@@ -106,7 +98,7 @@
       [
         "1D572CEB-057A-41C3-B575-04C37501A3C0",
         "Root",
-        "Sphere_Right"
+        "Explosion"
       ],
       {
         "isExpanded" : true,
@@ -120,6 +112,14 @@
       {
         "isExpanded" : true,
         "isLocked" : false
+      },
+      [
+        "1D572CEB-057A-41C3-B575-04C37501A3C0",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
       }
     ]
   },
@@ -127,7 +127,8 @@
     "objectMetadataList" : [
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Repeating_Crossbow_Armature"
+        "Heavy_Crossbow_Armature",
+        "Heavy_Crossbow"
       ],
       {
         "isExpanded" : true,
@@ -135,7 +136,8 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Hand_Crossbow_Armature"
+        "Hand_Crossbow_Armature",
+        "Hand_Crossbow"
       ],
       {
         "isExpanded" : true,
@@ -143,7 +145,7 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Recurve_Bow_2_Armature"
+        "Horn_Bow_Armature"
       ],
       {
         "isExpanded" : true,
@@ -151,7 +153,7 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Crossbow_Bolt_5_inch"
+        "Light_Crossbow_Armature"
       ],
       {
         "isExpanded" : true,
@@ -159,8 +161,8 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Short_Bow_Armature",
-        "Short_Bow"
+        "Repeating_Crossbow_Armature",
+        "Repeating_Crossbow"
       ],
       {
         "isExpanded" : true,
@@ -168,7 +170,7 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Arrow_26_inch_"
+        "Short_Bow_Armature"
       ],
       {
         "isExpanded" : true,
@@ -193,6 +195,14 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Arrow_26_inch_"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
         "Horn_Bow_Armature",
         "Horn_Bow"
       ],
@@ -202,7 +212,7 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Short_Bow_Armature"
+        "Hand_Crossbow_Armature"
       ],
       {
         "isExpanded" : true,
@@ -211,66 +221,6 @@
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
         "Crossbow_Bolt_10_inch"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Horn_Bow_Armature"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Recurve_Bow_Armature"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Heavy_Crossbow_Armature"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Recurve_Bow_2_Armature",
-        "Recurve_Bow_2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Repeating_Crossbow_Armature",
-        "Repeating_Crossbow"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Heavy_Crossbow_Armature",
-        "Heavy_Crossbow"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Hand_Crossbow_Armature",
-        "Hand_Crossbow"
       ],
       {
         "isExpanded" : true,
@@ -287,7 +237,57 @@
       },
       [
         "251D95AC-8541-46E4-A701-FB70DF8D96F3",
-        "Light_Crossbow_Armature"
+        "Heavy_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Short_Bow_Armature",
+        "Short_Bow"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_2_Armature",
+        "Recurve_Bow_2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Recurve_Bow_2_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Repeating_Crossbow_Armature"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "251D95AC-8541-46E4-A701-FB70DF8D96F3",
+        "Crossbow_Bolt_5_inch"
       ],
       {
         "isExpanded" : true,
@@ -300,8 +300,46 @@
       [
         "2831F438-0943-4498-821C-EF5AA3F737C8",
         "LandsapeScene",
+        "Gledista_Triacanthos_n3d",
+        "default_group_n3d5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandscapeScene",
+        "Gledista_Triacanthos_n3d",
+        "default_group_n3d5"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
+        "Gledista_Triacanthos_n3d"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandsapeScene",
         "material",
         "MATERIAL__14"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "2831F438-0943-4498-821C-EF5AA3F737C8",
+        "LandscapeScene",
+        "Gledista_Triacanthos_n3d"
       ],
       {
         "isExpanded" : true,
@@ -319,45 +357,7 @@
       },
       [
         "2831F438-0943-4498-821C-EF5AA3F737C8",
-        "LandsapeScene",
-        "Gledista_Triacanthos_n3d"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2831F438-0943-4498-821C-EF5AA3F737C8",
-        "LandsapeScene",
-        "Gledista_Triacanthos_n3d",
-        "default_group_n3d5"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2831F438-0943-4498-821C-EF5AA3F737C8",
         "LandsapeScene"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2831F438-0943-4498-821C-EF5AA3F737C8",
-        "LandscapeScene",
-        "Gledista_Triacanthos_n3d",
-        "default_group_n3d5"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "2831F438-0943-4498-821C-EF5AA3F737C8",
-        "LandscapeScene",
-        "Gledista_Triacanthos_n3d"
       ],
       {
         "isExpanded" : true,
@@ -394,8 +394,30 @@
 
     ]
   },
+  "3F07CF74-A4F6-4751-B182-87F896CE6BCE" : {
+    "objectMetadataList" : [
+      [
+        "3F07CF74-A4F6-4751-B182-87F896CE6BCE",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
   "4761986F-DADD-497F-8599-78BB4654132F" : {
     "objectMetadataList" : [
+      [
+        "4761986F-DADD-497F-8599-78BB4654132F",
+        "Root",
+        "nataUSDwithAnimation",
+        "mtl"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "4761986F-DADD-497F-8599-78BB4654132F",
         "Root"
@@ -408,16 +430,6 @@
         "4761986F-DADD-497F-8599-78BB4654132F",
         "Root",
         "nataUSDwithAnimation"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "4761986F-DADD-497F-8599-78BB4654132F",
-        "Root",
-        "nataUSDwithAnimation",
-        "mtl"
       ],
       {
         "isExpanded" : true,
@@ -474,6 +486,16 @@
         "6244253D-3103-42FC-8824-EE111AF49BDC",
         "Root",
         "UpdatedGrumpyScene2",
+        "cloud_002_anim"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6244253D-3103-42FC-8824-EE111AF49BDC",
+        "Root",
+        "UpdatedGrumpyScene2",
         "RainbowBody"
       ],
       {
@@ -484,16 +506,6 @@
         "6244253D-3103-42FC-8824-EE111AF49BDC",
         "Root",
         "UpdatedGrumpyScene2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6244253D-3103-42FC-8824-EE111AF49BDC",
-        "Root",
-        "UpdatedGrumpyScene2",
-        "cloud_002_anim"
       ],
       {
         "isExpanded" : true,
@@ -547,9 +559,7 @@
       [
         "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
         "Root",
-        "Nature_Compatible_Engine_animated",
-        "SkinnedMeshes",
-        "Sketchfab_model"
+        "Nature_Compatible_Engine_animated"
       ],
       {
         "isExpanded" : true,
@@ -567,8 +577,7 @@
       },
       [
         "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
-        "Root",
-        "Nature_Compatible_Engine_animated"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -576,7 +585,10 @@
       },
       [
         "68E64CFB-BF5F-4BD1-B428-B54C072596E8",
-        "Root"
+        "Root",
+        "Nature_Compatible_Engine_animated",
+        "SkinnedMeshes",
+        "Sketchfab_model"
       ],
       {
         "isExpanded" : true,
@@ -599,28 +611,9 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "Sling"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
         "Bow",
         "SkinnedMeshes",
         "Sketchfab_model"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "bow3dsmax",
-        "joint1"
       ],
       {
         "isExpanded" : true,
@@ -638,89 +631,7 @@
       },
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "bow3dsFBX_RCP",
-        "joint1",
-        "Skeleton"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "bow3dsFBX_RCP",
-        "joint1"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "AttackMouthAnimRConverterfromFBX",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "AttackMouthAnimRConverterfromFBX",
         "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "AttackMouthAnimRConverterfromFBX",
-        "Materials",
-        "material"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "Bow",
-        "SkinnedMeshes"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "Usurper",
-        "light_set"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "Bow",
-        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -741,8 +652,38 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "usurper",
+        "Usurper",
+        "light_set"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "LandsapeScene",
         "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsFBX_RCP",
+        "joint1"
       ],
       {
         "isExpanded" : true,
@@ -762,6 +703,27 @@
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
         "Usurper",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsFBX_RCP",
+        "joint1",
+        "Skeleton"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
         "Root",
         "DragonTheUsurperSK_geometry"
       ],
@@ -772,7 +734,27 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "Usurper",
+        "Usurper"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "bow3dsmax",
+        "joint1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Materials",
         "material"
       ],
       {
@@ -782,8 +764,8 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "usurper",
-        "light_set"
+        "Bow",
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -792,19 +774,7 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "LandsapeScene",
-        "material"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
-        "Root",
-        "Usurper",
-        "Root",
-        "Skeleton"
+        "Sling"
       ],
       {
         "isExpanded" : true,
@@ -823,7 +793,49 @@
       [
         "6C467EEA-42FA-464C-83CB-8C822D347DD7",
         "Root",
-        "Usurper"
+        "usurper",
+        "light_set"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "usurper",
+        "material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Bow",
+        "SkinnedMeshes"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "AttackMouthAnimRConverterfromFBX",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6C467EEA-42FA-464C-83CB-8C822D347DD7",
+        "Root",
+        "Usurper",
+        "Root",
+        "Skeleton"
       ],
       {
         "isExpanded" : true,
@@ -836,7 +848,46 @@
       [
         "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
         "Root",
-        "forest"
+        "Maple_tree",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "Realistics_grass_03"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "bush",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "bush"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root",
+        "forest",
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -864,6 +915,14 @@
       },
       [
         "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
         "Root",
         "Bush_v2",
         "Materials"
@@ -875,54 +934,7 @@
       [
         "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
         "Root",
-        "Maple_tree",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
-        "Root",
-        "bush",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
-        "Root",
-        "forest",
-        "Materials"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
-        "Root",
-        "Realistics_grass_03"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "6EBBA079-CFF4-499D-AE2D-B5F9B677F78E",
-        "Root",
-        "bush"
+        "forest"
       ],
       {
         "isExpanded" : true,
@@ -937,7 +949,11 @@
         "Bow",
         "SkinnedMeshes",
         "Sketchfab_model",
-        "Evelynn_bow_low_fbx"
+        "Evelynn_bow_low_fbx",
+        "Object_2",
+        "RootNode",
+        "Object_4",
+        "_rootJoint"
       ],
       {
         "isExpanded" : true,
@@ -946,26 +962,7 @@
       [
         "726009F9-C4FA-41C4-813B-E0FDE812BF56",
         "bow3dsmax",
-        "joint1"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "bow3dsmax",
-        "mtl",
-        "bow_mat"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "Bow",
-        "SkinnedMeshes"
+        "Bones"
       ],
       {
         "isExpanded" : true,
@@ -987,33 +984,7 @@
       [
         "726009F9-C4FA-41C4-813B-E0FDE812BF56",
         "Bow",
-        "SkinnedMeshes",
-        "Sketchfab_model",
-        "Evelynn_bow_low_fbx",
-        "Object_2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "Bow",
-        "SkinnedMeshes",
-        "Sketchfab_model",
-        "Evelynn_bow_low_fbx",
-        "Object_2",
-        "RootNode",
-        "Object_4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "bow3dsmax",
-        "Bones"
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -1037,15 +1008,6 @@
       },
       [
         "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "EnglishLongBow",
-        "mtl"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
         "bow3dsmax",
         "mtl"
       ],
@@ -1055,9 +1017,9 @@
       },
       [
         "726009F9-C4FA-41C4-813B-E0FDE812BF56",
-        "Bow",
-        "SkinnedMeshes",
-        "Sketchfab_model"
+        "bow3dsmax",
+        "mtl",
+        "bow_mat"
       ],
       {
         "isExpanded" : true,
@@ -1071,8 +1033,28 @@
         "Evelynn_bow_low_fbx",
         "Object_2",
         "RootNode",
-        "Object_4",
-        "_rootJoint"
+        "Object_4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes",
+        "Sketchfab_model"
       ],
       {
         "isExpanded" : true,
@@ -1090,7 +1072,37 @@
       [
         "726009F9-C4FA-41C4-813B-E0FDE812BF56",
         "Bow",
-        "Materials"
+        "SkinnedMeshes",
+        "Sketchfab_model",
+        "Evelynn_bow_low_fbx",
+        "Object_2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "bow3dsmax",
+        "joint1"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "EnglishLongBow",
+        "mtl"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "726009F9-C4FA-41C4-813B-E0FDE812BF56",
+        "Bow",
+        "SkinnedMeshes"
       ],
       {
         "isExpanded" : true,
@@ -1100,18 +1112,6 @@
   },
   "77509149-B205-4A05-A732-C817D05FF58C" : {
     "objectMetadataList" : [
-      [
-        "77509149-B205-4A05-A732-C817D05FF58C",
-        "Root",
-        "mountain_trees_1",
-        "Geom",
-        "Sketchfab_model",
-        "root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
       [
         "77509149-B205-4A05-A732-C817D05FF58C",
         "Root",
@@ -1126,7 +1126,9 @@
         "Root",
         "mountain_trees_1",
         "Geom",
-        "Sketchfab_model"
+        "Sketchfab_model",
+        "root",
+        "GLTF_SceneRootNode"
       ],
       {
         "isExpanded" : true,
@@ -1137,16 +1139,6 @@
         "Root",
         "mountain_trees_1",
         "Geom"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "77509149-B205-4A05-A732-C817D05FF58C",
-        "Root",
-        "mountain_trees_1",
-        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -1165,9 +1157,29 @@
         "Root",
         "mountain_trees_1",
         "Geom",
+        "Sketchfab_model"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Materials"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "77509149-B205-4A05-A732-C817D05FF58C",
+        "Root",
+        "mountain_trees_1",
+        "Geom",
         "Sketchfab_model",
-        "root",
-        "GLTF_SceneRootNode"
+        "root"
       ],
       {
         "isExpanded" : true,
@@ -1203,9 +1215,7 @@
     "objectMetadataList" : [
       [
         "9C53305B-09C4-4316-AEFB-55158CB29E2D",
-        "Root",
-        "flash",
-        "Looks"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -1213,7 +1223,9 @@
       },
       [
         "9C53305B-09C4-4316-AEFB-55158CB29E2D",
-        "Root"
+        "Root",
+        "flash",
+        "Looks"
       ],
       {
         "isExpanded" : true,
@@ -1242,9 +1254,7 @@
     "objectMetadataList" : [
       [
         "B96FC8C5-3DA4-471E-A397-CE7B19527E70",
-        "Root",
-        "plane",
-        "Materials"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -1252,7 +1262,9 @@
       },
       [
         "B96FC8C5-3DA4-471E-A397-CE7B19527E70",
-        "Root"
+        "Root",
+        "plane",
+        "Materials"
       ],
       {
         "isExpanded" : true,
@@ -1300,8 +1312,15 @@
         "CC34C24F-7593-4DAC-B593-663F44328AEB",
         "Root",
         "UpdatedGrumpyScene2",
-        "cloud_002_anim",
-        "cloud_ref_root_jnt"
+        "RainbowBody"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "CC34C24F-7593-4DAC-B593-663F44328AEB",
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -1320,17 +1339,10 @@
       },
       [
         "CC34C24F-7593-4DAC-B593-663F44328AEB",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "CC34C24F-7593-4DAC-B593-663F44328AEB",
         "Root",
         "UpdatedGrumpyScene2",
-        "cloud_002_anim"
+        "cloud_002_anim",
+        "cloud_ref_root_jnt"
       ],
       {
         "isExpanded" : true,
@@ -1361,7 +1373,7 @@
         "CC34C24F-7593-4DAC-B593-663F44328AEB",
         "Root",
         "UpdatedGrumpyScene2",
-        "RainbowBody"
+        "cloud_002_anim"
       ],
       {
         "isExpanded" : true,
@@ -1373,7 +1385,8 @@
     "objectMetadataList" : [
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root"
+        "Root",
+        "Sphere"
       ],
       {
         "isExpanded" : true,
@@ -1381,8 +1394,7 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root",
-        "Sphere"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -1427,20 +1439,7 @@
     "objectMetadataList" : [
       [
         "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096",
-        "Root",
-        "Meadow",
-        "skydome"
-      ],
-      {
-        "disallowsFraming" : false,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096",
-        "Root",
-        "WaterPlane",
-        "new_assets"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -1458,7 +1457,9 @@
       },
       [
         "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096",
-        "Root"
+        "Root",
+        "WaterPlane",
+        "new_assets"
       ],
       {
         "isExpanded" : true,
@@ -1471,6 +1472,17 @@
       ],
       {
         "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "E71D0C0E-C8F7-4FAF-BA7F-9CE224012096",
+        "Root",
+        "Meadow",
+        "skydome"
+      ],
+      {
+        "disallowsFraming" : false,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */ = {isa = PBXBuildFile; productRef = 412F23652DA0262A00FF05C5 /* Inertialization */; };
 		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
 		413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */; };
 		413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */; };
@@ -23,7 +24,6 @@
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
 		41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */; };
-		41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */; };
 		41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */; };
 		41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */; };
 		41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */; };
@@ -72,7 +72,6 @@
 		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
-		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
 		41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveComponent.swift; sourceTree = "<group>"; };
 		41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityViewExtensions.swift; sourceTree = "<group>"; };
 		41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapComponent.swift; sourceTree = "<group>"; };
@@ -102,6 +101,10 @@
 		41E39C9A2D5BE1CE007C29C6 /* FantasyTown2.mtlx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = FantasyTown2.mtlx; sourceTree = "<group>"; };
 		41E39C9B2D5BE1CE007C29C6 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		41E39CA22D5BE28B007C29C6 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
+		41E3DF2C2D9C1EC900381500 /* BrainAnimationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainAnimationSequence.swift; sourceTree = "<group>"; };
+		41E3DF2E2D9C1EC900381500 /* IdleToIdle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleToIdle.swift; sourceTree = "<group>"; };
+		41E3DF2F2D9C1EC900381500 /* IdleToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleToWalk.swift; sourceTree = "<group>"; };
+		41E3DF322D9C1EC900381500 /* WalkToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkToWalk.swift; sourceTree = "<group>"; };
 		41E3EBA92D5C18B5004752C9 /* CoreLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CoreLib; path = ../../NexTaleLibraries/CoreLibrary/CoreLib; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -113,6 +116,7 @@
 				41E3EBAC2D5C19B3004752C9 /* CoreLib in Frameworks */,
 				41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */,
 				41E3EBA52D5C15C5004752C9 /* CoreLib in Frameworks */,
+				412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */,
 				4135079E2D6026440048FE53 /* AnimLib in Frameworks */,
 				41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */,
 			);
@@ -170,11 +174,10 @@
 		41E39C5D2D5BE1C6007C29C6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */,
-				41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */,
 				41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */,
 				41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */,
 				41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */,
+				4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				419EDCF52D5C2744001CF47A /* Utilities */,
 				41E39C692D5BE1C6007C29C6 /* Load */,
 				41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */,
+				41E3DF332D9C1EC900381500 /* Brain-Old */,
 			);
 			path = MatheMagicApp;
 			sourceTree = "<group>";
@@ -294,6 +298,17 @@
 			path = Packages;
 			sourceTree = "<group>";
 		};
+		41E3DF332D9C1EC900381500 /* Brain-Old */ = {
+			isa = PBXGroup;
+			children = (
+				41E3DF2C2D9C1EC900381500 /* BrainAnimationSequence.swift */,
+				41E3DF2E2D9C1EC900381500 /* IdleToIdle.swift */,
+				41E3DF2F2D9C1EC900381500 /* IdleToWalk.swift */,
+				41E3DF322D9C1EC900381500 /* WalkToWalk.swift */,
+			);
+			path = "Brain-Old";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -316,6 +331,7 @@
 				41E3EBAB2D5C19B3004752C9 /* CoreLib */,
 				4135079D2D6026440048FE53 /* AnimLib */,
 				41D2E5122D667DDF00A8FA8F /* joystickController */,
+				412F23652DA0262A00FF05C5 /* Inertialization */,
 			);
 			productName = FantasyAppGithub;
 			productReference = 05E9E6FA2D1CF5A80008014C /* MatheMagic.app */;
@@ -350,6 +366,7 @@
 				41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */,
 				4135079C2D6026440048FE53 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AnimationLibrary/AnimLib" */,
 				41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */,
+				41E3DF402DA024E400381500 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/Inertialization/Inertialization" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 05E9E6FB2D1CF5A80008014C /* Products */;
@@ -389,7 +406,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */,
-				41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */,
 				41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */,
 				413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */,
 				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
@@ -644,6 +660,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/joystickController;
 		};
+		41E3DF402DA024E400381500 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/Inertialization/Inertialization" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/Inertialization/Inertialization;
+		};
 		41E3EBAA2D5C19B3004752C9 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/CoreLibrary/CoreLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/CoreLibrary/CoreLib;
@@ -651,6 +671,11 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		412F23652DA0262A00FF05C5 /* Inertialization */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 41E3DF402DA024E400381500 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/Inertialization/Inertialization" */;
+			productName = Inertialization;
+		};
 		4135079D2D6026440048FE53 /* AnimLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;

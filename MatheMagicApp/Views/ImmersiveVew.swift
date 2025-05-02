@@ -122,6 +122,16 @@ struct Selection: View {
                         )
                         .padding([.bottom, .leading], 20)
                         Spacer()
+                        // ─────────────────────────────────────────────
+                        //  ACTION BUTTON  (bottom‑right)
+                        //  Keeps GameModelView.shared.isHoldingButton
+                        //  true only while pressed.
+                        ActionButtonView(
+                            onPressStart: { GameModelView.shared.isHoldingButton = true },
+                            onPressEnd: { GameModelView.shared.isHoldingButton = false }
+                        )
+                        .padding([.bottom, .trailing], 20)
+                        // ─────────────────────────────────────────────
                     }
                 }
             }
