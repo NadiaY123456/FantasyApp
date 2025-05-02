@@ -30,6 +30,7 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     @Published var joystickMagnitude: CGFloat = 0
     @Published var joystickAngle: Angle = .degrees(0)
     @Published var joystickIsTouching = false
+    var cameraYaw: Angle { camera.cameraYaw }
 
     /// Generic gesture state accessible to various systems.
     @Published var isDragging: Bool = false

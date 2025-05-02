@@ -24,7 +24,6 @@
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
 		41E39C7D2D5BE1C6007C29C6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */; };
-		41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */; };
 		41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */; };
 		41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */; };
 		41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */; };
@@ -73,7 +72,6 @@
 		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
-		41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraComponent.swift; sourceTree = "<group>"; };
 		41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveComponent.swift; sourceTree = "<group>"; };
 		41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityViewExtensions.swift; sourceTree = "<group>"; };
 		41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapComponent.swift; sourceTree = "<group>"; };
@@ -103,15 +101,9 @@
 		41E39C9A2D5BE1CE007C29C6 /* FantasyTown2.mtlx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = FantasyTown2.mtlx; sourceTree = "<group>"; };
 		41E39C9B2D5BE1CE007C29C6 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		41E39CA22D5BE28B007C29C6 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
-		41E3DF262D9C1EC900381500 /* 1-WalkIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "1-WalkIntent.swift"; sourceTree = "<group>"; };
-		41E3DF272D9C1EC900381500 /* 2-WhenTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "2-WhenTransition.swift"; sourceTree = "<group>"; };
-		41E3DF282D9C1EC900381500 /* 3-TargetAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "3-TargetAnimation.swift"; sourceTree = "<group>"; };
-		41E3DF292D9C1EC900381500 /* 4-RawTargetSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "4-RawTargetSequence.swift"; sourceTree = "<group>"; };
-		41E3DF2A2D9C1EC900381500 /* 5-ModifyTargetSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "5-ModifyTargetSequence.swift"; sourceTree = "<group>"; };
 		41E3DF2C2D9C1EC900381500 /* BrainAnimationSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrainAnimationSequence.swift; sourceTree = "<group>"; };
 		41E3DF2E2D9C1EC900381500 /* IdleToIdle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleToIdle.swift; sourceTree = "<group>"; };
 		41E3DF2F2D9C1EC900381500 /* IdleToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleToWalk.swift; sourceTree = "<group>"; };
-		41E3DF312D9C1EC900381500 /* WalkToIdle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkToIdle.swift; sourceTree = "<group>"; };
 		41E3DF322D9C1EC900381500 /* WalkToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkToWalk.swift; sourceTree = "<group>"; };
 		41E3EBA92D5C18B5004752C9 /* CoreLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CoreLib; path = ../../NexTaleLibraries/CoreLibrary/CoreLib; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -182,11 +174,10 @@
 		41E39C5D2D5BE1C6007C29C6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */,
-				41E39C582D5BE1C6007C29C6 /* CameraComponent.swift */,
 				41E39C5A2D5BE1C6007C29C6 /* MoveComponent.swift */,
 				41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */,
 				41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */,
+				4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -307,26 +298,12 @@
 			path = Packages;
 			sourceTree = "<group>";
 		};
-		41E3DF2B2D9C1EC900381500 /* WalkToWalk */ = {
-			isa = PBXGroup;
-			children = (
-				41E3DF262D9C1EC900381500 /* 1-WalkIntent.swift */,
-				41E3DF272D9C1EC900381500 /* 2-WhenTransition.swift */,
-				41E3DF282D9C1EC900381500 /* 3-TargetAnimation.swift */,
-				41E3DF292D9C1EC900381500 /* 4-RawTargetSequence.swift */,
-				41E3DF2A2D9C1EC900381500 /* 5-ModifyTargetSequence.swift */,
-			);
-			path = WalkToWalk;
-			sourceTree = "<group>";
-		};
 		41E3DF332D9C1EC900381500 /* Brain-Old */ = {
 			isa = PBXGroup;
 			children = (
-				41E3DF2B2D9C1EC900381500 /* WalkToWalk */,
 				41E3DF2C2D9C1EC900381500 /* BrainAnimationSequence.swift */,
 				41E3DF2E2D9C1EC900381500 /* IdleToIdle.swift */,
 				41E3DF2F2D9C1EC900381500 /* IdleToWalk.swift */,
-				41E3DF312D9C1EC900381500 /* WalkToIdle.swift */,
 				41E3DF322D9C1EC900381500 /* WalkToWalk.swift */,
 			);
 			path = "Brain-Old";
@@ -429,7 +406,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */,
-				41E39C7E2D5BE1C6007C29C6 /* CameraComponent.swift in Sources */,
 				41E39C802D5BE1C6007C29C6 /* MoveComponent.swift in Sources */,
 				413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */,
 				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
