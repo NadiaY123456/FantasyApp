@@ -508,7 +508,7 @@
 //        guard let (transformDataPoint, animDataPointTarget) = createStrideAnimDataPoint(
 //            animationName: targetAnimation,
 //            startingFrame: startingFrame,
-//            highPoseSide: initAnimationSequenceElement.endPoseName.footOnGround.otherSide, // side in the initial high pose
+//            highPoseSide: initAnimationSequenceElement.endPoseName.sideOnGround.otherSide, // side in the initial high pose
 //            dataManager: dataManager
 //        ) else {
 //            AppLogger.shared.error("Error: Could not create stride animation data points.")

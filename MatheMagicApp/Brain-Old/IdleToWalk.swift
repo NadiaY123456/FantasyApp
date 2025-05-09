@@ -164,7 +164,7 @@
 //        }
 //
 //        // decide on new weight supporting leg - for now just use the current one.
-//        var initSide = initAnimationSequenceElement.endPoseName.footOnGround
+//        var initSide = initAnimationSequenceElement.endPoseName.sideOnGround
 //
 //        if initSide == .none {
 //            AppLogger.shared.error("Error: Failed to determine the initial side for the idle to walk transition.")

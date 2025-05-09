@@ -1,9 +1,12 @@
 {
   "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
-    "test\/test.usda"
+    "test.usda"
   ],
   "recentIdentifiers" : {
+    "2CEF893F-A1CE-4BBC-B142-ABB87BE9C856" : [
+
+    ],
     "9C53305B-09C4-4316-AEFB-55158CB29E2D" : [
 
     ],
@@ -15,6 +18,118 @@
     ]
   },
   "sceneCameraHistory" : {
+    "2CEF893F-A1CE-4BBC-B142-ABB87BE9C856" : [
+      {
+        "date" : 768379192.995694,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.7071067,
+          0,
+          0,
+          0.7071067,
+          0.7071069,
+          0,
+          -58.701416,
+          866.61115,
+          1379.8864,
+          1
+        ]
+      },
+      {
+        "date" : 768379087.10122,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.7071067,
+          0,
+          0,
+          0.7071067,
+          0.7071069,
+          0,
+          -19.199144,
+          942.67993,
+          1303.8176,
+          1
+        ]
+      },
+      {
+        "date" : 768379075.58634,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.7071067,
+          0,
+          0,
+          0.7071067,
+          0.7071069,
+          0,
+          25.541496,
+          809.2641,
+          1537.5057,
+          1
+        ]
+      },
+      {
+        "date" : 768379063.153133,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0.7071069,
+          -0.7071067,
+          0,
+          0,
+          0.7071067,
+          0.7071069,
+          0,
+          76.32184,
+          1130.0015,
+          1216.768,
+          1
+        ]
+      },
+      {
+        "date" : 768379052.332637,
+        "title" : "Untitled",
+        "transform" : [
+          1,
+          0,
+          -0,
+          0,
+          -0,
+          0.7071069,
+          -0.7071067,
+          0,
+          0,
+          0.7071067,
+          0.7071069,
+          0,
+          0.036499023,
+          1080.8077,
+          1265.9618,
+          1
+        ]
+      }
+    ],
     "3F07CF74-A4F6-4751-B182-87F896CE6BCE" : [
       {
         "date" : 767593420.682478,
@@ -907,5 +1022,5 @@
   "sceneViewportBackgroundColors" : {
 
   },
-  "selectedSceneRelativePath" : "test\/test.usda"
+  "selectedSceneRelativePath" : "test.usda"
 }

@@ -26,9 +26,6 @@ import AnimLib
         // Travel Component
         entity.components[TravelComponent.self] = TravelComponent()
 
-        // Custom Animation Component
-        entity.components[CustomAnimationComponent.self] = CustomAnimationComponent()
-
         // Animation Component
         entity.components.set(AnimationComponent())
 
