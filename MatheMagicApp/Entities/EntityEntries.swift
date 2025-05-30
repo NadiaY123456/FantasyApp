@@ -41,17 +41,14 @@ import Spatial
         isAnimated: true,
         isMoving: true,
         position: SIMD3(x: 0, y: 0, z: 0),
-        orientation: simd_quatf(
-            Rotation3D(angle: .degrees(0), axis: .x)
-                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
-        ),
+        orientation: simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)),
         spawnScaleFactor: SIMD3<Float>(0.1, 0.1, 0.1)
     )
     
     let meadowModel = EntitySet(
         name: "Meadow",
         modelEntityName: "Meadow",
-        entityType: .island,
+        entityType: .asset,
         loadSource: .realityComposerPro,
         realityComposerName: "Meadow",
         realityComposerScene: "Garden",
@@ -71,7 +68,7 @@ import Spatial
     let waterModel = EntitySet(
         name: "WaterPlane",
         modelEntityName: "WaterPlane",
-        entityType: .island,
+        entityType: .asset,
         loadSource: .realityComposerPro,
         realityComposerName: "WaterPlane",
         realityComposerScene: "Garden",
@@ -91,7 +88,7 @@ import Spatial
     let planeModel = EntitySet(
         name: "plane",
         modelEntityName: "plane",
-        entityType: .island,
+        entityType: .asset,
         loadSource: .realityComposerPro,
         realityComposerName: "plane",
         realityComposerScene: "planeScene",
@@ -121,40 +118,3 @@ import Spatial
 }
 
 
-
-//// Create the dictionary
-//var entityModelDictionary: [String: EntitySet] = Dictionary(uniqueKeysWithValues: [
-//    ("raven", ravenModel),
-//    ("flash", flashModel),
-//    ("meadow", meadowModel),
-//    ("water", waterModel)
-//])
-//
-//
-//var ravenModel = EntitySet (
-//    name: "Raven",
-//    loadSource: .realityComposerPro,
-//    realityComposerName: "Raven",
-//    realityComposerScene: "RavenScene"
-//)
-//
-//var flashModel = EntitySet (
-//    name: "Flash",
-//    loadSource: .realityComposerPro,
-//    realityComposerName: "Flash",
-//    realityComposerScene: "FlashScene"
-//)
-//
-//var meadowModel = EntitySet (
-//    name: "Meadow",
-//    loadSource: .realityComposerPro,
-//    realityComposerName: "Meadow",
-//    realityComposerScene: "Garden"
-//)
-//
-//var waterModel = EntitySet (
-//    name: "WaterPlane",
-//    loadSource: .realityComposerPro,
-//    realityComposerName: "WaterPlane",
-//    realityComposerScene: "Garden"
-//)

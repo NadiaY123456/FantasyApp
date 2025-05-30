@@ -1,7 +1,8 @@
+import AssetLib
 import CoreLib
 import RealityKit
 
-@MainActor func preLoadAssetsDict() async {
+@MainActor func preLoadAssetsDict(teraStore: TeraModelDictionaryActor) async {
     // Update Core Entity Dictionary
     let entityModelDictionary = setupEntitySets()
     CoreLib.addEntityModelToDictionaryToCore(entityModelDictionaryToAdd: entityModelDictionary)
@@ -57,6 +58,24 @@ import RealityKit
             CoreLib.entityModelDictionaryCore[key] = entitySet
         }
     }
+
+    // ───────────────────────────
+    //  Terrain (AssetLib) preload
+    // ───────────────────────────
+
+    // Update Core Tera Dictionary
+    let teraModelDictionary = setupTeraSets()
+    await teraStore.merge(teraModelDictionary)
+
+    for key in await teraStore.allWorlds() {
+        guard var teraSet = await teraStore.get(world: key) else { continue }
+        teraSet.positionEntity()
+
+        if let mgr = await teraStore.assetManager(for: teraSet.worldName) {
+            let tileCnt = mgr.fileIndex.count
+            AppLogger.shared.info("✅  Terrain “\(key)” pre-loaded (\(tileCnt) tiles)")
+        }
+    }
 }
 
 // Pre-Load entity (possibly without animations)
@@ -95,7 +114,7 @@ extension EntitySet {
 
                 // Grab the first one as model entity if list is not empty
                 if let firstEntity = entityChildrenWithModelComponent.first {
-                    self.modelEntity = firstEntity
+                    modelEntity = firstEntity
                     AppLogger.shared.info("ModelEntity set for \(name) using first available entity \(entityNames[0]).")
                 } else {
                     // Otherwise, log an error

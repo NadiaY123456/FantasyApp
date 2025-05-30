@@ -1,0 +1,1 @@
+{"firstWorld": {"dimensions": {"x": 1, "y": 1}, "preLoad:": true, "resolution": "2048x2048", "tiles": {"0,0": {"color_map": "ColorMaps/firstWorld_Colormap_0_0.ktx2", "height_map": "TerrainHeightMaps/firstWorld_Height Map_2048x2048_0_0.hf16.lzfse", "normal_map": "NormalMaps/firstWorld_Normal Map_0_0.ktx2"}}}}

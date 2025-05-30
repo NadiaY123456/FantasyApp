@@ -1,6 +1,6 @@
 import SwiftUI
 struct Start: View {
-    @ObservedObject var gameModelView = GameModelView.shared
+    @EnvironmentObject var gameModelView: GameModelView
     @State private var isPressed: Bool = false
 
     var body: some View {

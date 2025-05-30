@@ -41,19 +41,24 @@ public struct CameraRotationComponent: Component {
 class CameraRotationSystem: System {
     @MainActor private static let query = EntityQuery(where: .has(CameraRotationComponent.self))
     
+    static weak var gameModelView: GameModelView?
+    
     required init(scene: RealityKit.Scene) {}
     static var dependencies: [SystemDependency] { [] }
 
     public func update(context: SceneUpdateContext) {
+        guard let gameModelView = Self.gameModelView else {
+            AppLogger.shared.error("Error: GameModelView is not set for MoveSystem")
+            return
+        }
         let deltaTime = context.deltaTime
-        let gameModelView = GameModelView.shared
         let currentTime = CACurrentMediaTime()
         
         processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime, deltaTime: deltaTime)
         processPinch(in: context, gameModelView: gameModelView, deltaTime: deltaTime)
         
         // Update pivot transform each frame so camera follows the character even without gestures
-        GameModelView.shared.camera.updateCameraTransform(deltaTime: deltaTime)
+        gameModelView.camera.updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView)
     }
     
     // MARK: - Drag Processing
@@ -74,7 +79,7 @@ class CameraRotationSystem: System {
                 gestureState.lastDragUpdateTime = currentTime
                 entity.components.set(gestureState)
                 
-                gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime)
+                gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime, gameModelView: gameModelView)
             }
         } else {
             // Lock in final values when not dragging.
@@ -251,7 +256,7 @@ class CameraRotationSystem: System {
                         gameModelView.camera.targetCameraDistance = clampedDistance
                         gameModelView.camera.lastPinchDistance = clampedDistance
                         AppLogger.shared.debug("Updating targetCameraDistance from \(previousTarget) to \(clampedDistance)", toPrint)
-                        gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime)
+                        gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime, gameModelView: gameModelView)
                     }
                 }
                 gestureState.lastPinchScale = gameModelView.rawPinchScale
@@ -397,7 +402,7 @@ class CameraState {
     /// - Parameters:
     ///   - content: The RealityViewCameraContent to which the camera will be added.
     ///   - tracked: The entity that the camera will orbit.
-    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, toPrint: Bool = false, deltaTime: TimeInterval) {
+    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, gameModelView: GameModelView, toPrint: Bool = false, deltaTime: TimeInterval) {
         trackedEntity = tracked
 
         // Create a pivot entity at the tracked character’s position.
@@ -418,14 +423,18 @@ class CameraState {
         cameraEntity = camera
 
         // Immediately update the camera transform.
-        updateCameraTransform(deltaTime: deltaTime, toPrint: toPrint)
+        updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView, toPrint: toPrint)
         
         AppLogger.shared.debug("Camera world Position: \(camera.transform.translation + pivot.transform.translation), and cameraPivot: \(pivot.transform.translation)", toPrint)
     }
     
     // MARK: - Camera Transform Update
 
-    func updateCameraTransform(deltaTime dt: TimeInterval, toPrint: Bool = false) {
+    func updateCameraTransform(
+        deltaTime dt: TimeInterval,
+        gameModelView: GameModelView,
+        toPrint: Bool = false
+    ) {
         guard let pivot = cameraPivot, let camera = cameraEntity else { return }
         
         // Reset any undesired rotations on the pivot.
@@ -480,7 +489,7 @@ class CameraState {
         camera.transform.rotation = simd_quatf(rotationMatrix)
         
         // Optionally update skydome rotation.
-        if GameModelView.shared.isDragging || GameModelView.shared.isPinching {
+        if gameModelView.isDragging || gameModelView.isPinching { //ERROR: Cannot find 'gameModelView' in scope
             if let skydome = skydomeEntity {
                 let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
                 skydome.transform.rotation = yawRotation * skydomeBaseRotation
@@ -498,7 +507,7 @@ class CameraState {
     /// Smoothly interpolates cameraAngle, cameraPitch, and cameraDistance toward their targets.
     ///
     /// - Parameter toPrint: Pass `true` to print debug statements; defaults to `false`.
-    func startSmoothCameraAnimation(deltaTime: TimeInterval, toPrint: Bool = false) {
+    func startSmoothCameraAnimation(deltaTime: TimeInterval, gameModelView: GameModelView, toPrint: Bool = false) {
         guard !isAnimatingCamera else {
             AppLogger.shared.debug("Animation already in progress. Skipping new call.", toPrint)
             return
@@ -540,7 +549,7 @@ class CameraState {
                 let zoomDelta = distanceDiff * Float(easedTZoom * stabilizationFactorZoom)
                 cameraDistance += zoomDelta
                 
-                updateCameraTransform(deltaTime: deltaTime)
+                updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView)
                 
                 // Break if differences are negligible.
                 if abs(angleDifference) < settings.animationStopThreshold,

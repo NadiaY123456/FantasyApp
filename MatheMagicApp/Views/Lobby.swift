@@ -4,7 +4,7 @@ struct Lobby: View {
     //@Binding var currentScreen: AppScreen // Binding to manage navigation
     //@Published var currentState: GameScreenState
     @State var playAnimation: Bool = false
-    @ObservedObject var gameModelView = GameModelView.shared
+    @EnvironmentObject var gameModelView: GameModelView
 
     var body: some View {
         ZStack {

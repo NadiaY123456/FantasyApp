@@ -1,8 +1,10 @@
 import RealityKit
 import SwiftUI
+import CoreLib
 
 /// A component to track tap state for an entity.
 public struct TapComponent: Component, Codable {
+    
     /// Indicates that this entity was tapped since last frame.
     public var didTap: Bool = false
     
@@ -11,6 +13,7 @@ public struct TapComponent: Component, Codable {
 
 /// A system that processes `TapComponent`.
 public class TapSystem: RealityKit.System {
+    static weak var gameModelView: GameModelView?
     /// We look for any entities that have a `TapComponent`.
     private static let query = EntityQuery(where: .has(TapComponent.self))
     // var gameModelView: GameModelView?
@@ -21,6 +24,11 @@ public class TapSystem: RealityKit.System {
     public static var dependencies: [SystemDependency] { [] }
     
     public func update(context: SceneUpdateContext) {
+        guard let gameModelView = Self.gameModelView else {
+            AppLogger.shared.error("Error: GameModelView is not set for TapSystem")
+            return
+        }
+        
         // 1) Find all entities that have a TapComponent.
         let entities = context.entities(matching: Self.query,
                                         updatingSystemWhen: .rendering)
@@ -39,13 +47,13 @@ public class TapSystem: RealityKit.System {
                 print("Entity tapped: \(entity.name)")
                 
                 Task { @MainActor in
-                    GameModelView.shared.showQuestion = true
+                    gameModelView.showQuestion = true //ERROR: Cannot find 'gameModelView' in scope
                 }
                 
                 tapComponent.didTap = false
                 entity.components.set(tapComponent)
                 
-                //print("Show question: \(GameModelView.shared.showQuestion)")
+                //print("Show question: \(gameModelView.showQuestion)")
             }
         }
     }
