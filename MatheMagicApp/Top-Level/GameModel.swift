@@ -11,7 +11,7 @@ actor GameModel {
     //  Dependencies
     // ──────────────────────────────
     unowned let gameModelView: GameModelView
-    let teraStore: TeraModelDictionaryActor // <-- new stored property
+    let teraStore: TeraModelDictionaryActor
 //    let playData = PlayData()
     let appStateMachine: GKStateMachine
 

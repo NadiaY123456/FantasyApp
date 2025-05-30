@@ -17,8 +17,6 @@ import RealityKit
             entitySet.positionEntity() // position entity
 
             if entitySet.isAnimated {
-//                await entitySet.loadRootAnimationAssets() // load associated root animations
-
                 let dataManager = DataManager() // Create a DataManager instance for this entity
 
                 // Load all data types from the single .lzfse file using jsonPaths
@@ -62,20 +60,61 @@ import RealityKit
     // ───────────────────────────
     //  Terrain (AssetLib) preload
     // ───────────────────────────
-
+    
     // Update Core Tera Dictionary
     let teraModelDictionary = setupTeraSets()
     await teraStore.merge(teraModelDictionary)
 
-    for key in await teraStore.allWorlds() {
-        guard var teraSet = await teraStore.get(world: key) else { continue }
-        teraSet.positionEntity()
+    let worlds = await teraStore.allWorlds()
 
-        if let mgr = await teraStore.assetManager(for: teraSet.worldName) {
-            let tileCnt = mgr.fileIndex.count
-            AppLogger.shared.info("✅  Terrain “\(key)” pre-loaded (\(tileCnt) tiles)")
+        for world in worlds {
+
+            // 1) pull the descriptor we created in setupTeraSets()
+            guard var tera = await teraStore.get(world: world) else {
+                AppLogger.shared.error("Error: failed to retrieve TeraSet for world \(world)")
+                continue
+            }
+            
+            if let mgr = await teraStore.assetManager(for: tera.worldName) {
+                let tileCnt = mgr.fileIndex.count
+                AppLogger.shared.info("✅  Terrain “\(world)” pre-loaded (\(tileCnt) tiles)")
+            }
+
+            // 2) make sure the set already owns a container Entity
+            if tera.entity == nil {
+                tera.entity = Entity()
+                tera.entity!.name = tera.worldName
+            }
+
+            // 3) material + geometry (usually the one tile you used before)
+            let tileKey = TileKey(worldName: world, x: 0, y: 0)          // TODO: <-- adapt if you have more tiles
+            await TerrainMeshBuilder.addTerrain(
+                worldName: world,
+                tileKey:   tileKey,
+                teraStore: teraStore,
+                parent:    tera.entity!
+            )
+
+            // 4) respect the author-defined placement
+            tera.positionEntity()
+
+            // 5) push the mutated set back so everybody can pick it up later
+            await teraStore.put(tera, for: world)
         }
-    }
+    
+//    // Update Core Tera Dictionary
+//    let teraModelDictionary = setupTeraSets()
+//    await teraStore.merge(teraModelDictionary)
+//
+//    for key in await teraStore.allWorlds() {
+//        guard var teraSet = await teraStore.get(world: key) else { continue }
+//        teraSet.positionEntity()
+//
+//        if let mgr = await teraStore.assetManager(for: teraSet.worldName) {
+//            let tileCnt = mgr.fileIndex.count
+//            AppLogger.shared.info("✅  Terrain “\(key)” pre-loaded (\(tileCnt) tiles)")
+//        }
+//    }
 }
 
 // Pre-Load entity (possibly without animations)
@@ -127,25 +166,3 @@ extension EntitySet {
         }
     }
 }
-
-// to pre-load root animations. Runs in gameModel init()
-// extension EntitySet {
-//    mutating func loadRootAnimationAssets() async { // TODO: append animations from all sources together
-//        guard isAnimated else { return }
-//
-//        if realityComposerAnimationResourceName != "" {
-//            if realityComposerName != realityComposerAnimationResourceName {
-//                guard let animationAsset = await LoadUtilities.loadFromRealityComposerPro(
-//                    named: realityComposerAnimationResourceName,
-//                    fromSceneNamed: realityComposerScene
-//                ) else {
-//                    fatalError("Unable to load \(name) from Reality Composer Pro project.")
-//                }
-//                animationSet = await animationAsset.availableAnimations
-//            } else {
-//                animationSet = await self.entity.availableAnimations
-//            }
-//            AppLogger.shared.info("Loaded \(name) animations from Reality Composer Pro project.")
-//        }
-//    }
-// }

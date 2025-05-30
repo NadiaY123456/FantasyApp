@@ -49,7 +49,7 @@ class GameModelView: ObservableObject, JoystickDataProvider {
 
     init(teraStore: TeraModelDictionaryActor) {
         self.teraStore = teraStore
-        Task { await self.gameModel.initialize() }
+        Task { await gameModel.initialize() }
         startTimer()
     }
 

@@ -74,15 +74,9 @@ struct Selection: View {
                     AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
 
                     // MARK: - Build terrain
-                    Task.detached(priority: .userInitiated) {
-                        let world = "firstWorld"
-                        let tile = TileKey(worldName: world, x: 0, y: 0)
-                        await TerrainMeshBuilder.addTerrain(
-                            worldName: world,
-                            tileKey: tile,
-                            teraStore: teraStore,
-                            parent: spaceOrigin
-                        )
+
+                    if let terrainRoot = await teraStore.get(world: "firstWorld")?.entity {
+                        spaceOrigin.addChild(terrainRoot.clone(recursive: true)) // clone if multiple views share it
                     }
                 }
                 .id("SingleRealityView")
