@@ -11,7 +11,7 @@ struct ContentView: View {
     @EnvironmentObject private var gameModelView: GameModelView
     var body: some View {
         VStack {
-            AppState(gameModelView: gameModelView) //ERROR: Cannot find 'gameModelView' in scope
+            AppState(gameModelView: gameModelView)
         }
         .padding()
     }

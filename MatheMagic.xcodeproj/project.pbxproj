@@ -205,7 +205,6 @@
 		41E39C672D5BE1C6007C29C6 /* Game Engine */ = {
 			isa = PBXGroup;
 			children = (
-				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
 				41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */,
 				41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */,
 				41E39C662D5BE1C6007C29C6 /* PlayData.swift */,
@@ -252,6 +251,7 @@
 				41E39C752D5BE1C6007C29C6 /* Play.swift */,
 				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
 				41E39C772D5BE1C6007C29C6 /* Start.swift */,
+				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
