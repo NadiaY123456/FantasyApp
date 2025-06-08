@@ -30,38 +30,38 @@ struct Selection: View {
                 RealityView { content in
                     // Initial setup
                     content.add(spaceOrigin)
-
+                    
                     // Add directional light
                     sceneManager.addDirectionalLight(to: spaceOrigin)
-
+                    
                     // Add point light
                     // sceneManager.addPointLight(to: spaceOrigin)
-
+                    
                     // Image-based lighting (IBL)
                     guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
                     spaceOrigin.components.set(iblComponent) // space origin emits light
-
+                    
                     // position the camera immeditely on load to avoid a blink
                     gameModelView.camera.updateCameraTransform(deltaTime: 0.0, gameModelView: gameModelView)
-
+                    
                     // Skybox
                     gameModelView.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
-
-//                     // This function loads proper skybox (i.e. .exr) and uses it as IBL light source
-//                     do {
-//                         let skyboxResource = try await EnvironmentResource(named: "kloofendal_48d_partly_cloudy_puresky")
-//                         content.environment = RealityViewEnvironment.skybox(skyboxResource)
-//                     } catch {
-//                         AppLogger.shared.error("Error loading fantasycastle skybox: \(error)")
-//                     }
-
-//                    // add environment
-//                    if let planeModel = entityModelDictionaryCore["plane"] {
-//                        spaceOrigin.addChild(planeModel.entity)
-//                        // print plane position
-//                        AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
-//                    }
-
+                    
+                    //                     // This function loads proper skybox (i.e. .exr) and uses it as IBL light source
+                    //                     do {
+                    //                         let skyboxResource = try await EnvironmentResource(named: "kloofendal_48d_partly_cloudy_puresky")
+                    //                         content.environment = RealityViewEnvironment.skybox(skyboxResource)
+                    //                     } catch {
+                    //                         AppLogger.shared.error("Error loading fantasycastle skybox: \(error)")
+                    //                     }
+                    
+                    //                    // add environment
+                    //                    if let planeModel = entityModelDictionaryCore["plane"] {
+                    //                        spaceOrigin.addChild(planeModel.entity)
+                    //                        // print plane position
+                    //                        AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
+                    //                    }
+                    
                     // Add the character and create the camera pivot around it.
                     let flashModel = setupCharacterWithComponents(entityDictionaryID: "flash", gameModelView: gameModelView)
                     // Optionally, add lighting to Flash and add to the scene.
@@ -70,14 +70,28 @@ struct Selection: View {
                     gameModelView.camera.trackedEntity = flashModel
                     // Add the camera relative to Flash.
                     gameModelView.camera.addCamera(to: content, relativeTo: flashModel, gameModelView: gameModelView, deltaTime: 0)
-
+                    
                     AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
-
+                    
                     // MARK: - Build terrain
+                    
+                    //                    if let terrainRoot = await teraStore.getTeraSet(world: "firstWorld")?.entity {
+                    //                        spaceOrigin.addChild(terrainRoot.clone(recursive: true)) // clone if multiple views share it
+                    //                    }
+                    
+                    // MARK: - Build terrain via component (diagnostics + asset-manager fetch)
 
-                    if let terrainRoot = await teraStore.get(world: "firstWorld")?.entity {
-                        spaceOrigin.addChild(terrainRoot.clone(recursive: true)) // clone if multiple views share it
-                    }
+                    // 0️⃣ pull the AssetManager straight from the store
+                
+
+                    // 1️⃣ create placeholder + component
+                    let terrainEntity = Entity()
+                    terrainEntity.name = "TerrainRoot"
+                    terrainEntity.components.set(TeraComponent())
+
+                    // 2️⃣ add to the scene
+                    spaceOrigin.addChild(terrainEntity)
+                    AppLogger.shared.debug("✅  Terrain added to scene.")
                 }
                 .id("SingleRealityView")
                 .frame(width: geometry.size.width, height: geometry.size.height)

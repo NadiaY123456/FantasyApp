@@ -80,37 +80,13 @@ import Metal
 
         for world in worlds {
 
-            // 1) pull the descriptor we created in setupTeraSets()
-            guard var tera = await teraStore.get(world: world) else {
-                AppLogger.shared.error("Error: failed to retrieve TeraSet for world \(world)")
-                continue
-            }
+            let terrainIsLoaded = await TerrainLoader.prepareTerrain(worldName: world, teraStore: teraStore)
             
-            if let mgr = await teraStore.assetManager(for: tera.worldName) {
-                let tileCnt = mgr.fileIndex.count
-                AppLogger.shared.info("✅  Terrain “\(world)” pre-loaded (\(tileCnt) tiles)")
+            if terrainIsLoaded {
+                AppLogger.shared.info("🏔️ Terrain for world “\(world)” pre-loaded successfully.")
+            } else {
+                AppLogger.shared.error("🏔️ Failed to pre-load terrain for world “\(world)”")
             }
-
-            // 2) make sure the set already owns a container Entity
-            if tera.entity == nil {
-                tera.entity = Entity()
-                tera.entity!.name = tera.worldName
-            }
-
-            // 3) material + geometry (usually the one tile you used before)
-            let tileKey = TileKey(worldName: world, x: 0, y: 0)          // TODO: <-- adapt if you have more tiles
-            await TerrainMeshBuilder.addTerrain(
-                worldName: world,
-                tileKey:   tileKey,
-                teraStore: teraStore,
-                parent:    tera.entity!
-            )
-
-            // 4) respect the author-defined placement
-            tera.positionEntity()
-
-            // 5) push the mutated set back so everybody can pick it up later
-            await teraStore.put(tera, for: world)
         }
     
 

@@ -26,7 +26,7 @@
         "normal": "Materials/Stylized_Grass_001/Stylized_Grass_001_normal.ktx",
         "roughness": "Materials/Stylized_Grass_001/Stylized_Grass_001_roughness.ktx",
         "uv": {
-          "scale": {
+          "meters": {
             "u": 2.0,
             "v": 2.0
           },
@@ -35,11 +35,11 @@
             "v": 0.0
           },
           "rotationDegrees": 0.0,
-          "minScalePerMeter": {
-            "u": 0.1,
-            "v": 0.1
+          "minMeters": {
+            "u": 1,
+            "v": 1
           },
-          "maxScalePerMeter": {
+          "maxMeters": {
             "u": 10.0,
             "v": 10.0
           }
@@ -66,7 +66,7 @@
         "normal": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_normal.ktx",
         "roughness": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_roughness.ktx",
         "uv": {
-          "scale": {
+          "meters": {
             "u": 2.0,
             "v": 2.0
           },
@@ -75,11 +75,11 @@
             "v": 0.0
           },
           "rotationDegrees": 0.0,
-          "minScalePerMeter": {
-            "u": 0.1,
-            "v": 0.1
+          "minMeters": {
+            "u": 1,
+            "v": 1
           },
-          "maxScalePerMeter": {
+          "maxMeters": {
             "u": 10.0,
             "v": 10.0
           }

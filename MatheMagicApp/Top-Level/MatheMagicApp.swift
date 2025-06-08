@@ -49,6 +49,12 @@ struct FantasyAppGithubApp: App {
         AnimationSystem.registerSystem()
         TravelSystem.registerSystem()
 
+        // AssetLib
+        //  Inject the store into the system
+        TeraSystem.configure(with: teraStore)
+        //  Register the system
+        TeraSystem.registerSystem()
+
         // 4️⃣  Hook AppLogger to the *same* view-model
         AppLogger.shared.clockTimeProvider = { [weak gmv] in
             gmv?.clockTime ?? 0
