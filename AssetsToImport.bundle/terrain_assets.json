@@ -1,0 +1,103 @@
+{
+  "firstWorld": {
+    "dimensions": {
+      "x": 1,
+      "y": 1
+    },
+    "heightRange": {
+      "min": 9,
+      "max": 288
+    },
+    "preLoad": true,
+    "resolution": "2048x2048",
+    "spacing": 1.0,
+    "tiles": {
+      "0,0": {
+        "height_map": "firstWorld/HeightMaps/firstWorld_Height Map-Range_9_288-Space_1_0-2048x2048_0_0.hf16.lzfse",
+        "splat_map1": "firstWorld/SplatMaps/firstWorld_Splat Map-Material_snowTop_Rock_Dirt_Grass-0_0.ktx"
+      }
+    },
+    "materials": {
+      "splat1_R": {
+        "material_name": "Stylized_Grass_001",
+        "occlusion": "Materials/Stylized_Grass_001/Stylized_Grass_001_occlusion.ktx",
+        "basecolor": "Materials/Stylized_Grass_001/Stylized_Grass_001_basecolor.ktx",
+        "metallic": "Materials/Stylized_Grass_001/Stylized_Grass_001_metallic.ktx",
+        "normal": "Materials/Stylized_Grass_001/Stylized_Grass_001_normal.ktx",
+        "roughness": "Materials/Stylized_Grass_001/Stylized_Grass_001_roughness.ktx",
+        "uv": {
+          "meters": {
+            "u": 2.0,
+            "v": 2.0
+          },
+          "offset": {
+            "u": 0.0,
+            "v": 0.0
+          },
+          "rotationDegrees": 0.0,
+          "minMeters": {
+            "u": 1,
+            "v": 1
+          },
+          "maxMeters": {
+            "u": 10.0,
+            "v": 10.0
+          }
+        },
+        "sampler": {
+          "addressMode": {
+            "u": "repeat",
+            "v": "repeat",
+            "w": "repeat"
+          },
+          "filter": {
+            "minFilter": "linear",
+            "magFilter": "linear",
+            "mipFilter": "linear"
+          },
+          "maxAnisotropy": 8
+        }
+      },
+      "splat1_B": {
+        "material_name": "Rock_001_Cliff_Wall",
+        "occlusion": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_occlusion.ktx",
+        "basecolor": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_basecolor.ktx",
+        "metallic": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_metallic.ktx",
+        "normal": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_normal.ktx",
+        "roughness": "Materials/Rock_001_Cliff_Wall/Rock_001_Cliff_Wall_roughness.ktx",
+        "uv": {
+          "meters": {
+            "u": 2.0,
+            "v": 2.0
+          },
+          "offset": {
+            "u": 0.0,
+            "v": 0.0
+          },
+          "rotationDegrees": 0.0,
+          "minMeters": {
+            "u": 1,
+            "v": 1
+          },
+          "maxMeters": {
+            "u": 10.0,
+            "v": 10.0
+          }
+        },
+        "sampler": {
+          "addressMode": {
+            "u": "repeat",
+            "v": "repeat",
+            "w": "repeat"
+          },
+          "filter": {
+            "minFilter": "linear",
+            "magFilter": "linear",
+            "mipFilter": "linear"
+          },
+          "maxAnisotropy": 8
+        }
+      }
+    }
+  }
+}

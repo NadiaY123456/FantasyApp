@@ -43,10 +43,10 @@
 //                    guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
 //                    spaceOrigin.components.set(iblComponent) // space origin emits light
 //
-//                    GameModelView.shared.camera.updateCameraTransform()
+//                    gameModelView.camera.updateCameraTransform()
 //
 //                    // Skybox
-//                    GameModelView.shared.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
+//                    gameModelView.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
 //
 ////                     // This function loads proper skybox (i.e. .exr) and uses it as IBL light source
 ////                     do {
@@ -73,9 +73,9 @@
 //                        spaceOrigin.addChild(flashModel)
 //                    }
 //                    // Set Flash as the tracked entity.
-//                    GameModelView.shared.camera.trackedEntity = flashModel
+//                    gameModelView.camera.trackedEntity = flashModel
 //                    // Add the camera relative to Flash.
-//                    GameModelView.shared.camera.addCamera(to: content, relativeTo: flashModel)
+//                    gameModelView.camera.addCamera(to: content, relativeTo: flashModel)
 //                    // Optionally, add lighting to Flash.
 //                    sceneManager.addContentWithLight(entity: flashModel, iblComponent: iblComponent)
 //
@@ -91,27 +91,27 @@
 //                .gesture(
 //                    DragGesture()
 //                        .onChanged { value in
-//                            GameModelView.shared.rawDragTranslation = value.translation
-//                            GameModelView.shared.isDragging = true
+//                            gameModelView.rawDragTranslation = value.translation
+//                            gameModelView.isDragging = true
 //                        }
 //                        .onEnded { _ in
-//                            GameModelView.shared.isDragging = false
-//                            GameModelView.shared.rawDragTranslation = .zero
+//                            gameModelView.isDragging = false
+//                            gameModelView.rawDragTranslation = .zero
 //                        }
 //                )
 //                .simultaneousGesture(
 //                    MagnificationGesture()
 //                        .onChanged { scale in
-//                            if !GameModelView.shared.isPinching {
+//                            if !gameModelView.isPinching {
 //                                // Capture the baseline when pinch begins.
-//                                GameModelView.shared.initialPinchScale = scale
+//                                gameModelView.initialPinchScale = scale
 //                            }
-//                            GameModelView.shared.isPinching = true
-//                            GameModelView.shared.rawPinchScale = scale
+//                            gameModelView.isPinching = true
+//                            gameModelView.rawPinchScale = scale
 //                        }
 //                        .onEnded { _ in
-//                            GameModelView.shared.isPinching = false
-//                            GameModelView.shared.rawPinchScale = 1.0
+//                            gameModelView.isPinching = false
+//                            gameModelView.rawPinchScale = 1.0
 //                        }
 //                )
 //

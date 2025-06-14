@@ -1,19 +1,23 @@
+import AnimLib
 import CoreLib
 import RealityKit
-import AnimLib
+
 //
 //  setupCharacterWithComponents.swift
 //  MatheMagic
 //
 //
 
-@MainActor func setupCharacterWithComponents(entityDictionaryID: String) -> Entity {
+@MainActor func setupCharacterWithComponents(
+    entityDictionaryID: String,
+    gameModelView: GameModelView
+) -> Entity {
     var entity = Entity()
     if let template = entityModelDictionaryCore[entityDictionaryID] {
         entity = template.entity
 
         // Event Component
-        entity.components[EventComponent.self] = EventComponent(dataProvider: GameModelView.shared)
+        entity.components[EventComponent.self] = EventComponent(dataProvider: gameModelView) // ERROR: Cannot find 'gameModelView' in scope
 
         // Data Center Component
         if let dataManager = template.dataManager {
@@ -26,12 +30,11 @@ import AnimLib
         // Travel Component
         entity.components[TravelComponent.self] = TravelComponent()
 
-        // Custom Animation Component
-        entity.components[CustomAnimationComponent.self] = CustomAnimationComponent()
-
         // Animation Component
         entity.components.set(AnimationComponent())
 
     } else { AppLogger.shared.error("Error: did not find \(entityDictionaryID) key in entityTemplateDictionary") }
     return entity
 }
+
+// add setup TerrainWithComponents

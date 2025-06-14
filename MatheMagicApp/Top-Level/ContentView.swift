@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var gameModelView: GameModelView
     var body: some View {
         VStack {
-            AppState()
+            AppState(gameModelView: gameModelView)
         }
         .padding()
     }

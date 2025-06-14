@@ -1,14 +1,15 @@
+import AnimLib
+import AssetLib
 import Combine
 import Foundation
+import joystickController
 import RealityKit
 import SwiftUI
-import AnimLib
-import joystickController
-
 
 class GameModelView: ObservableObject, JoystickDataProvider {
-    static let shared = GameModelView()
-    let gameModel: GameModel
+    lazy var gameModel: GameModel = .init(gameModelView: self, teraStore: teraStore)
+
+    let teraStore: TeraModelDictionaryActor
 
     @Published var isPaused: Bool = false {
         didSet {
@@ -18,15 +19,16 @@ class GameModelView: ObservableObject, JoystickDataProvider {
 
     @Published var isFinished: Bool = false
     @Published var currentState: GameScreenState = .start
-    
+
     @Published var assetsLoaded: Bool = false // property to track asset loading
     @Published var score: Int = 0
     @Published var clockTime: Double = 0
 
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
-    
+
     // MARK: Joystick data
+
     @Published var joystickMagnitude: CGFloat = 0
     @Published var joystickAngle: Angle = .degrees(0)
     @Published var joystickIsTouching = false
@@ -45,11 +47,9 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     private var timer: Timer?
     private var startDate: Date?
 
-    private init() {
-        self.gameModel = GameModel()
-        Task {
-            await self.gameModel.initialize()
-        }
+    init(teraStore: TeraModelDictionaryActor) {
+        self.teraStore = teraStore
+        Task { await gameModel.initialize() }
         startTimer()
     }
 

@@ -1,4 +1,7 @@
+// MatheMagicApp.swift
+
 import AnimLib
+import AssetLib
 import CoreLib
 import RealityKit
 import SwiftUI
@@ -7,60 +10,68 @@ import SwiftUI
 struct FantasyAppGithubApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    @StateObject private var gameModelView = GameModelView.shared
-    var playData = PlayData()
-//    var settings = Settings()
+    // ─────────────  SINGLETONS FOR THE WHOLE APP  ─────────────
+    private let teraStore: TeraModelDictionaryActor
+    @StateObject private var gameModelView: GameModelView
+//    var playData = PlayData()
 
+    // ───────────────────────── init ───────────────────────────
     init() {
+        // 1️⃣  Build the *one* store and view-model
+        let store = TeraModelDictionaryActor()
+        let gmv = GameModelView(teraStore: store)
 
-        // MARK: COMPONENTS
+        // 2️⃣  Assign them to the stored properties
+        self.teraStore = store
+        _gameModelView = StateObject(wrappedValue: gmv)
 
+        // 3️⃣  Register components & systems  (unchanged)
         MoveComponent.registerComponent()
         TapComponent.registerComponent()
         CameraRotationComponent.registerComponent()
 
-        // MARK: SYSTEMS
-
         MoveSystem.registerSystem()
         TapSystem.registerSystem()
         CameraRotationSystem.registerSystem()
-        
-        //MARK: CoreLIB
-        
-        // Component-System
+
+        // CoreLib
         DataCenterComponent.registerComponent()
         DataCenterSystem.registerSystem()
-        
-        // AppLogger's elapsedTimeProvider:
-        AppLogger.shared.clockTimeProvider = {
-            GameModelView.shared.clockTime
-        }
-        
-        //MARK: AnimLib
-        
-        // components
+
+        // AnimLib
         EventComponent.registerComponent()
         BrainComponent.registerComponent()
-        CustomAnimationComponent.registerComponent()
         AnimationComponent.registerComponent()
         TravelComponent.registerComponent()
-        
-        // systems
+
         EventSystem.registerSystem()
         BrainSystem.registerSystem()
-        CustomAnimationSystem.registerSystem()
         AnimationSystem.registerSystem()
         TravelSystem.registerSystem()
 
+        // AssetLib
+        //  Inject the store into the system
+        TeraSystem.configure(with: teraStore)
+        //  Register the system
+        TeraSystem.registerSystem()
 
-        
+        // 4️⃣  Hook AppLogger to the *same* view-model
+        AppLogger.shared.clockTimeProvider = { [weak gmv] in
+            gmv?.clockTime ?? 0
+        }
+
+        // 🆕 give every system the same reference
+        MoveSystem.gameModelView = gmv
+        TapSystem.gameModelView = gmv
+        CameraRotationSystem.gameModelView = gmv
     }
 
     var body: some SwiftUI.Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(gameModelView)
-                .environmentObject(playData)
+//                .environmentObject(playData)
+                .environment(\.teraStore, teraStore)
 //                .onAppear {
 //                    guard let windowScreen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
 //                        return

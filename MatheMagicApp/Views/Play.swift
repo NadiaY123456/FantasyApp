@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct Play: View {
-    @ObservedObject var gameModelView = GameModelView.shared
+    @EnvironmentObject var gameModelView: GameModelView
 
     var body: some View {
         HStack(alignment: .top) {

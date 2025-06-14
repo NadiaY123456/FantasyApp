@@ -8,7 +8,11 @@ import RealityKit
 import SwiftUI
 
 struct AppState: View {
-    @ObservedObject var gameModelView = GameModelView.shared
+    unowned let gameModelView: GameModelView
+
+        init(gameModelView: GameModelView) {
+            self.gameModelView = gameModelView
+        }
 
     @State private var timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
 

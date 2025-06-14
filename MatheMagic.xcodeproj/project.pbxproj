@@ -20,6 +20,8 @@
 		4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */; };
 		419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */; };
 		419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF82D5C2767001CF47A /* LocalUtilities.swift */; };
+		41AFD2102DE3711B00E1FE37 /* AssetLib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AFD20F2DE3711B00E1FE37 /* AssetLib */; };
+		41AFD2122DE39F5500E1FE37 /* AssetsToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41AFD2112DE39F5500E1FE37 /* AssetsToImport.bundle */; };
 		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
@@ -28,7 +30,6 @@
 		41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */; };
 		41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */; };
 		41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */; };
-		41E39C842D5BE1C6007C29C6 /* EntitySet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */; };
 		41E39C852D5BE1C6007C29C6 /* SkyboxUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C612D5BE1C6007C29C6 /* SkyboxUtilities.swift */; };
 		41E39C862D5BE1C6007C29C6 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */; };
 		41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */; };
@@ -69,6 +70,7 @@
 		4138F1512D5DB18E00EE27CF /* CameraRotationComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationComponent.swift; sourceTree = "<group>"; };
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
 		419EDCF82D5C2767001CF47A /* LocalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUtilities.swift; sourceTree = "<group>"; };
+		41AFD2112DE39F5500E1FE37 /* AssetsToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AssetsToImport.bundle; sourceTree = "<group>"; };
 		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
@@ -76,7 +78,6 @@
 		41E39C5B2D5BE1C6007C29C6 /* RealityViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityViewExtensions.swift; sourceTree = "<group>"; };
 		41E39C5C2D5BE1C6007C29C6 /* TapComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapComponent.swift; sourceTree = "<group>"; };
 		41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityEntries.swift; sourceTree = "<group>"; };
-		41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntitySet.swift; sourceTree = "<group>"; };
 		41E39C612D5BE1C6007C29C6 /* SkyboxUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkyboxUtilities.swift; sourceTree = "<group>"; };
 		41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
 		41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMachineStates.swift; sourceTree = "<group>"; };
@@ -106,6 +107,7 @@
 		41E3DF2F2D9C1EC900381500 /* IdleToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleToWalk.swift; sourceTree = "<group>"; };
 		41E3DF322D9C1EC900381500 /* WalkToWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkToWalk.swift; sourceTree = "<group>"; };
 		41E3EBA92D5C18B5004752C9 /* CoreLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CoreLib; path = ../../NexTaleLibraries/CoreLibrary/CoreLib; sourceTree = SOURCE_ROOT; };
+		41EFD3DE2DD42DD7007A1579 /* AssetLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AssetLib; path = ../../NexTaleLibraries/AssetLib/AssetLib; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 				412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */,
 				4135079E2D6026440048FE53 /* AnimLib in Frameworks */,
 				41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */,
+				41AFD2102DE3711B00E1FE37 /* AssetLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,6 +131,7 @@
 		05E9E6F12D1CF5A80008014C = {
 			isa = PBXGroup;
 			children = (
+				41AFD2112DE39F5500E1FE37 /* AssetsToImport.bundle */,
 				41E39C7B2D5BE1C6007C29C6 /* MatheMagicApp */,
 				41E39CA32D5BE28B007C29C6 /* Packages */,
 				41E39C9C2D5BE1CE007C29C6 /* Resources */,
@@ -186,7 +190,6 @@
 			isa = PBXGroup;
 			children = (
 				41E39C5E2D5BE1C6007C29C6 /* EntityEntries.swift */,
-				41E39C5F2D5BE1C6007C29C6 /* EntitySet.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -202,7 +205,6 @@
 		41E39C672D5BE1C6007C29C6 /* Game Engine */ = {
 			isa = PBXGroup;
 			children = (
-				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
 				41E39C642D5BE1C6007C29C6 /* GameMachineStates.swift */,
 				41E39C652D5BE1C6007C29C6 /* GlobalEntities.swift */,
 				41E39C662D5BE1C6007C29C6 /* PlayData.swift */,
@@ -234,6 +236,7 @@
 				41E39C6D2D5BE1C6007C29C6 /* ContentView.swift */,
 				41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */,
 				41E39C702D5BE1C6007C29C6 /* GameModelView.swift */,
+				4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */,
 			);
 			path = "Top-Level";
 			sourceTree = "<group>";
@@ -242,13 +245,13 @@
 			isa = PBXGroup;
 			children = (
 				4138F14E2D5D2F5F00EE27CF /* Scene Functions */,
-				4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */,
 				41E39C722D5BE1C6007C29C6 /* BallView.swift */,
 				41E39C732D5BE1C6007C29C6 /* GameOver.swift */,
 				41E39C742D5BE1C6007C29C6 /* Lobby.swift */,
 				41E39C752D5BE1C6007C29C6 /* Play.swift */,
 				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
 				41E39C772D5BE1C6007C29C6 /* Start.swift */,
+				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 		41E39CA32D5BE28B007C29C6 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				41EFD3DE2DD42DD7007A1579 /* AssetLib */,
 				41D144932D6E3B2000BBA700 /* Inertialization */,
 				41D2E5102D667D1A00A8FA8F /* joystickController */,
 				412ADE192D5FAEAF007BDE16 /* AnimLib */,
@@ -332,6 +336,7 @@
 				4135079D2D6026440048FE53 /* AnimLib */,
 				41D2E5122D667DDF00A8FA8F /* joystickController */,
 				412F23652DA0262A00FF05C5 /* Inertialization */,
+				41AFD20F2DE3711B00E1FE37 /* AssetLib */,
 			);
 			productName = FantasyAppGithub;
 			productReference = 05E9E6FA2D1CF5A80008014C /* MatheMagic.app */;
@@ -367,6 +372,7 @@
 				4135079C2D6026440048FE53 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AnimationLibrary/AnimLib" */,
 				41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */,
 				41E3DF402DA024E400381500 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/Inertialization/Inertialization" */,
+				41AFD20E2DE3711B00E1FE37 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AssetLib/AssetLib" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 05E9E6FB2D1CF5A80008014C /* Products */;
@@ -383,6 +389,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41AFD2122DE39F5500E1FE37 /* AssetsToImport.bundle in Resources */,
 				41E39C9D2D5BE1CE007C29C6 /* FantasyCastle.skybox in Resources */,
 				41E39C9E2D5BE1CE007C29C6 /* FantasyTown.jpg in Resources */,
 				41E39C9F2D5BE1CE007C29C6 /* FantasyTown.skybox in Resources */,
@@ -411,7 +418,6 @@
 				41E39C812D5BE1C6007C29C6 /* RealityViewExtensions.swift in Sources */,
 				41E39C822D5BE1C6007C29C6 /* TapComponent.swift in Sources */,
 				41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */,
-				41E39C842D5BE1C6007C29C6 /* EntitySet.swift in Sources */,
 				4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */,
 				419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */,
 				41E39C852D5BE1C6007C29C6 /* SkyboxUtilities.swift in Sources */,
@@ -656,6 +662,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
 		};
+		41AFD20E2DE3711B00E1FE37 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AssetLib/AssetLib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/AssetLib/AssetLib;
+		};
 		41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/joystickController;
@@ -679,6 +689,10 @@
 		4135079D2D6026440048FE53 /* AnimLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;
+		};
+		41AFD20F2DE3711B00E1FE37 /* AssetLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AssetLib;
 		};
 		41D2E5122D667DDF00A8FA8F /* joystickController */ = {
 			isa = XCSwiftPackageProductDependency;

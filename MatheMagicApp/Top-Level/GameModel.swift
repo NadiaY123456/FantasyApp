@@ -1,12 +1,18 @@
+import AssetLib
 import AVKit
 import Combine
+import CoreLib
 import GameplayKit
 import RealityKit
 import SwiftUI
-import CoreLib
 
 actor GameModel {
-    let playData = PlayData()
+    // ──────────────────────────────
+    //  Dependencies
+    // ──────────────────────────────
+    unowned let gameModelView: GameModelView
+    let teraStore: TeraModelDictionaryActor
+//    let playData = PlayData()
     let appStateMachine: GKStateMachine
 
     private var _isPaused = false
@@ -50,12 +56,15 @@ actor GameModel {
         Task { await clear() }
     }
 
-    /// Preload assets when the app launches to avoid pop-in during the game.
-    init() {
+    /// Pre-load assets when the app launches to avoid pop-in during the game.
+    init(gameModelView: GameModelView, teraStore: TeraModelDictionaryActor) {
+        self.teraStore = teraStore
+        self.gameModelView = gameModelView
+
         appStateMachine = GKStateMachine(states: [
-            LoadState(),
+            LoadState(gameModelView: gameModelView, teraStore: teraStore),
             ReadyToStartState(),
-            PlayState(playData: playData),
+            PlayState(),
             PausedState(),
             LobbyState(),
             BallState(),
@@ -80,7 +89,7 @@ actor GameModel {
         if !(appStateMachine.currentState is LoadState) {
             AppLogger.shared.error("Error: Failed to transition to Load State")
         }
-        _gameScreenState = .loading //TODO: should be load once I have load view. Also, realityview supports progressiveview that shows up before content and update. search documentation.
+        _gameScreenState = .loading // TODO: should be load once I have load view. Also, realityview supports progressiveview that shows up before content and update. search documentation.
     }
 
     func readyToStart() {
@@ -98,7 +107,7 @@ actor GameModel {
         }
         _gameScreenState = .play
     }
-    
+
     func lobby() {
         appStateMachine.enter(LobbyState.self)
         if !(appStateMachine.currentState is LobbyState) {
@@ -106,7 +115,7 @@ actor GameModel {
         }
         _gameScreenState = .lobby
     }
-    
+
     func selection() {
         appStateMachine.enter(SelectionState.self)
         if !(appStateMachine.currentState is SelectionState) {
@@ -114,7 +123,7 @@ actor GameModel {
         }
         _gameScreenState = .selection
     }
-    
+
     func ball() {
         appStateMachine.enter(BallState.self)
         if !(appStateMachine.currentState is BallState) {
@@ -123,7 +132,6 @@ actor GameModel {
         _gameScreenState = .ball
     }
 }
-
 
 enum GameScreenState: Sendable {
     case start

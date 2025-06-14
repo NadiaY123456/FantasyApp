@@ -1,7 +1,19 @@
+import AssetLib
 import CoreLib
 import RealityKit
+import Metal
 
-@MainActor func preLoadAssetsDict() async {
+@MainActor func preLoadAssetsDict(teraStore: TeraModelDictionaryActor) async {
+    
+    // --- Check if Metal is available ---
+    if let dev = MTLCreateSystemDefaultDevice() {
+        AppLogger.shared.info("🎛️ 🏔️ Metal device: \(dev.name)")
+    } else {
+        AppLogger.shared.error("❌ Metal is NOT available on this machine")
+    }
+    // ----------------------
+    
+    
     // Update Core Entity Dictionary
     let entityModelDictionary = setupEntitySets()
     CoreLib.addEntityModelToDictionaryToCore(entityModelDictionaryToAdd: entityModelDictionary)
@@ -16,8 +28,6 @@ import RealityKit
             entitySet.positionEntity() // position entity
 
             if entitySet.isAnimated {
-//                await entitySet.loadRootAnimationAssets() // load associated root animations
-
                 let dataManager = DataManager() // Create a DataManager instance for this entity
 
                 // Load all data types from the single .lzfse file using jsonPaths
@@ -57,6 +67,29 @@ import RealityKit
             CoreLib.entityModelDictionaryCore[key] = entitySet
         }
     }
+
+    // ───────────────────────────
+    //  Terrain (AssetLib) preload
+    // ───────────────────────────
+    
+    // Update Core Tera Dictionary
+    let teraModelDictionary = setupTeraSets()
+    await teraStore.merge(teraModelDictionary)
+
+    let worlds = await teraStore.allWorlds()
+
+        for world in worlds {
+
+            let terrainIsLoaded = await TerrainLoader.prepareTerrain(worldName: world, teraStore: teraStore)
+            
+            if terrainIsLoaded {
+                AppLogger.shared.info("🏔️ Terrain for world “\(world)” pre-loaded successfully.")
+            } else {
+                AppLogger.shared.error("🏔️ Failed to pre-load terrain for world “\(world)”")
+            }
+        }
+    
+
 }
 
 // Pre-Load entity (possibly without animations)
@@ -95,7 +128,7 @@ extension EntitySet {
 
                 // Grab the first one as model entity if list is not empty
                 if let firstEntity = entityChildrenWithModelComponent.first {
-                    self.modelEntity = firstEntity
+                    modelEntity = firstEntity
                     AppLogger.shared.info("ModelEntity set for \(name) using first available entity \(entityNames[0]).")
                 } else {
                     // Otherwise, log an error
@@ -108,25 +141,3 @@ extension EntitySet {
         }
     }
 }
-
-// to pre-load root animations. Runs in gameModel init()
-// extension EntitySet {
-//    mutating func loadRootAnimationAssets() async { // TODO: append animations from all sources together
-//        guard isAnimated else { return }
-//
-//        if realityComposerAnimationResourceName != "" {
-//            if realityComposerName != realityComposerAnimationResourceName {
-//                guard let animationAsset = await LoadUtilities.loadFromRealityComposerPro(
-//                    named: realityComposerAnimationResourceName,
-//                    fromSceneNamed: realityComposerScene
-//                ) else {
-//                    fatalError("Unable to load \(name) from Reality Composer Pro project.")
-//                }
-//                animationSet = await animationAsset.availableAnimations
-//            } else {
-//                animationSet = await self.entity.availableAnimations
-//            }
-//            AppLogger.shared.info("Loaded \(name) animations from Reality Composer Pro project.")
-//        }
-//    }
-// }
