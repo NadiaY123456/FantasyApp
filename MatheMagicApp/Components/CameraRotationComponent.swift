@@ -110,13 +110,13 @@ class CameraRotationSystem: System {
         let timeThreshold = gameModelView.camera.settings.horizontalDragTimeThreshold
         
         // If the change is too small or if too much time passed since the last update, reset the baseline.
-        if abs(deltaX) < deadZone || dt > timeThreshold {
+        if Swift.abs(deltaX) < deadZone || dt > timeThreshold {
             gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
             gestureState.dragStartAngle = gameModelView.camera.cameraYaw
             gestureState.dragBaseline = currentTranslation.width
         } else {
             // If the direction of the drag changes (and the movement is significant), reset the baseline.
-            if gestureState.lastDeltaX * deltaX < 0 && abs(deltaX) > deadZone {
+            if gestureState.lastDeltaX * deltaX < 0 && Swift.abs(deltaX) > deadZone {
                 gestureState.dragStartAngle = gameModelView.camera.cameraYaw
                 gestureState.dragBaseline = currentTranslation.width
             }
@@ -144,14 +144,14 @@ class CameraRotationSystem: System {
         let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
 
         // Use a minimal threshold for vertical movement, similar to horizontal.
-        if abs(deltaY) < gameModelView.camera.settings.verticalDragDeadZone || dt > gameModelView.camera.settings.verticalDragTimeThreshold {
+        if Swift.abs(deltaY) < gameModelView.camera.settings.verticalDragDeadZone || dt > gameModelView.camera.settings.verticalDragTimeThreshold {
             // If movement is minimal or there's been a pause, "lock" the pitch.
             gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
             gestureState.dragStartPitch = gameModelView.camera.cameraPitch
             gestureState.verticalDragBaseline = currentTranslation.height
         } else {
             // If the direction of drag changes (and the movement is significant), reset the baseline.
-            if gestureState.lastDeltaY * deltaY < 0 && abs(deltaY) > gameModelView.camera.settings.verticalDirectionChangeThreshold {
+            if gestureState.lastDeltaY * deltaY < 0 && Swift.abs(deltaY) > gameModelView.camera.settings.verticalDirectionChangeThreshold {
                 gestureState.dragStartPitch = gameModelView.camera.cameraPitch
                 gestureState.verticalDragBaseline = currentTranslation.height
             }
@@ -224,9 +224,9 @@ class CameraRotationSystem: System {
                 AppLogger.shared.debug("Pinching: rawPinchScale = \(gameModelView.rawPinchScale), lastPinchScale = \(gestureState.lastPinchScale), scaleChange = \(scaleChange)", toPrint)
                 
                 // Only update if the change in scale exceeds our threshold.
-                if abs(scaleChange) >= pinchThreshold {
+                if Swift.abs(scaleChange) >= pinchThreshold {
                     let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
-                    let scaleDifference = abs(effectiveScale - gestureState.lastCommittedEffectiveScale)
+                    let scaleDifference = Swift.abs(effectiveScale - gestureState.lastCommittedEffectiveScale)
                     if scaleDifference >= pinchThreshold {
                         gestureState.lastCommittedEffectiveScale = effectiveScale
                     }
@@ -252,7 +252,7 @@ class CameraRotationSystem: System {
                     let previousTarget = gameModelView.camera.targetCameraDistance
                     AppLogger.shared.debug("Previous targetCameraDistance = \(previousTarget)", toPrint)
                     
-                    if abs(clampedDistance - previousTarget) >= zoomChangeThreshold {
+                    if Swift.abs(clampedDistance - previousTarget) >= zoomChangeThreshold {
                         gameModelView.camera.targetCameraDistance = clampedDistance
                         gameModelView.camera.lastPinchDistance = clampedDistance
                         AppLogger.shared.debug("Updating targetCameraDistance from \(previousTarget) to \(clampedDistance)", toPrint)
@@ -465,7 +465,7 @@ class CameraState {
         // Use lastPinchDistance as the "original" desired distance from the pivot.
         var desiredDistance = lastPinchDistance
         let tentativeY = pivotWorldPosition.y + desiredDistance * sin(pitch)
-        if tentativeY < settings.minCameraHeight, abs(sin(pitch)) > 0.0001 {
+        if tentativeY < settings.minCameraHeight, Swift.abs(sin(pitch)) > 0.0001 {
             desiredDistance = (settings.minCameraHeight - pivotWorldPosition.y) / sin(pitch)
         } else {
             desiredDistance = lastPinchDistance
@@ -527,7 +527,7 @@ class CameraState {
                 let limitedDelta = max(-maxDelta, min(angleDifference, maxDelta))
                 let t = min(1.0, clampedDeltaTime / settings.easingDuration)
                 let easedT = smoothStep(t)
-                let stabilizationFactor = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, abs(angleDifference) / (maxDelta == 0 ? 1.0 : maxDelta))
+                let stabilizationFactor = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(angleDifference) / (maxDelta == 0 ? 1.0 : maxDelta))
                 let easedDelta = limitedDelta * easedT * stabilizationFactor
                 cameraYaw = Angle(radians: cameraYaw.radians + easedDelta)
                 
@@ -537,7 +537,7 @@ class CameraState {
                 let limitedPitchDelta = max(-maxPitchDelta, min(pitchDiff, maxPitchDelta))
                 let tPitch = min(1.0, clampedDeltaTime / settings.easingDuration)
                 let easedTPitch = smoothStep(tPitch)
-                let stabilizationFactorPitch = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, abs(pitchDiff) / (maxPitchDelta == 0 ? 1.0 : maxPitchDelta))
+                let stabilizationFactorPitch = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(pitchDiff) / (maxPitchDelta == 0 ? 1.0 : maxPitchDelta))
                 let finalPitchDelta = limitedPitchDelta * easedTPitch * stabilizationFactorPitch
                 cameraPitch = Angle(radians: cameraPitch.radians + finalPitchDelta)
                 
@@ -545,16 +545,16 @@ class CameraState {
                 let distanceDiff = targetCameraDistance - cameraDistance
                 let tZoom = min(1.0, clampedDeltaTime / settings.easingDuration)
                 let easedTZoom = smoothStep(tZoom)
-                let stabilizationFactorZoom = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, abs(Double(distanceDiff)) / Double(settings.maxDistance - settings.minDistance))
+                let stabilizationFactorZoom = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(Double(distanceDiff)) / Double(settings.maxDistance - settings.minDistance))
                 let zoomDelta = distanceDiff * Float(easedTZoom * stabilizationFactorZoom)
                 cameraDistance += zoomDelta
                 
                 updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView)
                 
                 // Break if differences are negligible.
-                if abs(angleDifference) < settings.animationStopThreshold,
-                   abs(pitchDiff) < settings.animationStopThreshold,
-                   abs(distanceDiff) < Float(settings.animationStopThreshold)
+                if Swift.abs(angleDifference) < settings.animationStopThreshold,
+                   Swift.abs(pitchDiff) < settings.animationStopThreshold,
+                   Swift.abs(distanceDiff) < Float(settings.animationStopThreshold)
                 {
                     break
                 }
