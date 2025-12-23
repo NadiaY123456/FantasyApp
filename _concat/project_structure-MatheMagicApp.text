@@ -1,0 +1,42 @@
+- MatheMagicApp
+  - Brain-Old
+    - BrainAnimationSequence.swift
+    - IdleToIdle.swift
+    - IdleToWalk.swift
+    - WalkToWalk.swift
+  - Components
+    - CameraRotationComponent.swift
+    - MoveComponent.swift
+    - RealityViewExtensions.swift
+    - TapComponent.swift
+  - Entities
+    - EntityEntries.swift
+  - Environment
+    - SkyboxUtilities.swift
+  - Game Engine
+    - GameMachineStates.swift
+    - GlobalEntities.swift
+    - PlayData.swift
+  - Load
+    - PreLoadAssets.swift
+  - Top-Level
+    - AppState.swift
+    - ContentView.swift
+    - GameModel.swift
+    - GameModelView.swift
+    - ImmersiveVew.swift
+    - MatheMagicApp.swift
+  - Utilities
+    - ExtensionsEntity.swift
+    - LocalUtilities.swift
+  - Views
+    - BallView.swift
+    - CustomButtonStyle.swift
+    - GameOver.swift
+    - Lobby.swift
+    - Play.swift
+    - Scene Functions
+      - SceneManager.swift
+      - setupCharacterWithComponents.swift
+    - Selection.swift
+    - Start.swift

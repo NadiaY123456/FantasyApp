@@ -1,0 +1,1966 @@
+==== _concat/project_structure-MatheMagicApp.text ====
+
+- MatheMagicApp
+  - Brain-Old
+    - BrainAnimationSequence.swift
+    - IdleToIdle.swift
+    - IdleToWalk.swift
+    - WalkToWalk.swift
+  - Components
+    - CameraRotationComponent.swift
+    - MoveComponent.swift
+    - RealityViewExtensions.swift
+    - TapComponent.swift
+  - Entities
+    - EntityEntries.swift
+  - Environment
+    - SkyboxUtilities.swift
+  - Game Engine
+    - GameMachineStates.swift
+    - GlobalEntities.swift
+    - PlayData.swift
+  - Load
+    - PreLoadAssets.swift
+  - Top-Level
+    - AppState.swift
+    - ContentView.swift
+    - GameModel.swift
+    - GameModelView.swift
+    - ImmersiveVew.swift
+    - MatheMagicApp.swift
+  - Utilities
+    - ExtensionsEntity.swift
+    - LocalUtilities.swift
+  - Views
+    - BallView.swift
+    - CustomButtonStyle.swift
+    - GameOver.swift
+    - Lobby.swift
+    - Play.swift
+    - Scene Functions
+      - SceneManager.swift
+      - setupCharacterWithComponents.swift
+    - Selection.swift
+    - Start.swift
+
+==== _concat/project_structure-AnimLib.text ====
+
+- AnimLibS
+  - AnimationTransforms
+    - PlayTransforms.swift
+    - Transforms-To-Play
+      - 0-TransformsToPlay.swift
+      - 1-orig-data.swift
+      - 2-Alterations Data Functions
+        - cirWalk-data.swift
+        - matchTransform-data.swift
+        - stride-data.swift
+      - 2-apply-alterations-pre-blend.swift
+      - 3-blend-elments-in-tree.swift
+      - 4-inertial-data.swift
+  - AnimationTranstions
+    - Construct Poses
+      - 0-Pose-Level
+        - AdjustPose-Idle.swift
+      - 1-Body-Part-Level
+        - AdjustBodyParts.swift
+      - Bones-Level
+        - AboutToLiftFoot-Idle.swift
+        - LiftFoot-Idle.swift
+        - PlantedFeetIfPossible-Idle.swift
+      - Specific-Bone-Functions
+        - AdjustCalf.swift
+        - CorrectHipHeight.swift
+        - ExtendFoot.swift
+        - MoveBonesUtilities.swift
+        - OrientThigh.swift
+        - RollThigh.swift
+        - TiltPelvis.swift
+    - Idle-Idle Transitions
+      - 0-fillOutIdeToIdleElements.swift
+      - addAdditiveSourceElement.swift
+      - addAdditiveSourceElementFromTr.swift
+      - addBlendInSourceElementFromCustomInfo.swift
+      - addTargetAnimationSequenceAfterIdleToIdle.swift
+    - Idle-Walk Transitions
+      - addBlendInSourceElement.swift
+      - fillWalkIdleElements.swift
+    - Walk-Walk Transitions
+      - CirWalk
+        - CirWalk.swift
+        - CirWalkBoneOffsets.swift
+      - Stride
+        - StrideFunctions.swift
+        - StrideMIN-toDelete.swift
+        - StrideMain.swift
+  - Brain
+    - BrainAnimationSequence.swift
+    - Travel&StyleEvents.swift
+    - Idle
+      - 0-IdleSequence.swift
+      - 1-eval-orientation.swift
+      - 2-pick-transition.swift
+      - 3-build-transition.swift
+      - 4-inertial-units.swift
+    - Walk
+      - 0-WalkSequence.swift
+      - 1-PathwayEval.swift
+      - 2-ExtendWalkSequence.swift
+      - 3-TranstionalSequence.swift
+      - 4-StepAlterations.swift
+      - 5-InertialUnits.swift
+      - 6-walkToIdle.swift
+  - Components
+    - AnimationSystem.swift
+    - BrainComponent.swift
+    - CustomAnimationSystem.swift
+    - EventComponent.swift
+    - SkeletalPosesSystem.swift
+    - TravelComponent.swift
+  - SettingsAndDataStructs
+    - AnimationSettings.swift
+    - CharacterAttachment.swift
+    - SequenceData.swift
+    - StyleGuide.swift
+    - TravelGuide.swift
+  - Utilities
+    - BuildTransforms.swift
+    - CommonUseCases.swift
+    - CriricalPoseFunctions.swift
+    - SkeletonUtilities.swift
+    - TransformUtilities.swift
+    - mathUtilities.swift
+    - Sequence Functions
+      - CreateAnimationSequence.swift
+      - addBlendInSourceElementWithCustomAnimation.swift
+
+==== _concat/project_structure-AssetLib.text ====
+
+- AssetLibS
+  - AssetEntity
+    - TeraEntries.swift
+    - TeraModelDictionaryActor.swift
+    - TeraSet.swift
+  - BuildTerrain
+    - SimpleTerrainMaterial.swift
+    - TerrainHeight.swift
+    - TerrainMeshBuilder.swift
+    - TerrainModelEntityLoader.swift
+  - Components
+    - TeraComponent.swift
+  - Import
+    - AssetManager.swift
+    - ImportMaterial.swift
+    - ImportTerrain.swift
+  - Shaders
+    - SimpleTerrainShader.metal
+    - SplatTerrainShader.metal
+    - TerrainMaterials.h
+    - TerrainMaterials.metal
+
+==== _concat/project_structure-CoreLib.text ====
+
+- CoreLibS
+  - Components
+    - DataCenterComponent.swift
+  - CoreEntity
+    - EntityExtensions.swift
+    - EntitySet.swift
+    - ModelEntityUtilities.swift
+  - CoreUtilities
+    - AdditiveOffsetsForCirWalk.swift
+    - AppLogger.swift
+    - CoreTransform.swift
+    - SmoothingUtilities.swift
+    - VectorMath.swift
+  - ImportData
+    - AutoGenFromPython
+      - CriticalPosesDefinitions.swift
+    - BoneOperations.swift
+    - CommonStructs.swift
+    - CriticalPosesFunctions.swift
+    - DataManager.swift
+    - GeneratedAnimCache.swift
+    - ImportAnim.swift
+    - ImportMap.swift
+    - ImportTransforms.swift
+    - ImportTransitions.swift
+    - Mirror.swift
+    - ReOrderJointsAtLoad.swift
+
+==== _concat/project_structure-Inertialization.text ====
+
+- InertializationS
+  - inert-caching-unused.swift
+  - inert-main.swift
+
+==== _concat/project_structure-joystickController.text ====
+
+- joystickControllerS
+  - ExternalDataProtocol.swift
+  - JoystickInterpreter.swift
+  - UI
+    - ActionButtonView.swift
+    - JoystickController.swift
+
+==== MatheMagicApp/Components/CameraRotationComponent.swift ====
+
+
+import CoreLib
+import RealityKit
+import SwiftUI
+
+
+public struct CameraRotationComponent: Component {
+
+    public var dragStartAngle: Angle = .zero
+    public var dragBaseline: CGFloat = 0.0
+    public var lastDragTranslation: CGSize = .zero
+    public var lastDragUpdateTime: TimeInterval = CACurrentMediaTime()
+    public var lastDeltaX: CGFloat = 0.0
+
+    public var dragStartPitch: Angle = .zero
+    public var verticalDragBaseline: CGFloat = 0.0
+    public var lastDeltaY: CGFloat = 0.0
+
+
+    public var initialPinchDistance: Float = 0.0
+    public var pinchBaseline: CGFloat = 1.0
+    public var lastPinchScale: CGFloat = 1.0
+    public var pinchStartTime: TimeInterval = 0.0
+    public var lastCommittedEffectiveScale: CGFloat = 1.0
+
+    public init() {}
+}
+
+
+class CameraRotationSystem: System {
+    @MainActor private static let query = EntityQuery(where: .has(CameraRotationComponent.self))
+    
+    static weak var gameModelView: GameModelView?
+    
+    required init(scene: RealityKit.Scene) {}
+    static var dependencies: [SystemDependency] { [] }
+
+    public func update(context: SceneUpdateContext) {
+        guard let gameModelView = Self.gameModelView else {
+            AppLogger.shared.error("Error: GameModelView is not set for MoveSystem")
+            return
+        }
+        let deltaTime = context.deltaTime
+        let currentTime = CACurrentMediaTime()
+        
+        processDrag(in: context, gameModelView: gameModelView, currentTime: currentTime, deltaTime: deltaTime)
+        processPinch(in: context, gameModelView: gameModelView, deltaTime: deltaTime)
+        
+        gameModelView.camera.updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView)
+    }
+    
+    
+    @MainActor
+    private func processDrag(in context: SceneUpdateContext, gameModelView: GameModelView, currentTime: TimeInterval, deltaTime: TimeInterval) {
+        let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+        if gameModelView.isDragging, let currentTranslation = gameModelView.rawDragTranslation {
+            for entity in entities {
+                var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
+                let dt = currentTime - gestureState.lastDragUpdateTime
+                
+                processHorizontalDrag(for: &gestureState, currentTranslation: currentTranslation, deltaTime: dt, gameModelView: gameModelView)
+                processVerticalDrag(for: &gestureState, currentTranslation: currentTranslation, gameModelView: gameModelView) // DO NOT DELETE THIS COMMENT!
+                
+                gestureState.lastDragTranslation = currentTranslation
+                gestureState.lastDragUpdateTime = currentTime
+                entity.components.set(gestureState)
+                
+                gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime, gameModelView: gameModelView)
+            }
+        } else {
+            gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
+            gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
+            gameModelView.camera.targetCameraDistance = gameModelView.camera.cameraDistance
+            
+            for entity in entities {
+                var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
+                resetDragState(&gestureState, currentTime: currentTime, gameModelView: gameModelView)
+                entity.components.set(gestureState)
+            }
+        }
+    }
+    
+    @MainActor
+    private func processHorizontalDrag(for gestureState: inout CameraRotationComponent,
+                                       currentTranslation: CGSize,
+                                       deltaTime dt: TimeInterval,
+                                       gameModelView: GameModelView)
+    {
+        let deltaX = currentTranslation.width - gestureState.lastDragTranslation.width
+        
+        let deadZone = gameModelView.camera.settings.horizontalDragDeadZone
+        let timeThreshold = gameModelView.camera.settings.horizontalDragTimeThreshold
+        
+        if Swift.abs(deltaX) < deadZone || dt > timeThreshold {
+            gameModelView.camera.targetCameraYaw = gameModelView.camera.cameraYaw
+            gestureState.dragStartAngle = gameModelView.camera.cameraYaw
+            gestureState.dragBaseline = currentTranslation.width
+        } else {
+            if gestureState.lastDeltaX * deltaX < 0 && Swift.abs(deltaX) > deadZone {
+                gestureState.dragStartAngle = gameModelView.camera.cameraYaw
+                gestureState.dragBaseline = currentTranslation.width
+            }
+            
+            let effectiveDrag = currentTranslation.width - gestureState.dragBaseline
+            
+            gameModelView.camera.targetCameraYaw = gestureState.dragStartAngle +
+                Angle(radians: -Double(effectiveDrag) * gameModelView.camera.settings.yawSensitivity)
+        }
+        
+        gestureState.lastDeltaX = deltaX
+    }
+
+    @MainActor
+    private func processVerticalDrag(for gestureState: inout CameraRotationComponent,
+                                     currentTranslation: CGSize,
+                                     gameModelView: GameModelView)
+    {
+        let currentTime = CACurrentMediaTime()
+        let dt = currentTime - gestureState.lastDragUpdateTime
+        let deltaY = currentTranslation.height - gestureState.lastDragTranslation.height
+
+        if Swift.abs(deltaY) < gameModelView.camera.settings.verticalDragDeadZone || dt > gameModelView.camera.settings.verticalDragTimeThreshold {
+            gameModelView.camera.targetCameraPitch = gameModelView.camera.cameraPitch
+            gestureState.dragStartPitch = gameModelView.camera.cameraPitch
+            gestureState.verticalDragBaseline = currentTranslation.height
+        } else {
+            if gestureState.lastDeltaY * deltaY < 0 && Swift.abs(deltaY) > gameModelView.camera.settings.verticalDirectionChangeThreshold {
+                gestureState.dragStartPitch = gameModelView.camera.cameraPitch
+                gestureState.verticalDragBaseline = currentTranslation.height
+            }
+            
+            let effectiveDrag = currentTranslation.height - gestureState.verticalDragBaseline
+            let newPitchDegrees = gestureState.dragStartPitch.degrees + Double(effectiveDrag) * gameModelView.camera.settings.pitchSensitivity
+
+            let clampedPitchDegrees = min(max(newPitchDegrees,
+                                              gameModelView.camera.settings.minPitch.degrees),
+                                          gameModelView.camera.settings.maxPitch.degrees)
+            gameModelView.camera.targetCameraPitch = .degrees(clampedPitchDegrees)
+        }
+        gestureState.lastDeltaY = deltaY
+    }
+
+    @MainActor
+    private func resetDragState(_ gestureState: inout CameraRotationComponent, currentTime: TimeInterval, gameModelView: GameModelView) {
+        gestureState.lastDragTranslation = .zero
+        gestureState.lastDeltaX = 0.0
+        gestureState.dragBaseline = 0.0
+
+        gestureState.lastDeltaY = 0.0
+        gestureState.verticalDragBaseline = 0.0
+        gestureState.dragStartPitch = gameModelView.camera.cameraPitch // if you have access or pass it in
+
+        gestureState.lastDragUpdateTime = currentTime
+    }
+    
+    
+
+    @MainActor
+    private func processPinch(in context: SceneUpdateContext, gameModelView: GameModelView, toPrint: Bool = false, deltaTime: TimeInterval) {
+        let entities = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+        let settings = gameModelView.camera.settings
+        let currentTime = CACurrentMediaTime()
+        
+        for entity in entities {
+            var gestureState = entity.components[CameraRotationComponent.self] ?? CameraRotationComponent()
+            
+            let pinchThreshold = settings.pinchThreshold
+            let zoomChangeThreshold = settings.zoomChangeThreshold
+            let zoomSensitivity = settings.zoomSensitivity
+            let pinchDelay = settings.pinchDelay
+
+            if gameModelView.isPinching {
+                if gestureState.lastPinchScale == 1.0 {
+                    gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
+                    gestureState.pinchBaseline = 1.0 // Always normalize the baseline.
+                    gestureState.pinchStartTime = currentTime
+                    gestureState.lastCommittedEffectiveScale = 1.0
+                    AppLogger.shared.debug("Pinch start: initialPinchDistance = \(gestureState.initialPinchDistance), pinchBaseline = \(gestureState.pinchBaseline), lastPinchDistance = \(gameModelView.camera.lastPinchDistance)", toPrint)
+                }
+                
+                if currentTime - gestureState.pinchStartTime < pinchDelay {
+                    gestureState.lastPinchScale = gameModelView.rawPinchScale
+                    entity.components.set(gestureState)
+                    return
+                }
+                
+                let scaleChange = gameModelView.rawPinchScale - gestureState.lastPinchScale
+                AppLogger.shared.debug("Pinching: rawPinchScale = \(gameModelView.rawPinchScale), lastPinchScale = \(gestureState.lastPinchScale), scaleChange = \(scaleChange)", toPrint)
+                
+                if Swift.abs(scaleChange) >= pinchThreshold {
+                    let effectiveScale = gameModelView.rawPinchScale / gestureState.pinchBaseline
+                    let scaleDifference = Swift.abs(effectiveScale - gestureState.lastCommittedEffectiveScale)
+                    if scaleDifference >= pinchThreshold {
+                        gestureState.lastCommittedEffectiveScale = effectiveScale
+                    }
+                    AppLogger.shared.debug("Effective scale = \(effectiveScale)", toPrint)
+                    
+                    let immediateTarget = gestureState.initialPinchDistance / (Float(effectiveScale) * zoomSensitivity)
+                    AppLogger.shared.debug("Immediate target = \(immediateTarget)", toPrint)
+                    
+                    let elapsed = currentTime - gestureState.pinchStartTime
+                    let progress = min(1.0, elapsed / settings.pinchAccelerationDuration)
+                    let easedProgress = gameModelView.camera.smoothStep(progress)
+                    AppLogger.shared.debug("Elapsed time = \(elapsed), progress = \(progress), easedProgress = \(easedProgress)", toPrint)
+                    
+                    let interpolatedTarget = gestureState.initialPinchDistance +
+                        (immediateTarget - gestureState.initialPinchDistance) * Float(easedProgress)
+                    AppLogger.shared.debug("Interpolated target = \(interpolatedTarget)")
+                    
+                    let clampedDistance = min(settings.maxDistance,
+                                              max(settings.minDistance, interpolatedTarget))
+                    AppLogger.shared.debug("Clamped target distance = \(clampedDistance)", toPrint)
+                    
+                    let previousTarget = gameModelView.camera.targetCameraDistance
+                    AppLogger.shared.debug("Previous targetCameraDistance = \(previousTarget)", toPrint)
+                    
+                    if Swift.abs(clampedDistance - previousTarget) >= zoomChangeThreshold {
+                        gameModelView.camera.targetCameraDistance = clampedDistance
+                        gameModelView.camera.lastPinchDistance = clampedDistance
+                        AppLogger.shared.debug("Updating targetCameraDistance from \(previousTarget) to \(clampedDistance)", toPrint)
+                        gameModelView.camera.startSmoothCameraAnimation(deltaTime: deltaTime, gameModelView: gameModelView)
+                    }
+                }
+                gestureState.lastPinchScale = gameModelView.rawPinchScale
+                
+            } else {
+                if gestureState.lastPinchScale != 1.0 {
+                    gestureState.lastPinchScale = 1.0
+                    gestureState.initialPinchDistance = gameModelView.camera.lastPinchDistance
+                    gestureState.pinchBaseline = 1.0
+                    gestureState.pinchStartTime = 0.0
+                    gestureState.lastCommittedEffectiveScale = 1.0
+                    AppLogger.shared.debug("Resetting pinch state. Last pinch distance: \(gameModelView.camera.lastPinchDistance)", toPrint)
+                }
+            }
+            entity.components.set(gestureState)
+        }
+    }
+}
+
+
+class CameraState {
+
+    struct Settings {
+        var minPitch: Angle = .degrees(-89) // e.g. 45° from above
+        var maxPitch: Angle = .degrees(89) // e.g. 80° from below
+            
+        var minDistance: Float = 1.0
+        var maxDistance: Float = 6.0
+            
+        var pivotOffset: SIMD3<Float> = SIMD3(0, 1.5, 0)
+            
+            
+        var maxRotationSpeed: Double = 10 * .pi // Maximum allowed rotation speed (radians per second)
+            
+        var yawSensitivity: Double = 0.1 // Controls how fast the camera rotates based on drag
+        
+        var horizontalDragDeadZone: CGFloat = 1.0
+        
+        var horizontalDragTimeThreshold: Double = 0.1
+        
+        let verticalDragDeadZone = 1.0
+        let verticalDragTimeThreshold = 0.1
+        let verticalDirectionChangeThreshold = 1.0
+        
+        var pinchThreshold: CGFloat = 0.001
+        var zoomChangeThreshold: Float = 0.01
+        var zoomSensitivity: Float = 1.0
+        
+        var pinchDelay: TimeInterval = 0.05
+        var pinchAccelerationDuration: TimeInterval = 0.2
+        let pitchSensitivity = 0.1
+
+        var easingDuration: Double = 0.075 // higher -> slower zoom and rotation speed
+
+
+        var cameraHeight: Float = 2
+
+        var maxDeltaTime: Double = 0.016
+
+        var stabilizationFactorMultiplier: Double = 0.5
+
+        var animationStopThreshold: Double = 0.001
+
+        var animationFrameSleepNanoseconds: UInt64 = 16_000_000
+            
+        var minCameraHeight: Float = 0.1
+        
+        var pivotSmoothTime: Float = 0.2
+    }
+
+
+    
+    var cameraDistance: Float = 4.0
+    var targetCameraDistance: Float = 4.0
+    var lastPinchDistance: Float = 4.0 /// Final pinch-based distance so we can "return" to it when swiping up.
+    
+    var cameraYaw: Angle = .zero
+    var targetCameraYaw: Angle = .zero
+    
+    var cameraPitch: Angle = .degrees(10)
+    var targetCameraPitch: Angle = .degrees(10)
+    
+    var settings = Settings()
+
+
+    var cameraPivot: Entity?
+    var cameraEntity: Entity?
+    var trackedEntity: Entity?
+    
+    var skydomeEntity: Entity?
+    var skydomeBaseRotation: simd_quatf = .init(angle: 0, axis: SIMD3(0, 1, 0))
+    
+
+    private var isAnimatingCamera = false
+    private var lastUpdateTime: TimeInterval = CACurrentMediaTime()
+    
+
+    func addCamera(to content: RealityViewCameraContent, relativeTo tracked: Entity, gameModelView: GameModelView, toPrint: Bool = false, deltaTime: TimeInterval) {
+        trackedEntity = tracked
+
+        let pivot = Entity()
+        pivot.transform.translation = tracked.transform.translation + settings.pivotOffset
+
+        pivot.components.set(CameraRotationComponent())
+        content.add(pivot)
+        cameraPivot = pivot
+
+        let camera = Entity()
+        camera.components.set(PerspectiveCameraComponent())
+        camera.transform.translation = SIMD3(0, settings.cameraHeight, cameraDistance)
+        pivot.addChild(camera)
+        cameraEntity = camera
+
+        updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView, toPrint: toPrint)
+        
+        AppLogger.shared.debug("Camera world Position: \(camera.transform.translation + pivot.transform.translation), and cameraPivot: \(pivot.transform.translation)", toPrint)
+    }
+    
+
+    func updateCameraTransform(
+        deltaTime dt: TimeInterval,
+        gameModelView: GameModelView,
+        toPrint: Bool = false
+    ) {
+        guard let pivot = cameraPivot, let camera = cameraEntity else { return }
+        
+        pivot.transform.rotation = simd_quatf(angle: 0, axis: SIMD3(0, 0, 1))
+        
+        if let tracked = trackedEntity {
+            let targetPos = tracked.transform.translation + settings.pivotOffset
+            let currentPos = pivot.transform.translation
+            
+            let dtFloat = Float(dt)
+
+            let t = 1 - exp(-dtFloat / settings.pivotSmoothTime)
+            
+            let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: t))
+            pivot.transform.translation = smoothedPos
+        }
+        
+        let pivotWorldPosition = pivot.transform.translation
+        let yaw = Float(cameraYaw.radians)
+        let pitch = Float(cameraPitch.radians)
+        
+        var desiredDistance = lastPinchDistance
+        let tentativeY = pivotWorldPosition.y + desiredDistance * sin(pitch)
+        if tentativeY < settings.minCameraHeight, Swift.abs(sin(pitch)) > 0.0001 {
+            desiredDistance = (settings.minCameraHeight - pivotWorldPosition.y) / sin(pitch)
+        } else {
+            desiredDistance = lastPinchDistance
+        }
+        
+        let offset = SIMD3<Float>(
+            desiredDistance * cos(pitch) * sin(yaw),
+            desiredDistance * sin(pitch),
+            desiredDistance * cos(pitch) * cos(yaw)
+        )
+        
+        let cameraWorldPosition = pivotWorldPosition + offset
+        camera.transform.translation = cameraWorldPosition - pivotWorldPosition
+        
+        let forward = simd_normalize(pivotWorldPosition - cameraWorldPosition)
+        let upWorld = SIMD3<Float>(0, 1, 0)
+        let right = simd_normalize(simd_cross(forward, upWorld))
+        let up = simd_cross(right, forward)
+        let rotationMatrix = float3x3(columns: (right, up, -forward))
+        camera.transform.rotation = simd_quatf(rotationMatrix)
+        
+        if gameModelView.isDragging || gameModelView.isPinching { //ERROR: Cannot find 'gameModelView' in scope
+            if let skydome = skydomeEntity {
+                let yawRotation = simd_quatf(angle: yaw, axis: SIMD3<Float>(0, 1, 0))
+                skydome.transform.rotation = yawRotation * skydomeBaseRotation
+            }
+        }
+        
+        AppLogger.shared.debug(
+            "Camera World Position: \(cameraWorldPosition) | Pivot Position: \(pivotWorldPosition) | Yaw: \(cameraYaw.degrees)° | Pitch: \(cameraPitch.degrees)°",
+            toPrint
+        )
+    }
+
+
+    func startSmoothCameraAnimation(deltaTime: TimeInterval, gameModelView: GameModelView, toPrint: Bool = false) {
+        guard !isAnimatingCamera else {
+            AppLogger.shared.debug("Animation already in progress. Skipping new call.", toPrint)
+            return
+        }
+        isAnimatingCamera = true
+        
+        Task { @MainActor in
+            lastUpdateTime = CACurrentMediaTime()
+            while true {
+                let clampedDeltaTime = min(deltaTime, settings.maxDeltaTime)
+                AppLogger.shared.debug("Animation Loop: deltaTime = \(deltaTime), clampedDeltaTime = \(clampedDeltaTime)", toPrint)
+                
+                let angleDifference = targetCameraYaw.radians - cameraYaw.radians
+                let maxDelta = settings.maxRotationSpeed * clampedDeltaTime
+                let limitedDelta = max(-maxDelta, min(angleDifference, maxDelta))
+                let t = min(1.0, clampedDeltaTime / settings.easingDuration)
+                let easedT = smoothStep(t)
+                let stabilizationFactor = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(angleDifference) / (maxDelta == 0 ? 1.0 : maxDelta))
+                let easedDelta = limitedDelta * easedT * stabilizationFactor
+                cameraYaw = Angle(radians: cameraYaw.radians + easedDelta)
+                
+                let pitchDiff = targetCameraPitch.radians - cameraPitch.radians
+                let maxPitchDelta = settings.maxRotationSpeed * clampedDeltaTime
+                let limitedPitchDelta = max(-maxPitchDelta, min(pitchDiff, maxPitchDelta))
+                let tPitch = min(1.0, clampedDeltaTime / settings.easingDuration)
+                let easedTPitch = smoothStep(tPitch)
+                let stabilizationFactorPitch = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(pitchDiff) / (maxPitchDelta == 0 ? 1.0 : maxPitchDelta))
+                let finalPitchDelta = limitedPitchDelta * easedTPitch * stabilizationFactorPitch
+                cameraPitch = Angle(radians: cameraPitch.radians + finalPitchDelta)
+                
+                let distanceDiff = targetCameraDistance - cameraDistance
+                let tZoom = min(1.0, clampedDeltaTime / settings.easingDuration)
+                let easedTZoom = smoothStep(tZoom)
+                let stabilizationFactorZoom = 1.0 - settings.stabilizationFactorMultiplier * min(1.0, Swift.abs(Double(distanceDiff)) / Double(settings.maxDistance - settings.minDistance))
+                let zoomDelta = distanceDiff * Float(easedTZoom * stabilizationFactorZoom)
+                cameraDistance += zoomDelta
+                
+                updateCameraTransform(deltaTime: deltaTime, gameModelView: gameModelView)
+                
+                if Swift.abs(angleDifference) < settings.animationStopThreshold,
+                   Swift.abs(pitchDiff) < settings.animationStopThreshold,
+                   Swift.abs(distanceDiff) < Float(settings.animationStopThreshold)
+                {
+                    break
+                }
+                try? await Task.sleep(nanoseconds: settings.animationFrameSleepNanoseconds)
+            }
+            isAnimatingCamera = false
+            AppLogger.shared.debug("Animation loop ended.", toPrint)
+        }
+    }
+    
+
+    func loadSkybox(into content: RealityViewCameraContent,
+                    for destination: Destination,
+                    with iblComponent: ImageBasedLightComponent)
+    {
+        let rootEntity = Entity()
+
+        rootEntity.addSkybox(for: destination)
+        content.add(rootEntity)
+        
+        rootEntity.components.set(iblComponent)
+        rootEntity.components.set(ImageBasedLightReceiverComponent(imageBasedLight: rootEntity))
+        
+        skydomeEntity = rootEntity
+        
+        let baseAngle = Angle.degrees(destination.rotationDegrees)
+        skydomeBaseRotation = simd_quatf(angle: Float(baseAngle.radians), axis: SIMD3(0, 1, 0))
+    }
+    
+
+    func smoothStep(_ t: Double) -> Double {
+        return t * t * (3 - 2 * t)
+    }
+    
+    private func adjustedCameraDistance(toPrint: Bool = false) -> Float {
+        let pivotY = cameraPivot?.transform.translation.y ?? 0
+        let safetyMargin = settings.minCameraHeight
+        let pitch = Float(cameraPitch.radians)
+        let pitchDegrees = cameraPitch.degrees
+        let targetDistance = targetCameraDistance
+
+        let worldCameraY = pivotY + settings.cameraHeight * cos(pitch) - targetDistance * sin(pitch)
+        
+        AppLogger.shared.debug("AdjCam: pivotY=\(pivotY), pitch=\(pitchDegrees)°, targetDist=\(targetDistance), worldY=\(worldCameraY)", toPrint)
+
+        if pitch > 0 {
+            if worldCameraY < safetyMargin {
+                let computedSafeDistance = (pivotY + settings.cameraHeight * cos(pitch) - safetyMargin) / sin(pitch)
+                let safeDistance = max(0, computedSafeDistance)
+                let effectiveDistance = min(targetDistance, safeDistance)
+                AppLogger.shared.debug("AdjCam: worldY=\(worldCameraY) < \(safetyMargin) → safeDist=\(safeDistance), effectiveDist=\(effectiveDistance)", toPrint)
+                return effectiveDistance
+            }
+        }
+        
+        AppLogger.shared.debug("AdjCam: No adjustment needed; using targetDist", toPrint)
+        return targetDistance
+    }
+}
+
+
+extension CameraRotationComponent: Codable {
+    enum CodingKeys: String, CodingKey {
+        case dragStartAngle, dragBaseline, lastDragTranslation, lastDragUpdateTime, lastDeltaX
+        case dragStartPitch, verticalDragBaseline, lastDeltaY
+        case initialPinchDistance, lastPinchScale
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        dragStartAngle = try container.decode(Angle.self, forKey: .dragStartAngle)
+        dragBaseline = try container.decode(CGFloat.self, forKey: .dragBaseline)
+        lastDragTranslation = try container.decode(CGSize.self, forKey: .lastDragTranslation)
+        lastDragUpdateTime = try container.decode(TimeInterval.self, forKey: .lastDragUpdateTime)
+        lastDeltaX = try container.decode(CGFloat.self, forKey: .lastDeltaX)
+        
+        dragStartPitch = try container.decode(Angle.self, forKey: .dragStartPitch)
+        verticalDragBaseline = try container.decode(CGFloat.self, forKey: .verticalDragBaseline)
+        lastDeltaY = try container.decode(CGFloat.self, forKey: .lastDeltaY)
+        
+        initialPinchDistance = try container.decode(Float.self, forKey: .initialPinchDistance)
+        lastPinchScale = try container.decode(CGFloat.self, forKey: .lastPinchScale)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(dragStartAngle, forKey: .dragStartAngle)
+        try container.encode(dragBaseline, forKey: .dragBaseline)
+        try container.encode(lastDragTranslation, forKey: .lastDragTranslation)
+        try container.encode(lastDragUpdateTime, forKey: .lastDragUpdateTime)
+        try container.encode(lastDeltaX, forKey: .lastDeltaX)
+        
+        try container.encode(dragStartPitch, forKey: .dragStartPitch)
+        try container.encode(verticalDragBaseline, forKey: .verticalDragBaseline)
+        try container.encode(lastDeltaY, forKey: .lastDeltaY)
+        
+        try container.encode(initialPinchDistance, forKey: .initialPinchDistance)
+        try container.encode(lastPinchScale, forKey: .lastPinchScale)
+    }
+}
+
+==== MatheMagicApp/Entities/EntityEntries.swift ====
+
+import CoreLib
+import SwiftUI
+import Spatial
+
+@MainActor func setupEntitySets()
+    -> [String: EntitySet]
+{
+    
+    
+    let flashModel = EntitySet(
+        name: "flash",
+        modelEntityName: "BoneRoot",
+        entityType: .character,
+        loadSource: .realityComposerPro,
+        realityComposerName: "flash",
+        realityComposerScene: "FlashScene",
+        usdzName: "",
+        realityComposerAnimationResourceName: "flash",
+        jsonPaths: ["DataToImport.bundle/flash/flash.lzfse"], //["DataToImport.bundle/flash"]
+        isAnimated: true,
+        isMoving: true,
+        position: SIMD3(x: 0, y: 0, z: 0),
+        orientation: simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)),
+        spawnScaleFactor: SIMD3<Float>(0.1, 0.1, 0.1)
+    )
+    
+    let meadowModel = EntitySet(
+        name: "Meadow",
+        modelEntityName: "Meadow",
+        entityType: .asset,
+        loadSource: .realityComposerPro,
+        realityComposerName: "Meadow",
+        realityComposerScene: "Garden",
+        usdzName: "",
+        realityComposerAnimationResourceName: "",
+        jsonPaths: [""],
+        isAnimated: false,
+        isMoving: false,
+        position: SIMD3(x: 0, y: -0.2, z: 0),
+        orientation: simd_quatf(
+            Rotation3D(angle: .degrees(0), axis: .y)
+                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
+        ),
+        spawnScaleFactor: SIMD3<Float>(1.0, 0.001, 1.0)
+    )
+    
+    let waterModel = EntitySet(
+        name: "WaterPlane",
+        modelEntityName: "WaterPlane",
+        entityType: .asset,
+        loadSource: .realityComposerPro,
+        realityComposerName: "WaterPlane",
+        realityComposerScene: "Garden",
+        usdzName: "",
+        realityComposerAnimationResourceName: "",
+        jsonPaths: [""],
+        isAnimated: false,
+        isMoving: false,
+        position: SIMD3(x: 0, y: -0.2, z: 0),
+        orientation: simd_quatf(
+            Rotation3D(angle: .degrees(0), axis: .y)
+                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
+        ),
+        spawnScaleFactor: SIMD3<Float>(1.0, 0.001, 1.0)
+    )
+    
+    let planeModel = EntitySet(
+        name: "plane",
+        modelEntityName: "plane",
+        entityType: .asset,
+        loadSource: .realityComposerPro,
+        realityComposerName: "plane",
+        realityComposerScene: "planeScene",
+        usdzName: "",
+        realityComposerAnimationResourceName: "",
+        jsonPaths: [""],
+        isAnimated: false,
+        isMoving: false,
+        position: SIMD3(x: 0, y: -0.1, z: 0),
+        orientation: simd_quatf(
+            Rotation3D(angle: .degrees(0), axis: .y)
+                .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))
+        ),
+        spawnScaleFactor: SIMD3<Float>(1.0, 0.001, 1.0)
+    )
+    
+    let entityModelDictionary: [String: EntitySet] = Dictionary(uniqueKeysWithValues: [
+        ("flash", flashModel),
+        ("plane", planeModel),
+        ("meadow", meadowModel),
+        ("water", waterModel)
+    ])
+    
+    return entityModelDictionary
+}
+
+==== MatheMagicApp/Load/PreLoadAssets.swift ====
+
+import AssetLib
+import CoreLib
+import RealityKit
+import Metal
+
+@MainActor func preLoadAssetsDict(teraStore: TeraModelDictionaryActor) async {
+    
+    if let dev = MTLCreateSystemDefaultDevice() {
+        AppLogger.shared.info("🎛️ 🏔️ Metal device: \(dev.name)")
+    } else {
+        AppLogger.shared.error("❌ Metal is NOT available on this machine")
+    }
+    
+    
+    let entityModelDictionary = setupEntitySets()
+    CoreLib.addEntityModelToDictionaryToCore(entityModelDictionaryToAdd: entityModelDictionary)
+    let dictionary = CoreLib.entityModelDictionaryCore
+    for key in dictionary.keys {
+        AppLogger.shared.info("Pre-loading assets for entityTemplate \(key)")
+        if var entitySet = dictionary[key] {
+            await entitySet.loadEntity() // load entity
+            entitySet.setModelEntity() // set model entity
+            entitySet.positionEntity() // position entity
+
+            if entitySet.isAnimated {
+                let dataManager = DataManager() // Create a DataManager instance for this entity
+
+                let dataPath = entitySet.jsonPaths.first ?? ""
+                if !dataPath.isEmpty {
+                    dataManager.loadAllData(from: dataPath)
+
+
+                    let modelJointNames = entitySet.modelEntity.jointNames
+                    dataManager.setModelJointNames(modelJointNames)
+                    dataManager.reorderTransformsAndJointList(with: modelJointNames)
+
+                    dataManager.hierarchyManager = HierarchyManager(joints: modelJointNames)
+
+                    dataManager.initializeSideDependentData()
+
+                    entitySet.dataManager = dataManager
+
+                    dataManager.clearDecompressedDataCache()
+
+                } else {
+                    AppLogger.shared.warning("No data path provided for animated entity \(key)")
+                }
+            }
+            CoreLib.entityModelDictionaryCore[key] = entitySet
+        }
+    }
+
+    
+    let teraModelDictionary = setupTeraSets()
+    await teraStore.merge(teraModelDictionary)
+
+    let worlds = await teraStore.allWorlds()
+
+        for world in worlds {
+
+            let terrainIsLoaded = await TerrainLoader.prepareTerrain(worldName: world, teraStore: teraStore)
+            
+            if terrainIsLoaded {
+                AppLogger.shared.info("🏔️ Terrain for world “\(world)” pre-loaded successfully.")
+            } else {
+                AppLogger.shared.error("🏔️ Failed to pre-load terrain for world “\(world)”")
+            }
+        }
+    
+
+}
+
+extension EntitySet {
+    mutating func loadEntity() async {
+        if loadSource == .realityComposerPro {
+            guard let asset = await LoadUtilities.loadFromRealityComposerPro(
+                named: realityComposerName,
+                fromSceneNamed: realityComposerScene
+            ) else {
+                fatalError("Unable to load \(name) from Reality Composer Pro project.")
+            }
+            entity = asset
+            AppLogger.shared.info("Loaded \(name) from Reality Composer Pro project.")
+        } else if loadSource == .usdz {
+            guard let asset = try? await Entity(named: usdzName) else {
+                fatalError("Unable to load \(name) from usdz file.")
+            }
+            entity = asset
+            AppLogger.shared.info("Loaded \(name) from usdz file.")
+        }
+    }
+}
+
+extension EntitySet {
+    mutating func setModelEntity() {
+        if let modelEntity = getModelEntity(from: entity, withName: modelEntityName) {
+            self.modelEntity = modelEntity
+            AppLogger.shared.info("ModelEntity set for \(name) with name \(modelEntityName).")
+        } else {
+            if let entityChildrenWithModelComponent = entity.descendentsWithModelComponent as? [ModelEntity] {
+                let entityNames = entityChildrenWithModelComponent.map { $0.name }
+                AppLogger.shared.info("Found entities with model components: \(entityNames)")
+
+                if let firstEntity = entityChildrenWithModelComponent.first {
+                    modelEntity = firstEntity
+                    AppLogger.shared.info("ModelEntity set for \(name) using first available entity \(entityNames[0]).")
+                } else {
+                    // Otherwise, log an error
+                    AppLogger.shared.error("Error: ModelEntity with name \(modelEntityName) or any other name not found for \(name).")
+                }
+            } else {
+                // Log an error if casting fails
+                AppLogger.shared.error("Error: Unable to cast descendants to [ModelEntity].")
+            }
+        }
+    }
+}
+
+==== MatheMagicApp/Top-Level/GameModelView.swift ====
+
+import AnimLib
+import AssetLib
+import Combine
+import Foundation
+import joystickController
+import RealityKit
+import SwiftUI
+
+class GameModelView: ObservableObject, JoystickDataProvider {
+    lazy var gameModel: GameModel = .init(gameModelView: self, teraStore: teraStore)
+
+    let teraStore: TeraModelDictionaryActor
+
+    @Published var isPaused: Bool = false {
+        didSet {
+            Task { await updateIsPausedInComponents() }
+        }
+    }
+
+    @Published var isFinished: Bool = false
+    @Published var currentState: GameScreenState = .start
+
+    @Published var assetsLoaded: Bool = false // property to track asset loading
+    @Published var score: Int = 0
+    @Published var clockTime: Double = 0
+
+    @Published var showQuestion: Bool = false
+    @Published var isHoldingButton: Bool = false
+
+
+    @Published var joystickMagnitude: CGFloat = 0
+    @Published var joystickAngle: Angle = .degrees(0)
+    @Published var joystickIsTouching = false
+    var cameraYaw: Angle { camera.cameraYaw }
+
+    @Published var isDragging: Bool = false
+    @Published var rawDragTranslation: CGSize? = nil
+
+    @Published var isPinching: Bool = false
+    @Published var rawPinchScale: CGFloat = 1.0
+    var initialPinchScale: CGFloat = 1.0 // capture starting scale
+
+    @Published var camera: CameraState = .init()
+
+    private var timer: Timer?
+    private var startDate: Date?
+
+    init(teraStore: TeraModelDictionaryActor) {
+        self.teraStore = teraStore
+        Task { await gameModel.initialize() }
+        startTimer()
+    }
+
+    var rootEntity: Entity? {
+        didSet {
+            Task { await updateIsPausedInComponents() }
+        }
+    } // need to pull the scene it is in
+
+    @MainActor
+    func updateIsPausedInComponents() {}
+
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.001, repeats: true) { _ in
+            Task {
+                let state = await self.gameModel.getGameScreenState()
+                let score = await self.gameModel.score
+                await MainActor.run {
+                    self.currentState = state
+                    self.score = score
+                    if let start = self.startDate {
+                        self.clockTime = Date().timeIntervalSince(start)
+                    }
+                }
+            }
+        }
+    }
+
+    func togglePause() {
+        isPaused.toggle()
+        Task {
+            await gameModel.setPaused(isPaused)
+        }
+    }
+
+    func setFinished(_ finished: Bool) {
+        isFinished = finished
+        Task {
+            await gameModel.setFinished(finished)
+        }
+    }
+
+    func play() {
+        startDate = Date()
+        Task {
+            await gameModel.play()
+        }
+    }
+
+    func lobby() {
+        if startDate == nil {
+            startDate = Date()
+        }
+        Task {
+            await gameModel.lobby()
+        }
+    }
+
+    func selection() {
+        if startDate == nil {
+            startDate = Date()
+        }
+        Task {
+            await gameModel.selection()
+        }
+    }
+
+    func ball() {
+        Task {
+            await gameModel.ball()
+        }
+    }
+
+    func reset() {
+        startDate = Date()
+        Task {
+            await gameModel.reset()
+        }
+    }
+}
+
+==== MatheMagicApp/Top-Level/ImmersiveVew.swift ====
+
+import AnimLib
+import AssetLib
+import CoreLib
+
+import CoreGraphics
+import ImageIO
+import joystickController
+import RealityKit
+import RealityKitContent
+import SwiftUI
+
+struct Selection: View {
+    @StateObject private var sceneManager = SceneManager() // Create a dedicated manager
+    @EnvironmentObject private var gameModelView: GameModelView
+    @Environment(\.teraStore) private var teraStore: TeraModelDictionaryActor
+
+    @State private var dragStartAngle: Angle = .zero
+    @GestureState private var dragOffset: CGSize = .zero
+    @State private var lastDragTranslation: CGSize = .zero
+    @State private var lastDragUpdateTime: TimeInterval = CACurrentMediaTime()
+    @State private var lastDeltaX: CGFloat = 0.0
+    @State private var dragBaseline: CGFloat = 0.0
+
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                RealityView { content in
+                    content.add(spaceOrigin)
+                    
+                    sceneManager.addDirectionalLight(to: spaceOrigin)
+                    
+                    
+                    guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
+                    spaceOrigin.components.set(iblComponent) // space origin emits light
+                    
+                    gameModelView.camera.updateCameraTransform(deltaTime: 0.0, gameModelView: gameModelView)
+                    
+                    gameModelView.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
+                    
+                    //                         AppLogger.shared.error("Error loading fantasycastle skybox: \(error)")
+                    
+                    
+                    let flashModel = setupCharacterWithComponents(entityDictionaryID: "flash", gameModelView: gameModelView)
+                    sceneManager.addContentWithLight(entity: flashModel, iblComponent: iblComponent)
+                    gameModelView.camera.trackedEntity = flashModel
+                    gameModelView.camera.addCamera(to: content, relativeTo: flashModel, gameModelView: gameModelView, deltaTime: 0)
+                    
+                    AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
+                    
+                    
+                    
+
+                
+
+                    let terrainEntity = Entity()
+                    terrainEntity.name = "TerrainRoot"
+                    terrainEntity.components.set(TeraComponent())
+
+                    spaceOrigin.addChild(terrainEntity)
+                    AppLogger.shared.debug("✅  Terrain added to scene.")
+                }
+                .id("SingleRealityView")
+                .frame(width: geometry.size.width, height: geometry.size.height)
+                .ignoresSafeArea()
+
+
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            gameModelView.rawDragTranslation = value.translation
+                            gameModelView.isDragging = true
+                        }
+                        .onEnded { _ in
+                            gameModelView.isDragging = false
+                            gameModelView.rawDragTranslation = .zero
+                        }
+                )
+                .simultaneousGesture(
+                    MagnificationGesture()
+                        .onChanged { scale in
+                            if !gameModelView.isPinching {
+                                gameModelView.initialPinchScale = scale
+                            }
+                            gameModelView.isPinching = true
+                            gameModelView.rawPinchScale = scale
+                        }
+                        .onEnded { _ in
+                            gameModelView.isPinching = false
+                            gameModelView.rawPinchScale = 1.0
+                        }
+                )
+                VStack {
+                    Spacer()
+                    HStack {
+                        JoystickView(
+                            onChange: { magnitude, angle in
+                                gameModelView.joystickMagnitude = magnitude
+                                gameModelView.joystickAngle = angle
+                                gameModelView.joystickIsTouching = true
+                            },
+                            onEnd: {
+                                gameModelView.joystickMagnitude = 0
+                                gameModelView.joystickAngle = .zero
+                                gameModelView.joystickIsTouching = false
+                            }
+                        )
+                        .padding([.bottom, .leading], 20)
+                        Spacer()
+                        ActionButtonView(
+                            onPressStart: { gameModelView.isHoldingButton = true },
+                            onPressEnd: { gameModelView.isHoldingButton = false }
+                        )
+                        .padding([.bottom, .trailing], 20)
+                    }
+                }
+            }
+            .background(Color.white.ignoresSafeArea())
+        }
+    }
+}
+
+==== MatheMagicApp/Views/BallView.swift ====
+
+import RealityKit
+import RealityKitContent
+import SwiftUI
+import CoreLib
+
+struct BallView: View {
+    @State var showQuestion = false // State to show the math question
+    @State private var selectedOption: Int? = nil // State for selected option
+    @EnvironmentObject var gameModelView: GameModelView
+    @State private var joystickPosition: CGSize = .zero
+
+    var body: some View {
+        GeometryReader { _ in
+            ZStack {
+                RealityViewWithTap()
+                    .ignoresSafeArea() // Ensures it covers the entire background
+
+                VStack {
+                    selectionButton2
+                        .padding(.top, 20) // Optional: Add padding from the top edge
+                    Spacer()
+                }
+
+                if gameModelView.showQuestion {
+                    VStack(spacing: 20) {
+                        Text("What is 2 + 2?")
+                            .font(.custom("TimesNewRomanPS-BoldMT", size: 70))
+                            .foregroundColor(.white)
+                            .padding(.bottom, 10) // Spacing between question and options
+
+                        VStack(spacing: 10) {
+                            HStack(spacing: 10) {
+                                AnswerButton(option: 1, selectedOption: $selectedOption)
+                                AnswerButton(option: 2, selectedOption: $selectedOption)
+                            }
+                            HStack(spacing: 10) {
+                                AnswerButton(option: 3, selectedOption: $selectedOption)
+                                AnswerButton(option: 4, selectedOption: $selectedOption) // Correct answer
+                            }
+                        }
+                    }
+                    .padding()
+                    .frame(width: 600) // Constrain width of the entire box
+                    .background(Color(red: 143/255, green: 196/255, blue: 144/255).opacity(0.9)) // Green background
+                    .cornerRadius(12)
+                    .shadow(radius: 5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 5)
+                    )
+                    .transition(.opacity) // Opacity transition
+                    .animation(.easeInOut(duration: 0.5), value: gameModelView.showQuestion) // Tie animation to showQuestion
+                    .onChange(of: selectedOption) { _ in
+                        AppLogger.shared.debug("Debug: Answer selected")
+                        guard let _ = selectedOption else { return }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation {
+                                AppLogger.shared.debug("Debug: Question box going away!!")
+                                gameModelView.showQuestion = false
+                                AppLogger.shared.info("Value of showQuestion: \(gameModelView.showQuestion)")
+                            }
+                        }
+
+                        selectedOption = nil
+                    }
+                }
+
+                VStack {
+                    Spacer()
+                    HStack {
+                        joystick
+                            .padding([.bottom, .leading], 20) // Adjust padding as needed
+                        Spacer()
+                    }
+                }
+            }
+            .background(Color.white.ignoresSafeArea()) // Ensure the background doesn't interfere
+        }
+        .onChange(of: gameModelView.showQuestion) { newValue in
+            AppLogger.shared.info("BallView detected showQuestion change to \(newValue)")
+        }
+    }
+
+    private var joystick: some View {
+        ZStack {
+            Circle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(width: 170, height: 170)
+
+            Circle()
+                .fill(Color(red: 81/255, green: 156/255, blue: 72/255)) // Main green color
+                .frame(width: 90, height: 90)
+                .overlay(
+                    Circle()
+                        .stroke(Color(red: 60/255, green: 115/255, blue: 53/255), lineWidth: 3) // Darker green stroke
+                )
+                .overlay(
+                    Circle()
+                        .stroke(Color(red: 136/255, green: 219/255, blue: 125/255), lineWidth: 9) // Lighter green stroke
+                )
+                .shadow(color: Color(red: 0/255, green: 100/255, blue: 0/255).opacity(0.5), radius: 9, x: 0, y: 9)
+                .shadow(color: .black.opacity(0.3), radius: 2.5, x: 0, y: 2.5)
+                .opacity(gameModelView.isHoldingButton ? 0.7 : 1.0)
+                .offset(joystickPosition)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if !gameModelView.isHoldingButton {
+                                withAnimation {
+                                    gameModelView.isHoldingButton = true
+                                }
+                                AppLogger.shared.debug("Joystick pressed down")
+                            }
+
+                            let radius: CGFloat = 85 // Half of base circle's width
+                            let translation = value.translation
+                            let distance = min(sqrt(translation.width * translation.width + translation.height * translation.height), radius)
+
+                            let angle = atan2(translation.height, translation.width)
+
+                            joystickPosition = CGSize(
+                                width: distance * cos(angle),
+                                height: distance * sin(angle)
+                            )
+
+                            gameModelView.joystickMagnitude = distance/radius // Normalize if needed
+                            gameModelView.joystickAngle = Angle(radians: Double(angle))
+                        }
+                        .onEnded { _ in
+                            withAnimation {
+                                gameModelView.isHoldingButton = false
+                                joystickPosition = .zero
+                                gameModelView.joystickMagnitude = 0
+                                gameModelView.joystickAngle = Angle(degrees: 0)
+                            }
+                            AppLogger.shared.debug("Joystick released")
+                        }
+                )
+        }
+    }
+
+    private var selectionButton2: some View {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                spaceOriginBall.isEnabled = false
+                gameModelView.lobby()
+            }
+        }) {
+            Text("Go back to Lobby")
+                .font(.custom("TimesNewRomanPS-BoldMT", size: 30)) // Half of 40
+                .foregroundColor(.white)
+                .padding()
+                .frame(width: 350, height: 50) // Wider but half as tall
+                .background(Color(red: 81/255, green: 156/255, blue: 72/255))
+                .cornerRadius(15) // Half of 30
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color(red: 60/255, green: 115/255, blue: 53/255), lineWidth: 1) // Half of 2
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 15)
+                        .stroke(Color(red: 136/255, green: 219/255, blue: 125/255), lineWidth: 3) // Half of 6
+                )
+                .shadow(color: Color(red: 0/255, green: 100/255, blue: 0/255).opacity(0.5), radius: 5, x: 0, y: 5) // Half of original shadows
+                .shadow(color: .black.opacity(0.3), radius: 2.5, x: 0, y: 2.5)
+        }
+        .padding(.bottom, 50)
+    }
+}
+
+
+import RealityKit
+import RealityKitContent
+import SwiftUI
+
+struct RealityViewWithTap: View {
+    @EnvironmentObject var gameModelView: GameModelView
+
+    var body: some View {
+        RealityView { content in
+            content.add(spaceOriginBall)
+
+            let ballExists = spaceOriginBall.children.contains { entity in
+                entity.name == "ball"
+            }
+
+            if !ballExists {
+                let ball = ModelEntity(
+                    mesh: .generateSphere(radius: 0.6),
+                    materials: [SimpleMaterial(color: .red, isMetallic: true)]
+                )
+                ball.name = "ball"
+                ball.position = [0, 0, 0]
+                ball.generateCollisionShapes(recursive: true)
+                ball.components.set(InputTargetComponent())
+
+                ball.components.set(TapComponent())
+
+                ball.components.set(MoveComponent())
+                let camera = PerspectiveCamera()
+                camera.position = [0, 0, 5] // Position relative to the character
+
+                ball.addChild(camera)
+
+                spaceOriginBall.addChild(ball)
+            }
+
+            if let meadowModel = entityModelDictionaryCore["meadow"] {
+                spaceOriginBall.addChild(meadowModel.entity)
+            }
+            if let waterModel = entityModelDictionaryCore["water"] {
+                spaceOriginBall.addChild(waterModel.entity)
+            }
+
+            AppLogger.shared.info("End of ball realityview")
+        }
+        update: { content in
+            if let ball = content.entities.first(where: { $0.name == "ball" }),
+
+               var tapComponent = ball.components[TapComponent.self],
+               var moveComponent = ball.components[MoveComponent.self]
+            {
+
+                if tapComponent.didTap {
+                    gameModelView.showQuestion = true
+                    tapComponent.didTap = false
+                    ball.components[TapComponent.self] = tapComponent
+                    ball.components.remove(TapComponent.self)
+                }
+            }
+        }
+        .installTapGesture()
+    }
+}
+
+struct AnswerButton: View {
+    let option: Int
+    @Binding var selectedOption: Int?
+    var body: some View {
+        Button(action: {
+            selectedOption = option
+        }) {
+            Text("\(option)")
+                .foregroundColor(.white)
+        }
+        .buttonStyle(CustomButtonStyle())
+        .overlay(
+            selectedOption == option
+                ? RoundedRectangle(cornerRadius: 8)
+                .stroke(option == 4 ? Color.green : Color.red, lineWidth: 4)
+                : nil
+        )
+    }
+}
+
+==== MatheMagicApp/Views/Scene Functions/setupCharacterWithComponents.swift ====
+
+import AnimLib
+import CoreLib
+import RealityKit
+
+
+@MainActor func setupCharacterWithComponents(
+    entityDictionaryID: String,
+    gameModelView: GameModelView
+) -> Entity {
+    var entity = Entity()
+    if let template = entityModelDictionaryCore[entityDictionaryID] {
+        entity = template.entity
+
+        entity.components[EventComponent.self] = EventComponent(dataProvider: gameModelView) // ERROR: Cannot find 'gameModelView' in scope
+
+        if let dataManager = template.dataManager {
+            entity.components[DataCenterComponent.self] = DataCenterComponent(dataManager: dataManager)
+        }
+
+        entity.components[BrainComponent.self] = BrainComponent()
+
+        entity.components[TravelComponent.self] = TravelComponent()
+
+        entity.components.set(AnimationComponent())
+
+    } else { AppLogger.shared.error("Error: did not find \(entityDictionaryID) key in entityTemplateDictionary") }
+    return entity
+}
+
+==== AnimLibS/Components/TravelComponent.swift ====
+
+
+import AssetLib
+import CoreLib
+import RealityKit
+import simd
+
+public struct TravelComponent: RealityKit.Component {
+    var lagAnimationTime: Float = .zero
+    
+    var lastBoneOnGround: [ExplicitBoneName] = []
+        
+    var lagTransforms: [ExplicitBoneName: Transform] = [:]
+    
+    var lagDeltaRotation: [Float] = [] // we are tracking only y axis of the quaternion
+    var lagDeltaTranslation: [simd_float3] = []
+    
+    public init() {}
+}
+
+public class TravelSystem: RealityKit.System {
+    @MainActor private static let query = animationComponentQuery
+    
+    @MainActor private static let teraQuery = EntityQuery(where: .has(TeraComponent.self))
+    
+    public required init(scene: RealityKit.Scene) {}
+    
+    public static var dependencies: [SystemDependency] { [.after(AnimationSystem.self)] }
+    
+    public func update(context: SceneUpdateContext) {
+        let deltaTime = Float(context.deltaTime)
+        
+        let terrains = Array(context.entities(matching: Self.teraQuery, updatingSystemWhen: .rendering))
+        // check and warn in there is more than one
+        guard terrains.count == 1 else {
+            AppLogger.shared.error("TravelSystem: Error - more than one terrain entity found, expected only one.")
+            return
+        }
+        
+        guard let terrain = terrains.first else {
+            AppLogger.shared.error("TravelSystem: Error - terrain entity not found.")
+            return
+        }
+        
+        guard
+            var teraComponent = terrain.components[TeraComponent.self]
+        else {
+            AppLogger.shared.error("Error: Failed to get teraComponent")
+            return
+        }
+    
+        let travellers = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
+        for traveller in travellers {
+            guard
+                let animComponent = traveller.components[AnimationComponent.self],
+                let brainComponent = traveller.components[BrainComponent.self],
+                var travelComponent = traveller.components[TravelComponent.self],
+                let dataCenterComponent = traveller.components[DataCenterComponent.self]
+            else { continue }
+            
+            if printTravelSystem { AppLogger.shared.anim(" ----- TravelSystem is running for  \(traveller.name) at \((dataCenterComponent.gameTime * 10000).rounded() / 10000) with deltaTime \((context.deltaTime * 10000).rounded() / 10000)-----") }
+            
+            guard brainComponent.animationSequence.isEmpty == false else {
+                AppLogger.shared.error("Error: animationSequence is empty in TravelSystem")
+                continue
+            }
+            
+
+            let boneOnGround = brainComponent.animationSequence[0].startPoseName.groundBone
+            
+            let deltaTransform = fixFootOnGround(traveller: traveller, travelComponent: &travelComponent, boneOnGround: boneOnGround, gameTime: Float(dataCenterComponent.gameTime))
+            
+            if printPlot { AppLogger.shared.anim(" Traveller location from TravelSystem: \(traveller.transform.translation)") }
+            
+
+            if teraComponent.terrainAttached == true,
+                let y = TerrainMeshBuilder.sampledHeight(
+                worldX: traveller.transform.translation.x,
+                worldZ: traveller.transform.translation.z,
+                heightMap: teraComponent.heightMap,
+                gridCols: teraComponent.heightMapWidth,
+                horizontalSpacing: teraComponent.heightMapSpacing,
+                verticalScale: teraComponent.heightMapVerticalScale,
+                seaLevel: teraComponent.heightMapSeaLevel,
+                parentTransform: teraComponent.terrainEntityTransform
+            ) {
+                traveller.transform.translation.y = y
+            }
+            
+            
+            traveller.components.set(travelComponent)
+            traveller.components.set(animComponent)
+            
+            
+            
+            let localHead = getLocalJointTransform(entity: traveller, boneName: .head)
+            let localLThigh = getLocalJointTransform(entity: traveller, boneName: .leftThigh)
+            let localRThigh = getLocalJointTransform(entity: traveller, boneName: .rightThigh)
+            let localLFoot = getLocalJointTransform(entity: traveller, boneName: .leftFoot)
+            let localRFoot = getLocalJointTransform(entity: traveller, boneName: .rightFoot)
+            let localPelvis = getLocalJointTransform(entity: traveller, boneName: .pelvis)
+            let localWaist = getLocalJointTransform(entity: traveller, boneName: .waist)
+
+            if printTravelSystem {
+                AppLogger.shared.plot("Plot: gameTime: \(dataCenterComponent.gameTime), deltaTime: \(deltaTime), head: \(localHead), lThigh: \(localLThigh), rThigh: \(localRThigh), lFoot: \(localLFoot), rFoot: \(localRFoot), waist: \(localWaist), pelvis: \(localPelvis), isNewSegment: \(brainComponent.isNewSegment)")
+            }
+        }
+    }
+}
+
+@MainActor
+
+func fixFootOnGround(
+    traveller: Entity,
+    travelComponent: inout TravelComponent,
+    boneOnGround: ExplicitBoneName,
+    gameTime: Float
+) -> Transform {
+    guard
+        let leftFootPath = ExplicitBoneName.leftFoot.fullPath(),
+        let rightFootPath = ExplicitBoneName.rightFoot.fullPath(),
+        let leftToePath = ExplicitBoneName.leftToeBase.fullPath(),
+        let rightToePath = ExplicitBoneName.rightToeBase.fullPath()
+    else {
+        AppLogger.shared.error("Error: Invalid bone name")
+        return .identity
+    }
+    let identityQuat = simd_quatf(ix: 0, iy: 0, iz: 0, r: 1)
+
+    guard
+        let leftFootTransform = getJointWorldTransform(of: leftFootPath, in: traveller),
+        let rightFootTransform = getJointWorldTransform(of: rightFootPath, in: traveller),
+        let leftToeTransform = getJointWorldTransform(of: leftToePath, in: traveller),
+        let rightToeTransform = getJointWorldTransform(of: rightToePath, in: traveller)
+    else {
+        AppLogger.shared.error("Error: Bone transforms not found for \(traveller.name)")
+        return .identity
+    }
+
+    let activeTransform: Transform
+    switch boneOnGround {
+    case .leftFoot: activeTransform = leftFootTransform
+    case .rightFoot: activeTransform = rightFootTransform
+    case .leftToeBase: activeTransform = leftToeTransform
+    case .rightToeBase: activeTransform = rightToeTransform
+    default:
+        AppLogger.shared.error("Error: Invalid boneOnGround")
+        return .identity
+    }
+
+    var isSwitching = false
+    var lagIsSwitching = false
+    if travelComponent.lastBoneOnGround.count >= 2 {
+        isSwitching = (boneOnGround != travelComponent.lastBoneOnGround[0])
+        lagIsSwitching = (travelComponent.lastBoneOnGround[0] != travelComponent.lastBoneOnGround[1])
+    }
+
+    if travelComponent.lagTransforms[boneOnGround] == nil {
+        travelComponent.lagTransforms[boneOnGround] = activeTransform
+    }
+    let usedLagTransform = travelComponent.lagTransforms[boneOnGround] ?? activeTransform
+
+    var deltaRotation = usedLagTransform.rotation != identityQuat
+        ? usedLagTransform.rotation * activeTransform.rotation.inverse
+        : identityQuat
+
+    deltaRotation = simd_quatf(
+        ix: 0,
+        iy: deltaRotation.imag.y,
+        iz: 0,
+        r: deltaRotation.real
+    ).normalized
+
+    traveller.orientation *= deltaRotation
+
+    guard
+        let activeTransformAfter = getJointWorldTransform(
+            of: boneOnGround.fullPath()!,
+            in: traveller
+        )
+    else {
+        AppLogger.shared.error("Error: Could not get active transform after rotation for \(traveller.name)")
+        return .identity
+    }
+
+    let usedLagTranslation = usedLagTransform.translation
+    var deltaLocation = activeTransformAfter.translation - usedLagTranslation
+
+    if activeTransformAfter.translation.y > 0.01 {
+        deltaLocation.y = min(activeTransformAfter.translation.y, 0.001)
+    } else if activeTransformAfter.translation.y < -0.01 {
+        deltaLocation.y = max(activeTransformAfter.translation.y, -0.001)
+    }
+    deltaLocation.y = 0 // enforce foot on ground
+
+    traveller.transform.translation -= deltaLocation
+
+    if travelComponent.lagDeltaTranslation.count >= 2 {
+        travelComponent.lagDeltaTranslation.removeLast()
+    }
+    travelComponent.lagDeltaTranslation.insert(deltaLocation, at: 0)
+
+    if travelComponent.lagDeltaRotation.count >= 2 {
+        travelComponent.lagDeltaRotation.removeLast()
+    }
+    travelComponent.lagDeltaRotation.insert(deltaRotation.imag.y, at: 0)
+
+    for (boneName, _) in travelComponent.lagTransforms {
+        if let fullPath = boneName.fullPath() {
+            travelComponent.lagTransforms[boneName] =
+                getJointWorldTransform(of: fullPath, in: traveller) ?? .identity
+        }
+    }
+
+    travelComponent.lastBoneOnGround.insert(boneOnGround, at: 0)
+    if travelComponent.lastBoneOnGround.count > 2 {
+        travelComponent.lastBoneOnGround.removeLast()
+    }
+
+    let correction = Transform(scale: .one,
+                               rotation: deltaRotation,
+                               translation: -deltaLocation)
+
+    return correction
+}
+
+//        AppLogger.shared.error("Error: Invalid bone name")
+//        AppLogger.shared.error("Error: Bone transforms not found for \(traveller.name)")
+//        AppLogger.shared.error("Error: Invalid boneOnGround")
+//        AppLogger.shared.error("Error: Could not get active transform after rotation for \(traveller.name)")
+
+func shouldUsePreviousValue(previousCount: Int,
+                            isSwitching: Bool,
+                            lagIsSwitching: Bool,
+                            currentReal: Float? = nil,
+                            previousReal: Float? = nil) -> Bool
+{
+    guard previousCount >= 1 else { return false }
+    
+    if let curReal = currentReal, let prevReal = previousReal {
+        if curReal * prevReal < 0 {
+            return false
+        }
+    }
+    
+    if isSwitching || lagIsSwitching {
+        return true
+    }
+    
+    return false
+}
+
+func clampDeltaLocation(_ newDelta: SIMD3<Float>, previousDelta: SIMD3<Float>, allowedChange: SIMD3<Float>) -> SIMD3<Float> {
+    var clamped = SIMD3<Float>()
+    
+    for i in 0 ..< 3 {
+        let prev = previousDelta[i]
+        let current = newDelta[i]
+        
+        if Swift.abs(prev) < 0.0001 {
+            clamped[i] = current
+        } else {
+            let lowerBound = Swift.abs(prev) * (1 - allowedChange[i])
+            let upperBound = Swift.abs(prev) * (1 + allowedChange[i])
+            
+            let currentAbs = Swift.abs(current)
+            let clampedAbs = min(max(currentAbs, lowerBound), upperBound)
+            clamped[i] = copysign(clampedAbs, current)
+        }
+    }
+    
+    return clamped
+}
+
+func clampDeltaRotation(_ newDelta: simd_quatf,
+                        _ prevDelta: simd_quatf?,
+                        allowedChange: Float = 0.03, gameTime: Float) -> simd_quatf
+{
+    guard let prev = prevDelta else {
+        return newDelta
+    }
+    
+    let newImagLen = simd_length(newDelta.imag)
+    let prevImagLen = simd_length(prev.imag)
+    
+    if prevImagLen < 0.0001 {
+        return newDelta
+    }
+    
+    let lowerBound = Swift.abs(prevImagLen) * (1 - allowedChange)
+    let upperBound = Swift.abs(prevImagLen) * (1 + allowedChange)
+    
+    if newImagLen >= lowerBound, newImagLen <= upperBound {
+        return newDelta
+    }
+    
+    let targetLen = (newImagLen > upperBound) ? upperBound : lowerBound
+    let scale = (newImagLen > 0.00001) ? (targetLen / newImagLen) : 1.0
+    let scaledImag = newDelta.imag * scale
+    
+    let sq = max(0, 1 - targetLen * targetLen)
+    let candidatePos = simd_quatf(vector: SIMD4<Float>(scaledImag.x,
+                                                       scaledImag.y,
+                                                       scaledImag.z,
+                                                       sqrt(sq)))
+    let candidateNeg = simd_quatf(vector: SIMD4<Float>(scaledImag.x,
+                                                       scaledImag.y,
+                                                       scaledImag.z,
+                                                       -sqrt(sq)))
+    
+    let dotPos = simd_dot(candidatePos.vector, prev.vector)
+    let dotNeg = simd_dot(candidateNeg.vector, prev.vector)
+    let chosenCandidate = dotPos >= dotNeg ? candidatePos : candidateNeg
+    
+    return simd_normalize(chosenCandidate)
+}
+
+==== AnimLibS/Utilities/SkeletonUtilities.swift ====
+
+import RealityKit
+import CoreLib
+
+
+@MainActor func getSkeleton(in modelComponent: ModelComponent) -> MeshSkeletonCollection {
+    let skeletons = modelComponent.mesh.contents.skeletons
+    
+    return skeletons
+}
+
+
+@MainActor func getLocalJointTransformString(from modelEntity: ModelEntity, jointName: String) -> Transform? {
+    guard let jointIndex = modelEntity.jointNames.firstIndex(where: { $0.contains(jointName) }) else {
+        AppLogger.shared.error("Error: Joint named \(jointName) not found")
+        AppLogger.shared.anim("modelEntity.jointNames: \(modelEntity.jointNames)")
+        return nil
+    }
+    
+    let jointLocalTransform = modelEntity.jointTransforms[jointIndex]
+    
+    return jointLocalTransform
+}
+
+
+func generateListOfJointsInHierarchy(from jointName: String) -> [String] {
+    let jointComponents = jointName.split(separator: "/").map { String($0) }
+    
+    var jointList: [String] = []
+    
+    for i in 1 ... jointComponents.count {
+        let jointPath = jointComponents.prefix(i).joined(separator: "/")
+        jointList.append(jointPath)
+    }
+    
+    return jointList
+}
+
+
+@MainActor func getJointWorldTransform(of jointName: String, in entity: Entity) -> Transform? {
+    let modelEntity = entity.parentEntitySet().modelEntity
+    var worldTransformMatrix = matrix_multiply(entity.transform.matrix, modelEntity.transform.matrix)
+    
+    
+    let jointList = generateListOfJointsInHierarchy(from: jointName)
+    
+    
+    for joint in jointList {
+        guard let jointLocalTransform = getLocalJointTransformString(from: modelEntity, jointName: joint) else {
+            AppLogger.shared.error("Error: Joint \(joint) is not found for \(entity.name).")
+            return nil
+        }
+        
+        worldTransformMatrix = matrix_multiply(worldTransformMatrix, jointLocalTransform.matrix)
+    }
+    let worldTransform = Transform(matrix: worldTransformMatrix)
+    
+    return worldTransform
+}
+
+
+@MainActor func getCurrentJointTransformRelativeToRoot(of jointName: String, in entity: Entity) -> Transform? {
+    let modelEntity = entity.parentEntitySet().modelEntity
+    
+//        AppLogger.shared.error("Error: Root bone 'BoneRoot' not found for \(entity.name)")
+    
+    var relativeTransformMatrix = identityTransform.matrix
+    
+    let jointList = generateListOfJointsInHierarchy(from: jointName)
+    
+    for joint in jointList {
+        guard let jointRelativeTransform = getLocalJointTransformString(from: modelEntity, jointName: joint) else {
+            AppLogger.shared.error("Error: Joint \(joint) is not found for \(entity.name). Err2")
+            return nil
+        }
+        
+        relativeTransformMatrix = matrix_multiply(relativeTransformMatrix, jointRelativeTransform.matrix)
+    }
+    
+    let relativeTransform = Transform(matrix: relativeTransformMatrix)
+    
+    return relativeTransform
+}
+
+@MainActor
+public func getJointWorldTransform(bone: BoneName, side: Side, in entity: Entity) -> Transform? {
+    let paths = BonePaths.getPaths(for: side)
+    guard let jointPath = paths[bone] else {
+        AppLogger.shared.error("Error: No path found for bone \(bone.rawValue) on side \(side).")
+        return nil
+    }
+    
+    return getJointWorldTransform(of: jointPath, in: entity)
+}
+
+@MainActor
+public func getCurrentJointTransformRelativeToRoot(bone: BoneName, side: Side, in entity: Entity) -> Transform? {
+    let paths = BonePaths.getPaths(for: side)
+    guard let jointPath = paths[bone] else {
+        AppLogger.shared.error("Error: No path found for bone \(bone.rawValue) on side \(side).")
+        return nil
+    }
+    
+    return getCurrentJointTransformRelativeToRoot(of: jointPath, in: entity)
+}
+
+
+
+
+@MainActor
+func getLocalJointTransform(
+    entity: Entity,
+    boneName: ExplicitBoneName
+) -> Transform? {
+    
+    let modelEntity = entity.parentEntitySet().modelEntity
+    
+    guard let fullPath = boneName.fullPath() else {
+        AppLogger.shared.error("Error: No fullPath available for ExplicitBoneName \(boneName)")
+        return nil
+    }
+
+    guard let jointIndex = modelEntity.jointNames.firstIndex(of: fullPath) else {
+        AppLogger.shared.error("Error: Joint path '\(fullPath)' not found")
+        AppLogger.shared.anim("modelEntity.jointNames: \(modelEntity.jointNames)")
+        return nil
+    }
+
+    return modelEntity.jointTransforms[jointIndex]
+}

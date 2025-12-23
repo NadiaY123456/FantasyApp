@@ -1,0 +1,1456 @@
+==== MacVRTrial/Packages/RendererCore/Sources/Scene/Heightfield/HeightSparseStreamer+Fill.swift ====
+
+
+import Metal
+import RendererCoreC
+import simd
+
+extension HeightSparseStreamer {
+    struct FillJob {
+        var ringLevel: UInt32
+        var dstOriginPx: SIMD2<UInt32>
+        var sizePx: SIMD2<UInt32>
+        var dstMetersPerTexel: Float
+        var imageIndex: UInt32
+        var srcOriginPx: SIMD2<UInt32>
+        var srcMetersPerTexel: Float
+        var zScale: Float
+        var zBias: Float
+    }
+
+    struct MipJob {
+        var fromLevel: UInt32
+        var originPx: SIMD2<UInt32>
+        var sizePx: SIMD2<UInt32>
+    }
+
+    private static let fillThreadgroup = MTLSize(width: 8, height: 8, depth: 1)
+
+    @inline(__always)
+    private func imod(_ a: Int, _ m: Int) -> Int { let r = a % m; return r < 0 ? r + m : r }
+
+    func atlasSelection(for key: TileKey,
+                        ringLevel: Int,
+                        originTile: SIMD2<Int>,
+                        worldBaseTile: SIMD2<Int>,
+                        settings: FrameSettings) -> (imageIndex: Int, originPx: SIMD2<UInt32>)?
+    {
+        @inline(__always) func wrap(_ v: Float, _ period: Float) -> Float {
+            if period <= 0 { return v }
+            var r = fmodf(v, period)
+            if r < 0 { r += period }
+            return r
+        }
+
+        let lvl = max(0, ringLevel)
+        let dstMPT = settings.terrainMetersPerTexel * Float(1 << lvl)
+
+        let ringX = levels[lvl].ringTilesX
+        let ringY = levels[lvl].ringTilesY
+
+        let dx = imod(key.x - originTile.x, ringX)
+        let dy = imod(key.y - originTile.y, ringY)
+        let worldTile = SIMD2<Int>(worldBaseTile.x + dx, worldBaseTile.y + dy)
+
+        let pageTopLeftPx = SIMD2<Int>(
+            worldTile.x * Int(tile.width),
+            worldTile.y * Int(tile.height)
+        )
+
+        var wx = Float(pageTopLeftPx.x) * dstMPT
+        var wz = Float(pageTopLeftPx.y) * dstMPT
+        wx = worldXMin + wrap(wx - worldXMin, worldWidthMeters)
+        wz = worldZMin + wrap(wz - worldZMin, worldDepthMeters)
+
+        let tilesPerImgX = max(1, tilesPerImageX)
+        let tilesPerImgY = max(1, tilesPerImageY)
+
+        let tileXf = (wx - worldXMin) / max(1e-6, tileWorldSizeMetersX)
+        let tileYf = (wz - worldZMin) / max(1e-6, tileWorldSizeMetersY)
+
+        let imgX = min(imagesWide - 1, max(0, Int(floor(tileXf)) / tilesPerImgX))
+        let imgY = min(imagesHigh - 1, max(0, Int(floor(tileYf)) / tilesPerImgY))
+
+        guard let imageIndex = imageIndexForImageXY[ImageCoord(x: imgX, y: imgY)],
+              asset.textures.indices.contains(imageIndex) else {
+            return nil
+        }
+
+        let srcMPT = asset.desc.metersPerTexel
+        let metersPerImgX = Float(tilesPerImgX) * tileWorldSizeMetersX
+        let metersPerImgY = Float(tilesPerImgY) * tileWorldSizeMetersY
+
+        let localX_m = (wx - worldXMin) - Float(imgX) * metersPerImgX
+        let localY_m = (wz - worldZMin) - Float(imgY) * metersPerImgY
+
+        let ratio = dstMPT / max(1e-6, srcMPT)
+        var needW = Int(ceil(max(1.0, Float(tile.width)  * ratio)))
+        var needH = Int(ceil(max(1.0, Float(tile.height) * ratio)))
+
+        let tex = asset.textures[imageIndex]
+        needW = min(needW, tex.width)
+        needH = min(needH, tex.height)
+
+        var pxX = Int(floor(localX_m / max(1e-6, srcMPT)))
+        var pxY = Int(floor(localY_m / max(1e-6, srcMPT)))
+        pxX = min(max(0, tex.width  - needW), max(0, pxX))
+        pxY = min(max(0, tex.height - needH), max(0, pxY))
+
+        return (imageIndex, SIMD2<UInt32>(UInt32(pxX), UInt32(pxY)))
+    }
+
+    func enqueueFill(level i: Int,
+                     key: TileKey,
+                     originTile: SIMD2<Int>,
+                     worldBaseTile: SIMD2<Int>,
+                     settings: FrameSettings)
+    {
+        guard pendingFills.indices.contains(i) else { return }
+
+        let dstOriginPx = SIMD2<UInt32>(UInt32(key.x * tile.width),
+                                        UInt32(key.y * tile.height))
+
+        guard let sel = atlasSelection(for: key,
+                                       ringLevel: i,
+                                       originTile: originTile,
+                                       worldBaseTile: worldBaseTile,
+                                       settings: settings),
+              asset.textures.indices.contains(sel.imageIndex) else { return }
+
+        let z = asset.zScaleBiasPerImage[sel.imageIndex]
+        let zScale = z.x
+        let zBias  = z.y
+
+        precondition(zScale.isFinite && zBias.isFinite && abs(zScale) >= 1e-9,
+                     "HeightStream: invalid zScale/zBias for imageIndex=\(sel.imageIndex)")
+
+        let job = FillJob(
+            ringLevel: UInt32(i),
+            dstOriginPx: dstOriginPx,
+            sizePx: SIMD2<UInt32>(UInt32(tile.width), UInt32(tile.height)),
+            dstMetersPerTexel: settings.terrainMetersPerTexel * Float(1 << i),
+            imageIndex: UInt32(sel.imageIndex),
+            srcOriginPx: sel.originPx,
+            srcMetersPerTexel: asset.desc.metersPerTexel,
+            zScale: zScale,
+            zBias: zBias
+        )
+
+        pendingFills[i].append(job)
+        setTileValid(level: i, key: key, true)
+    }
+
+    @discardableResult
+    public func encodePendingFills(on cb: MTL4CommandBuffer,
+                            rings: HeightClipmapRings,
+                            asset: HeightfieldAsset) -> Bool
+    {
+        var did = false
+        var need = false
+        var jobsSubmitted = 0
+        for i in pendingFills.indices where !pendingFills[i].isEmpty {
+            need = true; break
+        }
+        guard need else { return false }
+
+        guard let enc = ctx.beginComputeEncoder(cb, label: "HeightStream.FillTiles") else { return false }
+
+        ctx.satisfyBarrier_SparseToCompute(enc, on: cb)
+
+        for (lvl, jobs) in pendingFills.enumerated() where !jobs.isEmpty {
+            guard rings.textures.indices.contains(lvl) else { continue }
+            let dstTex = rings.textures[lvl]
+            jobsSubmitted += jobs.count
+
+            for job in jobs {
+                enc.setComputePipelineState(fillPSO)
+                var J = job
+                let _addrJ = ctx.constSetCompute(enc, rawIndex: 0, &J)
+                ctx.setAndBindComputeAT(enc,
+                                        textures: [
+                                            (tex: dstTex, index: ComputeTextureIndex.heightDst.rawValue),
+                                            (tex: asset.textures[Int(job.imageIndex)], index: ComputeTextureIndex.heightSrc.rawValue)
+                                        ],
+                                        buffers:  [(addr: _addrJ, index: 0)])
+
+                let grid = MTLSize(width: Int(job.sizePx.x), height: Int(job.sizePx.y), depth: 1)
+                #if DEBUG
+                ctx.dispatchChecked(enc, threadsPerGrid: grid, threadsPerThreadgroup: Self.fillThreadgroup)
+                #else
+                enc.dispatchThreads(threadsPerGrid: grid, threadsPerThreadgroup: Self.fillThreadgroup)
+                #endif
+                ctx.noteDidDispatch(cb)
+
+                ctx.barrierOnCompute(enc, after: .dispatch, before: .dispatch)
+
+                enc.setComputePipelineState(mipPSO)
+                var region = MipJob(fromLevel: 0,
+                                    originPx: job.dstOriginPx,
+                                    sizePx: job.sizePx)
+                let lastLevel = UInt32(max(0, dstTex.mipmapLevelCount - 1))
+                while region.fromLevel < lastLevel && (region.sizePx.x > 1 || region.sizePx.y > 1) {
+                    let _addrM = ctx.constSetCompute(enc, rawIndex: 0, &region)
+                    ctx.setAndBindComputeAT(enc,
+                                            textures: [
+                                                (tex: dstTex, index: ComputeTextureIndex.heightDst.rawValue), // read
+                                                (tex: dstTex, index: ComputeTextureIndex.heightSrc.rawValue)  // write
+                                            ],
+                                            buffers:  [(addr: _addrM, index: 0)])
+
+                    let grid2 = MTLSize(
+                        width:  max(1, Int(region.sizePx.x) >> 1),
+                        height: max(1, Int(region.sizePx.y) >> 1),
+                        depth:  1
+                    )
+                    #if DEBUG
+                    ctx.dispatchChecked(enc, threadsPerGrid: grid2, threadsPerThreadgroup: Self.fillThreadgroup)
+                    #else
+                    enc.dispatchThreads(threadsPerGrid: grid2, threadsPerThreadgroup: Self.fillThreadgroup)
+                    #endif
+                    ctx.noteDidDispatch(cb)
+
+                    ctx.barrierOnCompute(enc, after: .dispatch, before: .dispatch)
+
+                    region = MipJob(
+                        fromLevel: region.fromLevel + 1,
+                        originPx: SIMD2<UInt32>(region.originPx.x >> 1, region.originPx.y >> 1),
+                        sizePx:   SIMD2<UInt32>(region.sizePx.x   >> 1, region.sizePx.y   >> 1)
+                    )
+                }
+
+                did = true
+            }
+            pendingFills[lvl].removeAll(keepingCapacity: true)
+        }
+
+        enc.endEncoding()
+        ctx.releaseEncoderAT(enc)
+        return did
+    }
+}
+
+==== MacVRTrial/Packages/RendererCore/Sources/Scene/Heightfield/HeightSparseStreamer.swift ====
+
+
+import Metal
+import simd
+
+private struct ClipFillParams {
+    var level: UInt32
+    var originPx: SIMD2<UInt32>
+    var sizePx: SIMD2<UInt32>
+}
+
+private enum ClearBind {
+    static let tex = 0
+    static let params = 0 // P
+}
+
+public final class HeightSparseStreamer {
+    fileprivate let device: MTLDevice
+    fileprivate let queue: any MTL4CommandQueue
+    unowned let ctx: RenderContext
+    fileprivate let rings: HeightClipmapRings
+    fileprivate let library: MTLLibrary
+    let asset: HeightfieldAsset
+
+    private var primed = false
+    private var didQueueInitialFills = false
+    private let budgetBytes: Int
+    private let pageBytes: Int
+    let tile: MTLSize
+    private let heap: MTLHeap
+    private var heapHeadTile: Int = 0
+    private var heapCapacityTiles: Int = 0
+    private var freeList: [Int] = [] // heap tile offsets available for reuse (heapOffset units)
+    private var mappedBytes: Int = 0 // accounting for live mapped pages (approx, in bytes)
+
+    struct TileKey: Hashable { let x: Int; let y: Int }
+
+    struct ImageCoord: Hashable { let x: Int; let y: Int } // top-level image grid (e.g., 2x2)
+
+    let tilesX: Int
+    let tilesY: Int
+    let tileWorldSizeMetersX: Float
+    let tileWorldSizeMetersY: Float
+
+    let imagesWide: Int
+    let imagesHigh: Int
+    let tilesPerImageX: Int
+    let tilesPerImageY: Int
+
+    let worldXMin: Float
+    let worldZMin: Float
+    let worldWidthMeters: Float
+    let worldDepthMeters: Float
+
+    var imageIndexForImageXY: [ImageCoord: Int] = [:]
+
+    @inline(__always)
+    func wrapMeters(_ v: Float, _ extent: Float) -> Float {
+        guard extent > 0 else { return 0 }
+        var r = fmodf(v, extent)
+        if r < 0 { r += extent }
+        return r
+    }
+
+    struct LevelState {
+        let tex: MTLTexture
+        let ringTilesX: Int
+        let ringTilesY: Int
+
+        var originTile: SIMD2<Int>
+
+        var worldBaseTile: SIMD2<Int>
+
+        var mapped: Set<TileKey> // currently mapped tiles (mip 0)
+        var heapByTile: [TileKey: Int] // location in placement heap
+    }
+
+    var levels: [LevelState] = []
+
+    private var ringTileValidBuffers: [MTLBuffer] = []
+    private var ringTileValidCounts: [Int] = []
+
+    public var tileValidBuffers: [MTLBuffer] { ringTileValidBuffers }
+
+    private let clearPSO: MTLComputePipelineState
+    let fillPSO: MTLComputePipelineState
+    let mipPSO: MTLComputePipelineState
+    private var pendingClears: [[TileKey]] = [] // per-level list of tiles to clear this frame
+    private var pendingMipClears: [[Int]] = [] // per-ring list of mip levels to clear once (whole level)
+    var pendingFills: [[FillJob]] = [] // per-level fill jobs queued for this frame
+
+    #if DEBUG
+    public private(set) var debugLastTickFrameIndex: UInt64?
+    public func debugMarkTick(frameIndex: UInt64) {
+        debugLastTickFrameIndex = frameIndex
+    }
+    #endif
+
+    @inline(__always) private func alignUp(_ n: Int, _ a: Int) -> Int { (n + (a - 1)) & ~(a - 1) }
+
+    @inline(__always)
+    private func availablePages() -> Int {
+        let remaining = max(0, heapCapacityTiles - heapHeadTile)
+        return freeList.count + remaining
+    }
+
+    @inline(__always)
+    private func allocatePages(count: Int) -> Int {
+        precondition(count == 1, "Only per-tile allocations are supported (count=1)")
+
+        if let off = freeList.popLast() {
+            mappedBytes &+= pageBytes
+            return off
+        }
+
+        let off = heapHeadTile
+        precondition(off + 1 <= heapCapacityTiles,
+                     "Placement heap exhausted; raise RenderSettings.terrainWorkingSetBudgetMB")
+
+        heapHeadTile &+= 1
+        mappedBytes &+= pageBytes
+        return off
+    }
+
+    @inline(__always)
+    private func freePages(offset: Int, count: Int) {
+        precondition(count == 1, "Only per-tile frees are supported (count=1)")
+        freeList.append(offset) // offset is a heap tile index
+        mappedBytes &-= pageBytes
+    }
+
+    public init(device: MTLDevice,
+                queue: any MTL4CommandQueue,
+                ctx: RenderContext,
+                rings: HeightClipmapRings,
+                budgetMB: Int,
+                library: MTLLibrary,
+                archive: MTLBinaryArchive?,
+                asset: HeightfieldAsset,
+                manifest: TerrainManifest)
+    {
+        self.device = device
+        self.queue = queue
+        self.ctx = ctx
+        self.rings = rings
+        self.library = library
+        self.asset = asset
+
+        self.tilesX = manifest.grid.tilesX
+        self.tilesY = manifest.grid.tilesY
+        self.tileWorldSizeMetersX = Float(manifest.grid.tileWorldSize.width)
+        self.tileWorldSizeMetersY = Float(manifest.grid.tileWorldSize.depth)
+
+        self.worldXMin = Float(manifest.grid.worldRect.xMin)
+        self.worldZMin = Float(manifest.grid.worldRect.zMin)
+
+        var maxImgX = 0, maxImgY = 0
+        for t in manifest.tiles {
+            maxImgX = max(maxImgX, t.tileX)
+            maxImgY = max(maxImgY, t.tileY)
+        }
+        self.imagesWide = maxImgX + 1
+        self.imagesHigh = maxImgY + 1
+
+        let srcMetersPerTexel = asset.desc.metersPerTexel
+        let srcW = asset.textures.first?.width ?? 0
+        let srcH = asset.textures.first?.height ?? 0
+        self.tilesPerImageX = max(1, Int(round(Float(srcW) * srcMetersPerTexel / max(1e-6, tileWorldSizeMetersX))))
+        self.tilesPerImageY = max(1, Int(round(Float(srcH) * srcMetersPerTexel / max(1e-6, tileWorldSizeMetersY))))
+
+        self.worldWidthMeters = Float(imagesWide * tilesPerImageX) * tileWorldSizeMetersX
+        self.worldDepthMeters = Float(imagesHigh * tilesPerImageY) * tileWorldSizeMetersY
+
+        imageIndexForImageXY.removeAll(keepingCapacity: true)
+        for (i, t) in manifest.tiles.enumerated() {
+            imageIndexForImageXY[ImageCoord(x: t.tileX, y: t.tileY)] = i
+        }
+
+        #if DEBUG
+        if Log.heightSparse || Log.heightfield {
+            print("[HeightStream] atlas images=\(imagesWide)x\(imagesHigh) "
+                + "tilesPerImage=\(tilesPerImageX)x\(tilesPerImageY) "
+                + "tileWS=\(tileWorldSizeMetersX)x\(tileWorldSizeMetersY) m "
+                + "world=\(Int(worldWidthMeters))x\(Int(worldDepthMeters)) m")
+        }
+        #endif
+
+        let soft = max(1, budgetMB) * 1048576
+        let hw = Int(device.recommendedMaxWorkingSetSize) // 0 if unknown
+        self.budgetBytes = (hw > 0) ? min(soft, hw) : soft
+        self.pageBytes = device.sparseTileSizeInBytes(sparsePageSize: rings.sparsePageSize)
+        self.tile = rings.tileSize
+
+        let heapDesc = MTLHeapDescriptor()
+        heapDesc.type = .placement
+        heapDesc.storageMode = .private
+        heapDesc.maxCompatiblePlacementSparsePageSize = rings.sparsePageSize
+
+        let heapSize = ((budgetBytes + pageBytes - 1) / pageBytes) * pageBytes
+        heapDesc.size = heapSize
+
+        guard let h = device.makeHeap(descriptor: heapDesc) else {
+            preconditionFailure("HeightSparseStreamer: makeHeap() failed for placement heap")
+        }
+        h.label = "Height.SparseHeap(p=\(rings.sparsePageSize))"
+        self.heap = h
+        self.heapCapacityTiles = max(0, h.size / pageBytes)
+
+        let tsize = rings.tileSize
+        var builtLevels: [LevelState] = []
+        builtLevels.reserveCapacity(rings.textures.count)
+        var validBuffers: [MTLBuffer] = []
+        var validCounts: [Int] = []
+
+        @inline(__always)
+        func alignUp256(_ n: Int) -> Int { (n + 255) & ~255 }
+
+        for (i, t) in rings.textures.enumerated() {
+            let tx = max(1, (t.width + tsize.width - 1) / tsize.width)
+            let ty = max(1, (t.height + tsize.height - 1) / tsize.height)
+            builtLevels.append(LevelState(tex: t,
+                                          ringTilesX: tx,
+                                          ringTilesY: ty,
+                                          originTile: .init(0, 0),
+                                          worldBaseTile: .init(0, 0),
+                                          mapped: [],
+                                          heapByTile: [:]))
+
+            let tileCount = max(1, tx * ty)
+            let byteLen = alignUp256(tileCount)
+            let buf = device.m4MakeBuffer(length: byteLen, role: .cpuWritableOften,
+                                          label: "Height.RingValid[L\(i)]")
+            memset(buf.contents(), 0, byteLen)
+
+            validBuffers.append(buf)
+            validCounts.append(tileCount)
+
+            #if !targetEnvironment(simulator)
+            ctx.register([buf], lifetime: .persistent, tag: "Height")
+            #endif
+        }
+        self.levels = builtLevels
+        self.ringTileValidBuffers = validBuffers
+        self.ringTileValidCounts = validCounts
+        self.pendingClears = Array(repeating: [], count: levels.count)
+        self.pendingMipClears = Array(repeating: [], count: levels.count)
+        self.pendingFills = Array(repeating: [], count: levels.count)
+
+        guard let fClear = library.makeFunction(name: "heightClipmapClear"),
+              fClear.functionType == .kernel
+        else {
+            preconditionFailure("HeightSparseStreamer: missing compute kernel 'heightClipmapClear' in library")
+        }
+
+        let base = MTL4LibraryFunctionDescriptor()
+        base.library = library
+        base.name = fClear.name
+
+        let spec = MTL4SpecializedFunctionDescriptor()
+        spec.functionDescriptor = base
+
+        let desc = MTL4ComputePipelineDescriptor()
+        desc.label = "ComputePSO.HeightClipmapClear"
+        desc.computeFunctionDescriptor = spec
+
+        let opts: MTL4CompilerTaskOptions? = {
+            guard let a = archive as? any MTL4Archive else { return nil }
+            let o = MTL4CompilerTaskOptions(); o.lookupArchives = [a]; return o
+        }()
+
+        do {
+            self.clearPSO = try ctx.compiler.makeComputePipelineState(descriptor: desc, compilerTaskOptions: opts)
+        } catch {
+            preconditionFailure("HeightSparseStreamer: failed to create PSO 'heightClipmapClear' (\(error))")
+        }
+
+        do {
+            guard let fFill = library.makeFunction(name: "heightClipmapBlitFromAtlas"),
+                  fFill.functionType == .kernel
+            else {
+                preconditionFailure("HeightSparseStreamer: missing compute kernel 'heightClipmapBlitFromAtlas'")
+            }
+
+            let base = MTL4LibraryFunctionDescriptor()
+            base.library = library
+            base.name = fFill.name
+
+            let spec = MTL4SpecializedFunctionDescriptor()
+            spec.functionDescriptor = base
+
+            let d = MTL4ComputePipelineDescriptor()
+            d.label = "ComputePSO.HeightClipmapFill"
+            d.computeFunctionDescriptor = spec
+
+            do {
+                self.fillPSO = try ctx.compiler.makeComputePipelineState(descriptor: d, compilerTaskOptions: opts)
+            } catch {
+                preconditionFailure("HeightSparseStreamer: failed to create PSO 'heightClipmapBlitFromAtlas' (\(error))")
+            }
+        }
+
+        do {
+            guard let fMip = library.makeFunction(name: "heightClipmapDownsample2x"),
+                  fMip.functionType == .kernel
+            else {
+                preconditionFailure("HeightSparseStreamer: missing compute kernel 'heightClipmapDownsample2x'")
+            }
+
+            let base = MTL4LibraryFunctionDescriptor()
+            base.library = library
+            base.name = fMip.name
+
+            let spec = MTL4SpecializedFunctionDescriptor()
+            spec.functionDescriptor = base
+
+            let d = MTL4ComputePipelineDescriptor()
+            d.label = "ComputePSO.HeightClipmapMip"
+            d.computeFunctionDescriptor = spec
+
+            do {
+                self.mipPSO = try ctx.compiler.makeComputePipelineState(descriptor: d, compilerTaskOptions: opts)
+            } catch {
+                preconditionFailure("HeightSparseStreamer: failed to create PSO 'heightClipmapDownsample2x' (\(error))")
+            }
+        }
+
+        #if DEBUG
+        if Log.heightSparse || Log.textures {
+            print("[HeightStream] heap size=\(heapSize) page=\(rings.sparsePageSize) (\(pageBytes) B) tiles=\(heapCapacityTiles)")
+        }
+        #endif
+    }
+
+    @inline(__always)
+    private func approxTailBytes(for tex: MTLTexture, startingAt firstLevel: Int) -> Int {
+        var pivot = max(firstLevel, min(tex.mipmapLevelCount - 1, tex.m4_firstMipInTail))
+        #if DEBUG
+        if Log.heightSparse || Log.textures, pivot < 0 || pivot >= tex.mipmapLevelCount {
+            let reported = pivot
+            print("[SparseTail] fallback pivot for \(tex.label ?? "<tex>") fmt=\(tex.pixelFormat) pageBytes=\(pageBytes) reported=\(reported)")
+        }
+        #endif
+        if pivot < 0 || pivot >= tex.mipmapLevelCount {
+            pivot = tex.m4_fallbackFirstMipInTail(pageBytes: pageBytes)
+        }
+
+        let start = min(firstLevel, pivot)
+        var w = max(1, tex.width >> start)
+        var h = max(1, tex.height >> start)
+        var tiles = 0
+        var lvl = start
+
+        while lvl < pivot {
+            let tx = max(1, (w + tile.width - 1) / tile.width)
+            let ty = max(1, (h + tile.height - 1) / tile.height)
+            tiles &+= max(1, tx * ty)
+            w = max(1, w >> 1)
+            h = max(1, h >> 1)
+            lvl &+= 1
+        }
+
+        tiles &+= 1
+        return tiles * pageBytes
+    }
+
+    @inline(__always)
+    func setTileValid(level: Int, key: TileKey, _ valid: Bool) {
+        guard level >= 0 && level < ringTileValidBuffers.count else { return }
+        let cols = levels[level].ringTilesX
+        let rows = levels[level].ringTilesY
+        guard key.x >= 0 && key.x < cols && key.y >= 0 && key.y < rows else { return }
+
+        let idx = key.y * cols + key.x
+        guard idx >= 0 && idx < ringTileValidCounts[level] else { return }
+
+        let p = ringTileValidBuffers[level].contents().assumingMemoryBound(to: UInt8.self)
+        p[idx] = valid ? 1 : 0
+    }
+
+    public func primeInitialMappingsIfNeeded(settings: FrameSettings) {
+        guard !primed else { return }
+
+        var bytes = 0
+        let pinMipTail = settings.terrainPinMipTail
+        let mipTailFirstLevel = max(1, settings.terrainMipTailFirstLevel)
+        let mipTailBudgetBytes = max(0, settings.terrainMipTailBudgetMB) * 1048576
+        var didMap = false
+
+        for i in levels.indices {
+            var ops: [MTL4UpdateSparseTextureMappingOperation] = []
+            let tex = levels[i].tex
+            let tilesX = levels[i].ringTilesX
+            let tilesY = levels[i].ringTilesY
+
+            #if DEBUG
+            precondition(tex.m4_isPlacementSparse, "Expected placement-sparse texture before mapping: \(tex.label ?? "<unnamed>")")
+            #endif
+
+            tileLoop: for ty in 0..<tilesY {
+                for tx in 0..<tilesX {
+                    let next = bytes + pageBytes
+                    if next > budgetBytes { break tileLoop }
+
+                    let off = allocatePages(count: 1)
+                    ops.append(MTL4UpdateSparseTextureMappingOperation(
+                        mode: .map,
+                        textureRegion: MTLRegionMake2D(tx, ty, 1, 1),
+                        textureLevel: 0, textureSlice: 0,
+                        heapOffset: off))
+
+                    let key = TileKey(x: tx, y: ty)
+                    levels[i].mapped.insert(key)
+                    levels[i].heapByTile[key] = off
+                    setTileValid(level: i, key: key, false)
+                    pendingClears[i].append(key)
+
+                    bytes = next
+                }
+            }
+
+            if !ops.isEmpty {
+                queue.updateMappings(texture: tex, heap: heap, operations: ops)
+                didMap = true
+                #if DEBUG
+                if Log.heightSparse || Log.textures { print("[SparseMap] PRIME \(tex.label ?? "<tex>") tiles=\(ops.count) mip0") }
+                #endif
+            }
+
+            if pinMipTail, tex.mipmapLevelCount > mipTailFirstLevel {
+                var pivot = min(tex.mipmapLevelCount - 1, tex.m4_firstMipInTail)
+                if pivot < 0 || pivot >= tex.mipmapLevelCount {
+                    pivot = tex.m4_fallbackFirstMipInTail(pageBytes: pageBytes)
+                }
+
+                let tailBytes = approxTailBytes(for: tex, startingAt: mipTailFirstLevel)
+                let tailCapOk = (tailBytes <= mipTailBudgetBytes)
+                if bytes &+ tailBytes <= budgetBytes, tailCapOk {
+                    var tailOps: [MTL4UpdateSparseTextureMappingOperation] = []
+
+                    if mipTailFirstLevel < pivot {
+                        for level in mipTailFirstLevel..<pivot {
+                            let wL = max(1, tex.width >> level)
+                            let hL = max(1, tex.height >> level)
+                            let tilesX_L = max(1, (wL + tile.width - 1) / tile.width)
+                            let tilesY_L = max(1, (hL + tile.height - 1) / tile.height)
+                            for ty in 0..<tilesY_L {
+                                for tx in 0..<tilesX_L {
+                                    let off = allocatePages(count: 1)
+                                    tailOps.append(MTL4UpdateSparseTextureMappingOperation(
+                                        mode: .map,
+                                        textureRegion: MTLRegionMake2D(tx, ty, 1, 1),
+                                        textureLevel: level, textureSlice: 0,
+                                        heapOffset: off))
+                                }
+                            }
+                            pendingMipClears[i].append(level)
+                        }
+                    }
+
+                    do {
+                        let off = allocatePages(count: 1)
+                        tailOps.append(MTL4UpdateSparseTextureMappingOperation(
+                            mode: .map,
+                            textureRegion: MTLRegionMake2D(0, 0, 1, 1),
+                            textureLevel: pivot, textureSlice: 0,
+                            heapOffset: off))
+                    }
+                    for lvl in pivot..<tex.mipmapLevelCount {
+                        pendingMipClears[i].append(lvl)
+                    }
+
+                    if !tailOps.isEmpty {
+                        queue.updateMappings(texture: tex, heap: heap, operations: tailOps)
+                        didMap = true
+                        bytes &+= tailBytes
+                        #if DEBUG
+                        if Log.heightSparse || Log.textures {
+                            let mb = Double(tailBytes) / (1024.0 * 1024.0)
+                            print(String(format: "[SparseMap] PRIME tail %@ map L%u…L%u + place tail at L%u (ops=%d) ≈ %.2f MB",
+                                         tex.label ?? "<tex>",
+                                         UInt32(mipTailFirstLevel),
+                                         UInt32(max(mipTailFirstLevel, pivot > mipTailFirstLevel ? pivot - 1 : pivot)),
+                                         UInt32(pivot), tailOps.count, mb))
+                        }
+                        #endif
+                    }
+                } else {
+                    #if DEBUG
+                    if Log.heightSparse || Log.textures {
+                        print(String(format: "[SparseMap] SKIP tail pin on %@ (need≈%.2f MB, cap=%d MB, budget rem≈%.2f MB)",
+                                     tex.label ?? "<tex>",
+                                     Double(tailBytes) / (1024.0 * 1024.0),
+                                     settings.terrainMipTailBudgetMB,
+                                     Double(max(0, budgetBytes - bytes)) / (1024.0 * 1024.0)))
+                    }
+                    #endif
+                }
+            }
+        }
+
+        if didMap { ctx.noteQueueSparseMutation() }
+        primed = true
+
+        #if DEBUG
+        if Log.heightSparse || Log.textures {
+            let mb = Double(bytes) / (1024.0 * 1024.0)
+            print(String(format: "[HeightStream] prime mapped ≈ %.2f MB (budget=%d MB, hw≈%.1f MB)",
+                         mb, budgetBytes / 1048576,
+                         Double(Int(device.recommendedMaxWorkingSetSize)) / (1024.0 * 1024.0)))
+        }
+        #endif
+    }
+
+    public func tick(cameraWorldPosition cam: SIMD3<Float>, settings: FrameSettings) {
+        let wasPrimed = primed
+        if !primed { primeInitialMappingsIfNeeded(settings: settings) }
+        let primedThisTick = (!wasPrimed && primed)
+
+        var totalOps = 0
+        var anyUpdates = false
+        let halo = max(0, settings.terrainRingHaloTiles)
+        let maxOps = max(0, settings.terrainMaxTileOpsPerFrame)
+
+        @inline(__always) func imod(_ a: Int, _ m: Int) -> Int { let r = a % m; return r < 0 ? r + m : r }
+
+        for i in levels.indices {
+            let scale = 1 << i
+            let metersPerTexel = settings.terrainMetersPerTexel
+            let tileMetersX = Float(tile.width * scale) * metersPerTexel
+            let tileMetersY = Float(tile.height * scale) * metersPerTexel
+
+            let cx = Int(floor(cam.x / tileMetersX))
+            let cy = Int(floor(cam.z / tileMetersY))
+
+            let ringX = levels[i].ringTilesX
+            let ringY = levels[i].ringTilesY
+            let halfX = ringX / 2
+            let halfY = ringY / 2
+
+            let desiredWorldBase = SIMD2<Int>(cx - halfX - halo, cy - halfY - halo)
+            var desired = desiredWorldBase
+            desired.x = imod(desired.x, ringX)
+            desired.y = imod(desired.y, ringY)
+
+            var ox = levels[i].originTile.x
+            var oy = levels[i].originTile.y
+            var wbX = levels[i].worldBaseTile.x
+            var wbY = levels[i].worldBaseTile.y
+
+            if primedThisTick {
+                ox = desired.x
+                oy = desired.y
+                wbX = desiredWorldBase.x
+                wbY = desiredWorldBase.y
+            }
+
+            @inline(__always) func worldTile(for key: TileKey) -> SIMD2<Int> {
+                let dx = imod(key.x - desired.x, ringX)
+                let dy = imod(key.y - desired.y, ringY)
+                return SIMD2<Int>(desiredWorldBase.x + dx, desiredWorldBase.y + dy)
+            }
+
+            var opsUnmap: [MTL4UpdateSparseTextureMappingOperation] = []
+            var opsMap: [MTL4UpdateSparseTextureMappingOperation] = []
+
+            func advance(_ delta: Int, _ size: Int) -> Int { (delta + size) % size }
+
+            var churn = 0
+
+            let opsBudget = max(0, maxOps - totalOps - churn)
+            let opsForXStep = ringY * 2 // drop col + add col
+            let opsForYStep = ringX * 2 // drop row + add row
+
+            let deltaX = (desired.x - ox + ringX) % ringX
+            let deltaY = (desired.y - oy + ringY) % ringY
+
+            #if DEBUG
+            if Log.heightSparse || Log.textures {
+                print("[HeightStream/Tick] L\(i) ring=\(ringX)x\(ringY) desired=(\(desired.x),\(desired.y))" +
+                    " origin=(\(ox),\(oy)) dX=\(deltaX) dY=\(deltaY) frameCap=\(maxOps) used=\(totalOps)")
+            }
+            #endif
+
+            if deltaX != 0 && opsBudget >= opsForXStep {
+                let step = (deltaX <= ringX / 2) ? 1 : -1
+
+                let dropX = (step > 0) ? ox : imod(ox - 1, ringX)
+                for ky in 0..<ringY {
+                    let y = (oy + ky) % ringY
+                    let key = TileKey(x: dropX, y: y)
+                    if let off = levels[i].heapByTile.removeValue(forKey: key),
+                       levels[i].mapped.remove(key) != nil
+                    {
+                        setTileValid(level: i, key: key, false)
+                        opsUnmap.append(MTL4UpdateSparseTextureMappingOperation(
+                            mode: .unmap,
+                            textureRegion: MTLRegionMake2D(key.x, key.y, 1, 1),
+                            textureLevel: 0, textureSlice: 0,
+                            heapOffset: 0))
+                        freePages(offset: off, count: 1)
+                        churn &+= 1
+                    }
+                }
+
+                ox = imod(ox &+ step, ringX)
+                wbX &+= step
+
+                let addX = (step > 0) ? imod(ox - 1, ringX) : ox
+                for ky in 0..<ringY {
+                    let y = (oy + ky) % ringY
+                    let key = TileKey(x: addX, y: y)
+                    if !levels[i].mapped.contains(key) {
+                        let off = allocatePages(count: 1)
+                        opsMap.append(MTL4UpdateSparseTextureMappingOperation(
+                            mode: .map,
+                            textureRegion: MTLRegionMake2D(key.x, key.y, 1, 1),
+                            textureLevel: 0, textureSlice: 0,
+                            heapOffset: off))
+                        levels[i].heapByTile[key] = off
+                        levels[i].mapped.insert(key)
+                        setTileValid(level: i, key: key, false)
+                        pendingClears[i].append(key)
+                        enqueueFill(level: i,
+                                    key: key,
+                                    originTile: SIMD2<Int>(ox, oy),
+                                    worldBaseTile: SIMD2<Int>(wbX, wbY),
+                                    settings: settings)
+                        churn &+= 1
+                    }
+                }
+            } else if deltaX != 0 {
+                #if DEBUG
+                if Log.heightSparse {
+                    print("[HeightStream/Tick] L\(i) skip X step (need=\(opsForXStep) ops, have=\(opsBudget))")
+                }
+                #endif
+            }
+
+            let afterXBudget = max(0, maxOps - totalOps - churn)
+
+            if deltaY != 0 && afterXBudget >= opsForYStep {
+                let step = (deltaY <= ringY / 2) ? 1 : -1
+
+                let dropY = (step > 0) ? oy : imod(oy - 1, ringY)
+                for kx in 0..<ringX {
+                    let x = (ox + kx) % ringX
+                    let key = TileKey(x: x, y: dropY)
+                    if let off = levels[i].heapByTile.removeValue(forKey: key),
+                       levels[i].mapped.remove(key) != nil
+                    {
+                        setTileValid(level: i, key: key, false)
+                        opsUnmap.append(MTL4UpdateSparseTextureMappingOperation(
+                            mode: .unmap,
+                            textureRegion: MTLRegionMake2D(key.x, key.y, 1, 1),
+                            textureLevel: 0, textureSlice: 0,
+                            heapOffset: 0))
+                        freePages(offset: off, count: 1)
+                        churn &+= 1
+                    }
+                }
+
+                oy = imod(oy &+ step, ringY)
+                wbY &+= step
+
+                let addY = (step > 0) ? imod(oy - 1, ringY) : oy
+                for kx in 0..<ringX {
+                    let x = (ox + kx) % ringX
+                    let key = TileKey(x: x, y: addY)
+                    if !levels[i].mapped.contains(key) {
+                        let off = allocatePages(count: 1)
+                        opsMap.append(MTL4UpdateSparseTextureMappingOperation(
+                            mode: .map,
+                            textureRegion: MTLRegionMake2D(key.x, key.y, 1, 1),
+                            textureLevel: 0, textureSlice: 0,
+                            heapOffset: off))
+                        levels[i].heapByTile[key] = off
+                        levels[i].mapped.insert(key)
+                        setTileValid(level: i, key: key, false)
+                        pendingClears[i].append(key)
+                        enqueueFill(level: i,
+                                    key: key,
+                                    originTile: SIMD2<Int>(ox, oy),
+                                    worldBaseTile: SIMD2<Int>(wbX, wbY),
+                                    settings: settings)
+                        churn &+= 1
+                    }
+                }
+            } else if deltaY != 0 {
+                #if DEBUG
+                if Log.heightSparse {
+                    print("[HeightStream/Tick] L\(i) skip Y step (need=\(opsForYStep) ops, have=\(afterXBudget))")
+                }
+                #endif
+            }
+
+            #if DEBUG
+            if Log.heightSparse || Log.textures, !opsUnmap.isEmpty || !opsMap.isEmpty {
+                let msg = String(format: "[SparseMap] L%d unmap=%d map=%d → originNext=(%d,%d)",
+                                 i, opsUnmap.count, opsMap.count, ox, oy)
+                if opsUnmap.count != opsMap.count {
+                    print("⚠️ " + msg + " (UNBALANCED: may cause visible holes this frame)")
+                } else {
+                    print(msg)
+                }
+            }
+            #endif
+            if !opsUnmap.isEmpty { queue.updateMappings(texture: levels[i].tex, heap: heap, operations: opsUnmap) }
+            if !opsMap.isEmpty { queue.updateMappings(texture: levels[i].tex, heap: heap, operations: opsMap) }
+
+            levels[i].originTile = SIMD2<Int>(ox, oy)
+            levels[i].worldBaseTile = SIMD2<Int>(wbX, wbY)
+
+            if primedThisTick && !didQueueInitialFills {
+                for key in levels[i].mapped {
+                    enqueueFill(level: i,
+                                key: key,
+                                originTile: SIMD2<Int>(ox, oy),
+                                worldBaseTile: SIMD2<Int>(wbX, wbY),
+                                settings: settings)
+                }
+            }
+
+            totalOps &+= churn
+            anyUpdates = anyUpdates || (churn > 0)
+            if totalOps >= maxOps { break }
+        }
+
+        if primedThisTick { didQueueInitialFills = true }
+
+        if anyUpdates {
+            ctx.noteQueueSparseMutation()
+            #if DEBUG
+            if Log.heightSparse || Log.textures {
+                let mb = Double(mappedBytes) / (1024.0 * 1024.0)
+                print(String(format: "[HeightStream] frameOps=%d mapped≈%.2f MB freelist=%d", totalOps, mb, freeList.count))
+            }
+            #endif
+        }
+    }
+
+    @discardableResult
+    public func encodePendingClears(on cb: MTL4CommandBuffer) -> Bool {
+        var need = false
+        for i in pendingClears.indices where !pendingClears[i].isEmpty {
+            need = true; break
+        }
+        if !need {
+            for i in pendingMipClears.indices where !pendingMipClears[i].isEmpty {
+                need = true; break
+            }
+        }
+        guard need else { return false }
+
+        guard let enc = ctx.beginComputeEncoder(cb, label: "HeightStream.ClearTiles") else { return false }
+
+        #if DEBUG
+        if Log.heightSparse {
+            let clearTiles = pendingClears.reduce(0) { $0 + $1.count }
+            let clearMips = pendingMipClears.reduce(0) { $0 + $1.count }
+            defer {
+                print("[HeightStream/Clear] tiles=\(clearTiles) fullMipLevels=\(clearMips)")
+            }
+        }
+        #endif
+
+        ctx.satisfyBarrier_SparseToCompute(enc, on: cb)
+
+        enc.setComputePipelineState(clearPSO)
+
+        let tg = MTLSize(width: 8, height: 8, depth: 1)
+
+        for i in pendingMipClears.indices {
+            let tex = levels[i].tex
+            let lvls = pendingMipClears[i]
+            guard !lvls.isEmpty else { continue }
+
+            for lvl in lvls {
+                let wL = max(1, tex.width >> lvl)
+                let hL = max(1, tex.height >> lvl)
+                var P = ClipFillParams(level: UInt32(lvl),
+                                       originPx: .init(0, 0),
+                                       sizePx: .init(UInt32(wL), UInt32(hL)))
+                let _addrP = ctx.constSetCompute(enc, rawIndex: ClearBind.params, &P)
+                ctx.setAndBindComputeAT(enc,
+                                        textures: [(tex: tex, index: 0)],
+                                        buffers: [(addr: _addrP, index: ClearBind.params)])
+                let grid = MTLSize(width: Int(P.sizePx.x), height: Int(P.sizePx.y), depth: 1)
+                #if DEBUG
+                ctx.dispatchChecked(enc, threadsPerGrid: grid, threadsPerThreadgroup: tg)
+                #else
+                enc.dispatchThreads(threadsPerGrid: grid, threadsPerThreadgroup: tg)
+                #endif
+                ctx.noteDidDispatch(cb)
+            }
+            pendingMipClears[i].removeAll(keepingCapacity: true)
+        }
+
+        for i in pendingClears.indices {
+            let tex = levels[i].tex
+            let tiles = pendingClears[i]
+            guard !tiles.isEmpty else { continue }
+
+            for key in tiles {
+                let originPx = SIMD2<UInt32>(UInt32(key.x * tile.width),
+                                             UInt32(key.y * tile.height))
+                let sizePx = SIMD2<UInt32>(UInt32(tile.width),
+                                           UInt32(tile.height))
+                var P = ClipFillParams(level: UInt32(0),
+                                       originPx: originPx,
+                                       sizePx: sizePx)
+                let _addrP = ctx.constSetCompute(enc, rawIndex: ClearBind.params, &P)
+                ctx.setAndBindComputeAT(enc,
+                                        textures: [(tex: tex, index: 0)],
+                                        buffers: [(addr: _addrP, index: ClearBind.params)])
+                let grid = MTLSize(width: Int(P.sizePx.x), height: Int(P.sizePx.y), depth: 1)
+                #if DEBUG
+                ctx.dispatchChecked(enc, threadsPerGrid: grid, threadsPerThreadgroup: tg)
+                #else
+                enc.dispatchThreads(threadsPerGrid: grid, threadsPerThreadgroup: tg)
+                #endif
+                ctx.noteDidDispatch(cb)
+            }
+
+            pendingClears[i].removeAll(keepingCapacity: true)
+        }
+
+        enc.endEncoding()
+        ctx.releaseEncoderAT(enc)
+        return true
+    }
+
+    public var approxResidentBytes: Int { mappedBytes }
+
+
+    public struct HeightClipmapStateSnapshot {
+        public let levels: Int
+        public let tileTexels: SIMD2<UInt32>
+        public let ringDimTexels: [SIMD2<UInt32>]
+        public let originTile: [SIMD2<Int32>]
+
+        public let originPx: [SIMD2<Int32>]
+    }
+
+    public func snapshotClipmapState() -> HeightClipmapStateSnapshot {
+        let lvls = levels.count
+        var dims: [SIMD2<UInt32>] = .init(repeating: .init(0, 0), count: lvls)
+        var origin: [SIMD2<Int32>] = .init(repeating: .init(0, 0), count: lvls)
+        var originPx: [SIMD2<Int32>] = .init(repeating: .init(0, 0), count: lvls)
+
+        let tW = Int64(tile.width)
+        let tH = Int64(tile.height)
+
+        for i in 0..<lvls {
+            dims[i] = .init(UInt32(levels[i].tex.width), UInt32(levels[i].tex.height))
+            origin[i] = .init(Int32(levels[i].originTile.x), Int32(levels[i].originTile.y))
+
+            let pxX = Int64(levels[i].worldBaseTile.x) * tW - Int64(levels[i].originTile.x) * tW
+            let pxY = Int64(levels[i].worldBaseTile.y) * tH - Int64(levels[i].originTile.y) * tH
+            originPx[i] = SIMD2<Int32>(Int32(clamping: pxX), Int32(clamping: pxY))
+        }
+        let tileXY = SIMD2<UInt32>(UInt32(tile.width), UInt32(tile.height))
+        return .init(levels: lvls,
+                     tileTexels: tileXY,
+                     ringDimTexels: dims,
+                     originTile: origin,
+                     originPx: originPx)
+    }
+}
+
+==== MacVRTrial/Packages/AppRenderer/Sources/AppRenderer/Orchestrator/HeightfieldOrchestration.swift ====
+
+
+import Metal
+import RendererCore
+import simd
+
+enum HeightfieldOrchestration {
+    @MainActor
+    static func preFrame(renderer: Renderer,
+                         camWorldFromDevice W: simd_float4x4,
+                         settings: FrameSettings,
+                         frameIndex: UInt64) {
+
+        guard let streamer = renderer.heightStreamer else { return }
+        let camPos = SIMD3<Float>(W.columns.3.x, W.columns.3.y, W.columns.3.z)
+        streamer.tick(cameraWorldPosition: camPos, settings: settings)
+        #if DEBUG
+        streamer.debugMarkTick(frameIndex: frameIndex)
+        #endif
+    }
+
+    @MainActor
+    @discardableResult
+    static func encodePrepass(renderer: Renderer,
+                              on cb: MTL4CommandBuffer,
+                              settings: FrameSettings) -> Bool {
+        guard let streamer = renderer.heightStreamer else { return false }
+        let didClear = streamer.encodePendingClears(on: cb)
+        let didFill: Bool = {
+            if let rings = renderer.heightRings, let hf = renderer.heightfield {
+                return streamer.encodePendingFills(on: cb, rings: rings, asset: hf)
+            }
+            return false
+        }()
+        #if DEBUG
+        if RendererCore.Log.heightfield {
+            print("[HeightPrepass] clear=\(didClear ? 1 : 0) fill=\(didFill ? 1 : 0)")
+        }
+        #endif
+        return didClear || didFill
+    }
+}
+
+==== MacVRTrial/Packages/AppRenderer/Sources/AppRenderer/Pipeline/Renderer+ComputePrepass.swift ====
+
+
+import Metal
+import RendererCore
+
+extension Renderer {
+    @discardableResult
+    func scheduleComputePrepass(on cb: MTL4CommandBuffer,
+                                sources: [MTLTexture],
+                                settings: FrameSettings) -> Bool {
+        var did = false
+
+        let didHeightSparse = HeightfieldOrchestration.encodePrepass(renderer: self, on: cb, settings: settings)
+        #if DEBUG
+        if Log.heightSparse {
+            print("[ComputePrepass] HeightSparse did=\(didHeightSparse ? 1 : 0)")
+        }
+        #endif
+        if didHeightSparse { did = true }
+
+        var didGray = false
+        if settings.computeEnabled,
+           self.forceGrayscaleAll,
+           let gp = self.grayscalePrepass,
+           !sources.isEmpty {
+            didGray = gp.run(on: cb, sources: sources)
+            if didGray { did = true }
+        }
+
+        var didIBL = false
+        if settings.iblAuthoringComputeEnabled,
+           let ibl = self.iblAuthoringPrepass,
+           let env = (self.iblEnvSourceCube ?? self.skyboxTexture),
+           ibl.run(on: cb, envCube: env) {
+            self.iblDiffuseCube = ibl.irradiance
+            self.iblSpecularCube = ibl.specular
+            self.iblBrdfLut = ibl.brdfLut
+            self.updateIBLProxy()
+            #if DEBUG
+            self.validateIBL(self.iblDiffuseCube, self.iblSpecularCube, self.iblBrdfLut)
+            #endif
+            didIBL = true
+            did = true
+        }
+
+        var didORM = false
+        if let op = self.ormPrepass,
+           op.hasWork,
+           op.run(on: cb) {
+            didORM = true
+            did = true
+        }
+
+        #if DEBUG
+        if Log.passes {
+            let summary = String(format: "[ComputePrepass] did=%d height=%d gray=%d ibl=%d orm=%d%@",
+                                 did ? 1 : 0,
+                                 didHeightSparse ? 1 : 0,
+                                 didGray ? 1 : 0,
+                                 didIBL ? 1 : 0,
+                                 didORM ? 1 : 0,
+                                 did ? " → request Barrier(Dispatch→Render)" : "")
+            print(summary)
+        }
+        #endif
+
+        if did {
+            self.ctx.requiresBarrier_DispatchToRender(cb)
+            #if DEBUG
+            if Log.barriers || Log.passes {
+                print("[ComputePrepass] Dispatch→Render barrier requested")
+            }
+            #endif
+        }
+        return did
+    }
+}
+
+==== MacVRTrial/Packages/AppRenderer/Sources/AppRenderer/Engine/Renderer+Loop.swift ====
+
+
+import Foundation
+import Metal
+import PlatformAbstraction
+import RendererCore
+import simd
+import XRCore
+
+public extension Renderer {
+    func renderLoop() async {
+        while true {
+            await self.renderFrame()
+        }
+    }
+}
+
+extension Renderer {
+    func renderFrame() async {
+        #if DEBUG
+        if firstFrameStartTime == nil {
+            firstFrameStartTime = RendererCore.AssetLoadMetrics.markStart(.firstFrame)
+        }
+        #endif
+
+        await framePump.tick(endFrameEvent: endFrameEvent,
+                             preEncode: { [weak self] timings in
+                                 guard let self else { return }
+                                 if !self.didSeedScene { await self.seedSceneOnce() }
+                                 self.targetPresentationUptime = timings.presentationUptime
+                                 await self.animateScene(forPresentationTime: timings.presentationUptime)
+                             },
+                             encode: { [self] band, surfaces in
+                                 return autoreleasepool {
+                                     let baseOffset = RenderConstants.alignedUniformsSize * self.uniformsPerFrame * band.inFlightIndex
+                                     var state = FrameState(frameIndex: band.frameIndex,
+                                                            inFlightIndex: band.inFlightIndex,
+                                                            uniformRingBaseOffset: baseOffset,
+                                                            ctx: ctx,
+                                                            uniformsPerFrameCapacity: self.uniformsPerFrame,
+                                                            settings: FrameSettings.snapshot())
+                                     state.scene = FrameSceneData(gpuScene: self.gpuScene)
+
+                                     if !framePump.advancesSlotsInternally {
+                                         ctx.advanceSlot(
+                                             to: band.inFlightIndex,
+                                             minCompleted: band.frameIndex &- UInt64(RenderConstants.maxBuffersInFlight),
+                                             event: endFrameEvent
+                                         )
+                                     }
+#if DEBUG
+                                     GPUDebugCapture.beginIfNeeded(device: ctx.device, frameIndex: state.frameIndex)
+#endif
+
+                                     guard let primary = surfaces.first else { return [] }
+
+                                     if !didLogSceneCount, didSeedScene {
+                                         didLogSceneCount = true
+                                         Task { [scene] in
+                                             let c = await scene.count()
+                                             print("Scene.drawCalls.count = \(c)")
+                                         }
+                                     }
+
+                                     self.uniforms = UnsafeMutableRawPointer(self.dynamicUniformBuffer.contents() + state.uniformRingBaseOffset)
+                                         .bindMemory(to: Uniforms.self, capacity: 1)
+
+                                     self.targets.prune(staleBefore: state.frameIndex)
+#if DEBUG
+                                     self.targets.report(everyNFrames: 120, frameIndex: state.frameIndex)
+#endif
+
+                                     let currKey = RTKey(
+                                         w: primary.colorTextures[0].width,
+                                         h: primary.colorTextures[0].height,
+                                         arrayLen: primary.colorTextures[0].arrayLength,
+                                         samples: self.ctx.formats.sampleCount,
+                                         color: primary.colorTextures[0].pixelFormat,
+                                         depth: primary.depthTextures[0].pixelFormat,
+                                         rrmOn: primary.rasterizationRateMaps.first != nil
+                                     )
+                                     var mustReset = false
+                                     if let prevKey = self.lastRTKey, prevKey != currKey { mustReset = true }
+                                     if let lastF = self.lastFrameIndexSeen, state.frameIndex != (lastF &+ 1) { mustReset = true }
+                                     self.lastRTKey = currKey
+
+                                     let poseSampleTime = self.targetPresentationUptime
+                                     let rig = self.tracking.rig(at: poseSampleTime)
+                                     let W_curr = rig.worldFromDevice
+                                     let W_prev = self.lastWorldFromDevice ?? W_curr
+                                    HeightfieldOrchestration.preFrame(
+                                        renderer: self,
+                                        camWorldFromDevice: W_curr,
+                                        settings: state.settings,
+                                        frameIndex: state.frameIndex
+                                    )
+
+                                     let anchorOpaque = (self.tracking as? AnchoringTrackingProvider)?
+                                         .opaqueDeviceAnchor(at: poseSampleTime)
+
+                                     if mustReset { self.resetStabilityHistory("frame/RT/RRM continuity") }
+                                     if anchorOpaque == nil, self.lastOpaqueAnchor != nil { self.resetStabilityHistory("anchor lost") }
+                                     if anchorOpaque != nil, self.lastOpaqueAnchor == nil { self.resetStabilityHistory("anchor regained") }
+
+                                     var decisions = FrameStereoDecisions()
+                                     let fov = self.computeFOVClamp(primaryDrawable: primary, epsilon: fovClampEps)
+                                     if let o = fov.override {
+                                         decisions.fovOverride_m00 = o.m00
+                                         decisions.fovOverride_m11 = o.m11
+                                     }
+                                     decisions.usedFOVClamp = fov.didClamp
+
+                                     let jitterPx = self.measurePoseJitterPx(primaryDrawable: primary, prevW: W_prev, currW: W_curr)
+
+                                     let nowT = poseSampleTime
+                                     if let t0 = self.lastShakeUpdateTime {
+                                         let dt = max(1.0 / 240.0, min(0.5, nowT - t0))
+                                         let alpha = Float(1.0 - exp(-dt / state.settings.shakeTauSeconds))
+                                         self.shakeEMA += alpha * (jitterPx - self.shakeEMA)
+                                         self.shakeEMA = min(self.shakeEMA, 3.0 * jitterPx)
+                                     } else {
+                                         self.shakeEMA = jitterPx
+                                     }
+                                     self.lastShakeUpdateTime = nowT
+
+                                     if self.motionLatched {
+                                         if self.shakeEMA <= state.settings.motionExitPx { self.motionLatched = false }
+                                     } else {
+                                         if self.shakeEMA >= state.settings.motionEnterPx { self.motionLatched = true }
+                                     }
+
+                                     let microPx = state.settings.microDeadbandPx
+                                     let freezeInstant = (microPx > 0) && self.shouldFreezePoseMicroDeadband(
+                                         primaryDrawable: primary, prevW: W_prev, currW: W_curr, thresholdPx: microPx
+                                     )
+                                     var freeze = freezeInstant || !self.motionLatched
+
+                                     if primary is SimpleSurfaceDrawable {
+                                         freeze = false
+                                     }
+
+                                     let effectiveW = freeze ? W_prev : W_curr
+                                     decisions.worldFromDeviceOverride = effectiveW
+                                     decisions.usedDeadband = freeze
+
+#if DEBUG
+                                     DebugLogs.shake(frame: state.frameIndex,
+                                                     px: jitterPx,
+                                                     ema: self.shakeEMA,
+                                                     frozen: freeze,
+                                                     fxaaOn: state.settings.fxaaEnabled)
+#endif
+                                     state.decisions = decisions
+
+                                     let w = primary.colorTextures[0].width
+                                     let h = primary.colorTextures[0].height
+                                     enum GpuLogMask { static let fxaa: UInt32 = 1 << 0; static let forward: UInt32 = 1 << 1 }
+                                     ctx.writeGpuLogConfig(inFlightIndex: state.inFlightIndex,
+                                                           frameIndex: state.frameIndex,
+                                                           level: 1,
+                                                           mask: GpuLogMask.fxaa | GpuLogMask.forward,
+                                                           everyN: 1,
+                                                           pixelX: UInt32(w / 2),
+                                                           pixelY: UInt32(h / 2))
+                                     let fcfg = FXAATuning.config(forShakeEMA: self.shakeEMA)
+                                     ctx.writeFxaaConfig(inFlightIndex: state.inFlightIndex,
+                                                         edgeMin: fcfg.edgeMin, edge: fcfg.edgeMax,
+                                                         subpixel: fcfg.subpixel, iterations: fcfg.iterations)
+
+                                     let rrmActive = (primary.rasterizationRateMaps.first != nil)
+                                     ctx.writeFeatureGates(inFlightIndex: state.inFlightIndex,
+                                                           eyeFoveation: rrmActive,
+                                                           rrmActive: rrmActive,
+                                                           metalFX: false,
+                                                           icbUsed: false)
+
+                                     self.lightManager.commit(to: self.ctx, inFlightIndex: state.inFlightIndex)
+
+                                     for s in surfaces {
+                                         self.render(surface: s, frameIndex: state.frameIndex, state: &state)
+                                     }
+
+                                     let chosenAnchorEarlyOpaque: AnyObject? = freeze ? (self.lastOpaqueAnchor ?? anchorOpaque) : anchorOpaque
+                                     for i in surfaces.indices {
+                                         let surface = surfaces[i]
+                                         let target = self.targets[surface]
+                                         target.updateViewProjectionArray(
+                                             drawable: surface,
+                                             decisions: decisions,
+                                             viewCount: self.ctx.formats.viewCount
+                                         )
+
+#if DEBUG
+                                         do {
+                                             let used = target.latchedSliceIndex
+                                             let l0 = UInt32(surface.views[0].textureMap.sliceIndex)
+                                             let l1 = (surface.views.count > 1) ? UInt32(surface.views[1].textureMap.sliceIndex) : l0
+                                             if used.x != l0 || used.y != l1 {
+                                                 print("⚠️ FXAA slice mismatch frame=\(state.frameIndex) encoded=(\(used.x),\(used.y)) present=(\(l0),\(l1))")
+                                             }
+                                         }
+#endif
+                                         if let acceptor = surface as? DeviceAnchorAcceptingSurface {
+                                             acceptor.setDeviceAnchorOpaque(chosenAnchorEarlyOpaque)
+                                         }
+                                     }
+
+                                     self.lastWorldFromDevice = effectiveW
+                                     self.lastOpaqueAnchor = chosenAnchorEarlyOpaque
+                                     self.lastFrameIndexSeen = state.frameIndex
+#if DEBUG
+                                     ctx.debugBarrierReport(frameIndex: state.frameIndex)
+#endif
+#if DEBUG
+                                     Task { await CoalescingLogger.shared.flush(category: .heightFillQ) }
+#endif
+
+                                 return state.usedCommandBuffers
+                                 }
+                             })
+
+        #if DEBUG
+        if !firstFrameLogged, let start = firstFrameStartTime {
+            firstFrameLogged = true
+            RendererCore.AssetLoadMetrics.log(.firstFrame,
+                                              start: start,
+                                              context: "Renderer.firstFrame")
+        }
+        #endif
+    }
+}

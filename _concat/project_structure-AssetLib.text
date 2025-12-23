@@ -1,0 +1,21 @@
+- AssetLibS
+  - AssetEntity
+    - TeraEntries.swift
+    - TeraModelDictionaryActor.swift
+    - TeraSet.swift
+  - BuildTerrain
+    - SimpleTerrainMaterial.swift
+    - TerrainHeight.swift
+    - TerrainMeshBuilder.swift
+    - TerrainModelEntityLoader.swift
+  - Components
+    - TeraComponent.swift
+  - Import
+    - AssetManager.swift
+    - ImportMaterial.swift
+    - ImportTerrain.swift
+  - Shaders
+    - SimpleTerrainShader.metal
+    - SplatTerrainShader.metal
+    - TerrainMaterials.h
+    - TerrainMaterials.metal

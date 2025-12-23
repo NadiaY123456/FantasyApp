@@ -1,0 +1,6 @@
+9:52 / 12-23: Implement below. I am shooting for production-grade pipeline. Also do it in a modular /refactored way when possible. If you need to see additional files to make a more robust decision, plmk which files are those.
+
+Make sure to provide EXACT EDITS, not like "wherever you compute ...". If you don't see the file you need, EXPLICITELY ask for it upfront!
+
+Task:
+As of now, my camera centers somewhere in the character chest. So when caracter stands idle but moves his body, the ground / terrain moves as well and it looks weird. So I want when Flash - main character that I control with controls - is idle, the terrain should be stationary on the screen. 

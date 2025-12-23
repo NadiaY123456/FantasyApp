@@ -1,0 +1,6 @@
+MatheMagicApp/AnimationLibrary
+MatheMagicApp/CoreLibrary
+
+.DS_Store
+
+_concat/__pycache__/
