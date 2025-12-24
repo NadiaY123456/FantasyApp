@@ -2,6 +2,7 @@
 //  MatheMagic
 //
 
+import AnimLib
 import CoreLib
 import RealityKit
 import SwiftUI
@@ -44,7 +45,7 @@ class CameraRotationSystem: System {
     static weak var gameModelView: GameModelView?
     
     required init(scene: RealityKit.Scene) {}
-    static var dependencies: [SystemDependency] { [] }
+    static var dependencies: [SystemDependency] { [.after(TravelSystem.self)] }
 
     public func update(context: SceneUpdateContext) {
         guard let gameModelView = Self.gameModelView else {
@@ -298,6 +299,17 @@ class CameraState {
         /// Offset for the pivot (e.g. center on a character’s knees rather than chest)
         /// pivot is the center point of camera rotation. by default, it is set at character position.
         var pivotOffset: SIMD3<Float> = SIMD3(0, 1.5, 0)
+
+        /// When `true`, the camera pivot translation is locked while the tracked entity is idle
+        /// and there is no active movement input (prevents terrain drift during idle body sway).
+        var lockPivotTranslationWhenIdle: Bool = true
+
+        /// If `true`, the idle pivot lock only engages when the player is not providing movement input.
+        var idlePivotLockRequiresNoControllerInput: Bool = true
+
+        /// Joystick magnitude threshold used to consider the joystick "active" for the idle pivot lock.
+        /// This avoids unlocking the pivot when the user is merely resting a finger on the joystick.
+        var idlePivotLockJoystickDeadzone: CGFloat = 0.05
             
         // MARK: Parameters that affect horizontal rotation speed
             
@@ -383,7 +395,9 @@ class CameraState {
     /// The actual camera entity.
     var cameraEntity: Entity?
     /// The entity the camera orbits (e.g. a character).
-    var trackedEntity: Entity?
+    var trackedEntity: Entity? {
+        didSet { lockedPivotWorldPosition = nil }
+    }
     
     /// The skydome entity used for the skybox.
     var skydomeEntity: Entity?
@@ -391,6 +405,8 @@ class CameraState {
     var skydomeBaseRotation: simd_quatf = .init(angle: 0, axis: SIMD3(0, 1, 0))
     
     // MARK: Animation Control
+
+    private var lockedPivotWorldPosition: SIMD3<Float>? = nil
 
     private var isAnimatingCamera = false
     private var lastUpdateTime: TimeInterval = CACurrentMediaTime()
@@ -428,6 +444,26 @@ class CameraState {
         AppLogger.shared.debug("Camera world Position: \(camera.transform.translation + pivot.transform.translation), and cameraPivot: \(pivot.transform.translation)", toPrint)
     }
     
+    private func shouldLockPivotTranslation(gameModelView: GameModelView) -> Bool {
+        guard settings.lockPivotTranslationWhenIdle else { return false }
+        guard let tracked = trackedEntity else { return false }
+
+        // Move type comes from AnimLib's published playback-state snapshot.
+        let isIdleMoveType = tracked.components[AnimationPlaybackStateComponent.self]?.isIdle ?? false
+        guard isIdleMoveType else { return false }
+
+        if settings.idlePivotLockRequiresNoControllerInput {
+            let joystickActive =
+                gameModelView.joystickIsTouching &&
+                gameModelView.joystickMagnitude > settings.idlePivotLockJoystickDeadzone
+
+            let controllerPressed = gameModelView.isHoldingButton || joystickActive
+            if controllerPressed { return false }
+        }
+
+        return true
+    }
+
     // MARK: - Camera Transform Update
 
     func updateCameraTransform(
@@ -442,8 +478,19 @@ class CameraState {
         
         // Smoothly update pivot position based on the tracked entity's current position.
         if let tracked = trackedEntity {
-            // Target pivot position.
-            let targetPos = tracked.transform.translation + settings.pivotOffset
+            let lockPivot = shouldLockPivotTranslation(gameModelView: gameModelView)
+
+            if lockPivot {
+                // Capture once on entry, then hold steady while idle.
+                if lockedPivotWorldPosition == nil {
+                    lockedPivotWorldPosition = pivot.transform.translation
+                }
+            } else {
+                // Leaving idle (or controller input resumed) → resume following the character.
+                lockedPivotWorldPosition = nil
+            }
+
+            let targetPos = lockedPivotWorldPosition ?? (tracked.transform.translation + settings.pivotOffset)
             let currentPos = pivot.transform.translation
             
             // Convert dt to Float.
@@ -455,6 +502,8 @@ class CameraState {
             // Use simd_mix to blend between the current and target positions.
             let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: t))
             pivot.transform.translation = smoothedPos
+        } else {
+            lockedPivotWorldPosition = nil
         }
         
         // Continue with the rest of your camera transform update...

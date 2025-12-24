@@ -42,6 +42,7 @@ struct FantasyAppGithubApp: App {
         EventComponent.registerComponent()
         BrainComponent.registerComponent()
         AnimationComponent.registerComponent()
+        AnimationPlaybackStateComponent.registerComponent()
         TravelComponent.registerComponent()
 
         EventSystem.registerSystem()

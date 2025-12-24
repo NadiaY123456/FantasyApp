@@ -65,6 +65,7 @@
       - 6-walkToIdle.swift
   - Components
     - AnimationSystem.swift
+    - AnimationPlaybackStateComponent.swift
     - BrainComponent.swift
     - CustomAnimationSystem.swift
     - EventComponent.swift
