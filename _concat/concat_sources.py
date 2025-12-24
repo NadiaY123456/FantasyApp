@@ -15,10 +15,10 @@ SOURCE_FILES = [
     # ============================================================================
     "_concat/project_structure-MatheMagicApp.text",
     "_concat/project_structure-AnimLib.text",
-    "_concat/project_structure-AssetLib.text",
+    # "_concat/project_structure-AssetLib.text",
     "_concat/project_structure-CoreLib.text",
     "_concat/project_structure-Inertialization.text",
-    "_concat/project_structure-joystickController.text",
+    # "_concat/project_structure-joystickController.text",
 
     # ============================================================================
     # APP (MatheMagicApp)
@@ -35,7 +35,7 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # APP: Entities
     #----------------------------------------------------------------------------
-    "MatheMagicApp/Entities/EntityEntries.swift",
+    # "MatheMagicApp/Entities/EntityEntries.swift",
 
     #----------------------------------------------------------------------------
     # APP: Environment
@@ -52,17 +52,17 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # APP: Load
     #----------------------------------------------------------------------------
-    "MatheMagicApp/Load/PreLoadAssets.swift",
+    # "MatheMagicApp/Load/PreLoadAssets.swift",
 
     #----------------------------------------------------------------------------
     # APP: Top-Level
     #----------------------------------------------------------------------------
-    # "MatheMagicApp/Top-Level/AppState.swift",
-    # "MatheMagicApp/Top-Level/ContentView.swift",
+    "MatheMagicApp/Top-Level/AppState.swift",
+    "MatheMagicApp/Top-Level/ContentView.swift",
     # "MatheMagicApp/Top-Level/GameModel.swift",
     "MatheMagicApp/Top-Level/GameModelView.swift",
     "MatheMagicApp/Top-Level/ImmersiveVew.swift",
-    # "MatheMagicApp/Top-Level/MatheMagicApp.swift",
+    "MatheMagicApp/Top-Level/MatheMagicApp.swift",
 
     #----------------------------------------------------------------------------
     # APP: Utilities
@@ -73,7 +73,7 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # APP: Views
     #----------------------------------------------------------------------------
-    "MatheMagicApp/Views/BallView.swift",
+    # "MatheMagicApp/Views/BallView.swift",
     # "MatheMagicApp/Views/CustomButtonStyle.swift",
     # "MatheMagicApp/Views/GameOver.swift",
     # "MatheMagicApp/Views/Lobby.swift",
@@ -99,20 +99,20 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/1-orig-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play / 2-Alterations Data Functions
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play (continuation)
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/3-blend-elments-in-tree.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/4-inertial-data.swift",
 
@@ -179,16 +179,16 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # ANIMATION: Brain
     #----------------------------------------------------------------------------
-    # "AnimLibS/Brain/BrainAnimationSequence.swift",
+    "AnimLibS/Brain/BrainAnimationSequence.swift",
     # "AnimLibS/Brain/Travel&StyleEvents.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Brain / Idle
     #----------------------------------------------------------------------------
-    # "AnimLibS/Brain/Idle/0-IdleSequence.swift",
+    "AnimLibS/Brain/Idle/0-IdleSequence.swift",
     # "AnimLibS/Brain/Idle/1-eval-orientation.swift",
     # "AnimLibS/Brain/Idle/2-pick-transition.swift",
-    # "AnimLibS/Brain/Idle/3-build-transition.swift",
+    "AnimLibS/Brain/Idle/3-build-transition.swift",
     # "AnimLibS/Brain/Idle/4-inertial-units.swift",
 
     #----------------------------------------------------------------------------
@@ -196,28 +196,29 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # "AnimLibS/Brain/Walk/0-WalkSequence.swift",
     # "AnimLibS/Brain/Walk/1-PathwayEval.swift",
-    # "AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift",
-    # "AnimLibS/Brain/Walk/3-TranstionalSequence.swift",
-    # "AnimLibS/Brain/Walk/4-StepAlterations.swift",
+    "AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift",
+    "AnimLibS/Brain/Walk/3-TranstionalSequence.swift",
+    "AnimLibS/Brain/Walk/4-StepAlterations.swift",
     # "AnimLibS/Brain/Walk/5-InertialUnits.swift",
     # "AnimLibS/Brain/Walk/6-walkToIdle.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Components
     #----------------------------------------------------------------------------
-    # "AnimLibS/Components/AnimationSystem.swift",
+    "AnimLibS/Components/AnimationSystem.swift",
+    "AnimLibS/Components/AnimationPlaybackStateComponent.swift",
     # "AnimLibS/Components/BrainComponent.swift",
     # "AnimLibS/Components/CustomAnimationSystem.swift",
     # "AnimLibS/Components/EventComponent.swift",
     # "AnimLibS/Components/SkeletalPosesSystem.swift",
-    "AnimLibS/Components/TravelComponent.swift",
+    # "AnimLibS/Components/TravelComponent.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: SettingsAndDataStructs
     #----------------------------------------------------------------------------
     # "AnimLibS/SettingsAndDataStructs/AnimationSettings.swift",
     # "AnimLibS/SettingsAndDataStructs/CharacterAttachment.swift",
-    # "AnimLibS/SettingsAndDataStructs/SequenceData.swift",
+    "AnimLibS/SettingsAndDataStructs/SequenceData.swift",
     # "AnimLibS/SettingsAndDataStructs/StyleGuide.swift",
     # "AnimLibS/SettingsAndDataStructs/TravelGuide.swift",
 
@@ -227,7 +228,7 @@ SOURCE_FILES = [
     # "AnimLibS/Utilities/BuildTransforms.swift",
     # "AnimLibS/Utilities/CommonUseCases.swift",
     # "AnimLibS/Utilities/CriricalPoseFunctions.swift",
-    "AnimLibS/Utilities/SkeletonUtilities.swift",
+    # "AnimLibS/Utilities/SkeletonUtilities.swift",
     # "AnimLibS/Utilities/TransformUtilities.swift",
     # "AnimLibS/Utilities/mathUtilities.swift",
 

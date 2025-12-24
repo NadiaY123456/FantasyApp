@@ -3,4 +3,27 @@
 Make sure to provide EXACT EDITS, not like "wherever you compute ...". If you don't see the file you need, EXPLICITELY ask for it upfront!
 
 Task:
-As of now, my camera centers somewhere in the character chest. So when caracter stands idle but moves his body, the ground / terrain moves as well and it looks weird. So I want when Flash - main character that I control with controls - is idle, the terrain should be stationary on the screen. 
+i want to add UI overlay which will print which animation is playing, if animation is modified and if so - which modification is applied, or if the transition between animations are playing.
+also, because some transitions are super brief, i want to have history printed as well.  
+
+
+about my codebase:
+The transition/connection logic and the on‑the‑fly walk shaping are both in AnimLibS; here are the exact spots.
+
+Transition/connection between animations (with dynamic tweaking)
+
+0-IdleSequence.swift (line 347) builds/splices transition sequences (idle↔idle, idle→walk) and then blends into the target walk style.
+3-build-transition.swift (line 9) constructs the transition clip and injects MatchTransformAlteration per element (this is where the transition animation is modified on the fly to align start/end poses).
+2-ExtendWalkSequence.swift (line 263) blends from one walk style to another.
+2-ExtendWalkSequence.swift (line 436) attaches a per‑element blend tree (attachBlendInSequence) for the cross‑fade.
+3-blend-elments-in-tree.swift (line 9) actually applies that blend tree to the transforms.
+Walk direction/shape modifications (left/right/curved/stride)
+
+0-WalkSequence.swift (line 109) chooses and splices a transitional turn clip based on orientation.
+3-TranstionalSequence.swift (line 9) builds that turn sequence (picks left/right 180° candidates).
+0-WalkSequence.swift (line 144) applies cir‑walk adjustment (turning the walk).
+4-StepAlterations.swift (line 43) computes the per‑step cir adjustment and writes WalkCircleAlteration + deltaLocation/deltaRotation changes.
+CirWalk.swift (line 9) computes additive offsets for cir‑walk (mirrors twist ops for right turns).
+cirWalk-data.swift (line 9) applies those offsets to the actual transforms.
+0-WalkSequence.swift (line 168) applies stride adjustment when path deviation is still high.
+stride-data.swift (line 10) blends stride‑min/stride‑max data into the base animation.
