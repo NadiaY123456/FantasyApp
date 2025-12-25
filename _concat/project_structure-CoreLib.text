@@ -1,0 +1,27 @@
+- CoreLibS
+  - Components
+    - DataCenterComponent.swift
+  - CoreEntity
+    - EntityExtensions.swift
+    - EntitySet.swift
+    - ModelEntityUtilities.swift
+  - CoreUtilities
+    - AdditiveOffsetsForCirWalk.swift
+    - AppLogger.swift
+    - CoreTransform.swift
+    - SmoothingUtilities.swift
+    - VectorMath.swift
+  - ImportData
+    - AutoGenFromPython
+      - CriticalPosesDefinitions.swift
+    - BoneOperations.swift
+    - CommonStructs.swift
+    - CriticalPosesFunctions.swift
+    - DataManager.swift
+    - GeneratedAnimCache.swift
+    - ImportAnim.swift
+    - ImportMap.swift
+    - ImportTransforms.swift
+    - ImportTransitions.swift
+    - Mirror.swift
+    - ReOrderJointsAtLoad.swift

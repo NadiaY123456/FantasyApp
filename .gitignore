@@ -1,0 +1,9 @@
+MatheMagicApp/AnimationLibrary
+MatheMagicApp/CoreLibrary
+
+.DS_Store
+
+_concat/__pycache__/
+MatheMagicApp/.DS_Store
+AILibS
+_concat/prompts/current-prompt.txt

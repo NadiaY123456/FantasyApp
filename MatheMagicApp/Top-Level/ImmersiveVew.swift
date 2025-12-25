@@ -103,10 +103,12 @@ struct Selection: View {
                 .gesture(
                     DragGesture()
                         .onChanged { value in
+                            guard !gameModelView.isUserTextInputFocused else { return }
                             gameModelView.rawDragTranslation = value.translation
                             gameModelView.isDragging = true
                         }
                         .onEnded { _ in
+                            guard !gameModelView.isUserTextInputFocused else { return }
                             gameModelView.isDragging = false
                             gameModelView.rawDragTranslation = .zero
                         }
@@ -114,22 +116,38 @@ struct Selection: View {
                 .simultaneousGesture(
                     MagnificationGesture()
                         .onChanged { scale in
+                            guard !gameModelView.isUserTextInputFocused else { return }
                             if !gameModelView.isPinching {
-                                // Capture the baseline when pinch begins.
                                 gameModelView.initialPinchScale = scale
                             }
                             gameModelView.isPinching = true
                             gameModelView.rawPinchScale = scale
                         }
                         .onEnded { _ in
+                            guard !gameModelView.isUserTextInputFocused else { return }
                             gameModelView.isPinching = false
                             gameModelView.rawPinchScale = 1.0
                         }
                 )
+
+                // AI response HUD (debug overlay; does not intercept gestures).
+                VStack {
+                    HStack {
+                        AIResponseHUDView(state: gameModelView.aiDebug)
+                        .frame(maxWidth: 520)
+                        .allowsHitTesting(false)
+
+                        Spacer(minLength: 0)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+                .padding([.top, .leading], 20)
+
                 // 2) Overlay the JoystickView at the bottom left
                 VStack {
                     Spacer()
-                    HStack {
+                    HStack(alignment: .bottom, spacing: 14) {
                         JoystickView(
                             onChange: { magnitude, angle in
                                 // Update the game model with the joystick's values.
@@ -145,17 +163,40 @@ struct Selection: View {
                             }
                         )
                         .padding([.bottom, .leading], 20)
-                        Spacer()
-                        // ─────────────────────────────────────────────
-                        //  ACTION BUTTON  (bottom‑right)
-                        //  Keeps gameModelView.isHoldingButton
-                        //  true only while pressed.
+
+                        Spacer(minLength: 12)
+
+                        VStack(spacing: 10) {
+                            // AIResponseHUDView is intentionally only shown in the top-left overlay (avoid duplicate HUD).
+                            RealityTextInputOverlayView(
+                                input: $gameModelView.realityTextInput,
+                                placeholder: "Type input for AI…",
+                                onSubmit: { event in
+                                    gameModelView.handleSubmittedRealityText(event)
+                                },
+                                onFocusChange: { isFocused in
+                                    gameModelView.isUserTextInputFocused = isFocused
+
+                                    if isFocused {
+                                        // Cancel any in-progress camera gesture state as soon as typing starts.
+                                        gameModelView.isDragging = false
+                                        gameModelView.rawDragTranslation = .zero
+                                        gameModelView.isPinching = false
+                                        gameModelView.rawPinchScale = 1.0
+                                    }
+                                }
+                            )
+                        }
+                        .frame(maxWidth: 520)
+                        .padding(.bottom, 20)
+
+                        Spacer(minLength: 12)
+
                         ActionButtonView(
                             onPressStart: { gameModelView.isHoldingButton = true },
                             onPressEnd: { gameModelView.isHoldingButton = false }
                         )
                         .padding([.bottom, .trailing], 20)
-                        // ─────────────────────────────────────────────
                     }
                 }
             }

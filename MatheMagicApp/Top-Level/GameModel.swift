@@ -26,6 +26,26 @@ actor GameModel {
 
     var score = 0
 
+    // MARK: - User text input pipeline (AI integration will consume from here later)
+    private var pendingUserTextInputs: [UserTextInputEvent] = []
+    private let pendingUserTextInputsLimit: Int = 200
+
+    func enqueueUserTextInput(_ event: UserTextInputEvent) {
+        pendingUserTextInputs.append(event)
+
+        // Safety cap to prevent unbounded growth.
+        if pendingUserTextInputs.count > pendingUserTextInputsLimit {
+            pendingUserTextInputs.removeFirst(pendingUserTextInputs.count - pendingUserTextInputsLimit)
+        }
+    }
+
+    /// Convenience for later: let a system consume and clear the queue.
+    func drainUserTextInputs() -> [UserTextInputEvent] {
+        let items = pendingUserTextInputs
+        pendingUserTextInputs.removeAll(keepingCapacity: true)
+        return items
+    }
+
     func isPaused() -> Bool {
         return _isPaused
     }
@@ -53,6 +73,9 @@ actor GameModel {
         _isPaused = false
         _isFinished = false
         score = 0
+
+        pendingUserTextInputs.removeAll(keepingCapacity: true)
+
         Task { await clear() }
     }
 

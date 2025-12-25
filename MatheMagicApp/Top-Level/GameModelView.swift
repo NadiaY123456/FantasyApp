@@ -1,12 +1,26 @@
 import AnimLib
 import AssetLib
 import Combine
+import CoreLib
 import Foundation
 import joystickController
 import RealityKit
 import SwiftUI
 
 class GameModelView: ObservableObject, JoystickDataProvider {
+    // MARK: - Animation Debug HUD (overlay)
+
+    @Published var showAnimationDebugHUD: Bool = false {
+        didSet {
+            // Enable/disable emission at the source (AnimLib), and clear history when turning ON.
+            AnimationDebugBus.shared.setEnabled(showAnimationDebugHUD, resetHistory: showAnimationDebugHUD)
+        }
+    }
+
+    @Published var animationDebugHUDCards: [AnimationDebugCard] = []
+
+    private var animationDebugHUDCancellables = Set<AnyCancellable>()
+
     lazy var gameModel: GameModel = .init(gameModelView: self, teraStore: teraStore)
 
     let teraStore: TeraModelDictionaryActor
@@ -26,6 +40,18 @@ class GameModelView: ObservableObject, JoystickDataProvider {
 
     @Published var showQuestion: Bool = false
     @Published var isHoldingButton: Bool = false
+
+    // MARK: - RealityView text input (future AI prompt pipeline)
+    @Published var realityTextInput: RealityTextInputState = .init()
+
+    @Published var isUserTextInputFocused: Bool = false
+
+    // MARK: - AI (AILib contract pipeline)
+    @Published var aiDebug: AIDebugState = .init()
+
+    private let aiPipeline = MatheMagicAIEventPipeline()
+    private var aiTask: Task<Void, Never>?
+    private var aiActiveEventID: UUID?
 
     // MARK: Joystick data
 
@@ -50,6 +76,8 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     init(teraStore: TeraModelDictionaryActor) {
         self.teraStore = teraStore
         Task { await gameModel.initialize() }
+
+        setupAnimationDebugHUDSubscription()
         startTimer()
     }
 
@@ -77,6 +105,70 @@ class GameModelView: ObservableObject, JoystickDataProvider {
                 }
             }
         }
+    }
+
+    func toggleAnimationDebugHUD() {
+        showAnimationDebugHUD.toggle()
+    }
+
+    @MainActor
+    func handleSubmittedRealityText(_ event: UserTextInputEvent) {
+        AppLogger.shared.info("📝 Captured user text input (\(event.source.rawValue)): \(event.text)")
+
+        // Keep existing gameplay/event flow
+        Task { await gameModel.enqueueUserTextInput(event) }
+
+        // NEW: AI pipeline (AILib contract -> Ollama -> structured response)
+        runAIClassification(for: event)
+    }
+
+    // MARK: - AI (AILib)
+
+    @MainActor
+    private func runAIClassification(for event: UserTextInputEvent) {
+        // Cancel in-flight request (latest input wins)
+        aiTask?.cancel()
+
+        aiActiveEventID = event.id
+        aiDebug.start(eventText: event.text)
+
+        let eventID = event.id
+        let eventText = event.text
+
+        aiTask = Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                let result = try await self.aiPipeline.run(eventText: eventText)
+                guard !Task.isCancelled, self.aiActiveEventID == eventID else { return }
+                self.aiDebug.setSuccess(result)
+            } catch is CancellationError {
+                guard self.aiActiveEventID == eventID else { return }
+                self.aiDebug.setCancelled()
+            } catch {
+                guard !Task.isCancelled, self.aiActiveEventID == eventID else { return }
+                self.aiDebug.setFailure(error)
+            }
+        }
+    }
+
+    private func setupAnimationDebugHUDSubscription() {
+        AnimationDebugBus.shared.events
+            .receive(on: RunLoop.main)
+            .sink { [weak self] event in
+                guard let self else { return }
+                switch event {
+                case .reset:
+                    self.animationDebugHUDCards.removeAll()
+
+                case .card(let card):
+                    self.animationDebugHUDCards.append(card)
+                    if self.animationDebugHUDCards.count > 3 {
+                        self.animationDebugHUDCards.removeFirst(self.animationDebugHUDCards.count - 3)
+                    }
+                }
+            }
+            .store(in: &animationDebugHUDCancellables)
     }
 
     func togglePause() {
@@ -127,10 +219,13 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     }
 
     func reset() {
-        // Reset the start time to now.
         startDate = Date()
         Task {
             await gameModel.reset()
         }
+    }
+
+    deinit {
+        aiTask?.cancel()
     }
 }
