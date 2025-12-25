@@ -174,30 +174,6 @@
       - CreateAnimationSequence.swift
       - addBlendInSourceElementWithCustomAnimation.swift
 
-==== _concat/project_structure-AssetLib.text ====
-
-- AssetLibS
-  - AssetEntity
-    - TeraEntries.swift
-    - TeraModelDictionaryActor.swift
-    - TeraSet.swift
-  - BuildTerrain
-    - SimpleTerrainMaterial.swift
-    - TerrainHeight.swift
-    - TerrainMeshBuilder.swift
-    - TerrainModelEntityLoader.swift
-  - Components
-    - TeraComponent.swift
-  - Import
-    - AssetManager.swift
-    - ImportMaterial.swift
-    - ImportTerrain.swift
-  - Shaders
-    - SimpleTerrainShader.metal
-    - SplatTerrainShader.metal
-    - TerrainMaterials.h
-    - TerrainMaterials.metal
-
 ==== _concat/project_structure-CoreLib.text ====
 
 - CoreLibS
@@ -1893,7 +1869,6 @@ public enum ClassifierError: Error, Sendable, LocalizedError {
             \(Self.truncate(rawJSON))
             """
         }
-    }
 
 
     public static func classifyTransport(_ error: Error, url: URL) -> ClassifierError {
@@ -4971,319 +4946,1658 @@ func MarkAllEventsOld(for eventComponent: inout EventComponent) {
 ==== AnimLibS/Components/TravelComponent.swift ====
 
 
-import AssetLib
+import CoreLib
+
+import Inertialization
+import RealityKit
+
+enum animState {
+    case animationPlaying
+    case startingNewAnimation
+}
+
+func generateAnimDataForSequenceElement(
+    animationSequenceElement: inout AnimationSequenceElement,
+    lagAnimationSequenceElement: AnimationSequenceElement? = nil,
+    leadAnimationSequenceElement: inout AnimationSequenceElement?,
+    dataManager: DataManager
+) {
+    generateAnimDataForSequenceElementWoIntert(
+        animationSequenceElement: &animationSequenceElement,
+        dataManager: dataManager
+    )
+
+    populateInertialData(
+        animationSequenceElement: &animationSequenceElement,
+        lagAnimationSequenceElement: lagAnimationSequenceElement,
+        leadAnimationSequenceElement: &leadAnimationSequenceElement,
+        dataManager: dataManager
+    )
+}
+
+func generateAnimDataForSequenceElementWoIntert(
+    animationSequenceElement: inout AnimationSequenceElement,
+    withInertialization: Bool = true,
+    dataManager: DataManager
+) {
+    if let _ = animationSequenceElement.blendTree {
+        if printAnimationSystem {
+            AppLogger.shared.anim(" Blending animation sequence element: \(animationSequenceElement.animationName) with blend tree.")
+        }
+        blendRecursively(animationSequenceElement: &animationSequenceElement, dataManager: dataManager)
+    } else {
+        if printAnimationSystem {
+            AppLogger.shared.anim("Populating animData for animation sequence element: \(animationSequenceElement.animationName)")
+        }
+        populateAnimDataWithAlterations(
+            animationSequenceElement: &animationSequenceElement,
+            dataManager: dataManager
+        )
+    }
+
+    populateCirData(
+        animationSequenceElement: &animationSequenceElement,
+        dataManager: dataManager
+    )
+}
+
+==== AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift ====
+
+
+import CoreLib
+import RealityKit
+
+func populateCirData(
+    animationSequenceElement: inout AnimationSequenceElement,
+    dataManager: DataManager
+) {
+    
+    guard
+        let animAlteration = animationSequenceElement.animAlteration,
+        let walkCircleAlteration = animAlteration.walkCircleAlteration,
+        let cirWalkDegree = walkCircleAlteration.cirWalkDegree,
+        let cirBlendInfo = walkCircleAlteration.cirBlendInfo
+    else {
+        return
+    }
+    
+    if printAnimationSystem {
+        if let alt = animationSequenceElement.animAlteration {
+            var msg = "animAlteration:\n"
+            if let w = alt.walkCircleAlteration {
+                msg += """
+                🌀 WalkCircleAlteration:
+                  cirWalkDegree: \(String(format: "%.3f", w.cirWalkDegree ?? 0))
+                  blendJoints: \(w.cirBlendInfo?.jointIndices ?? [])
+                  ownBlendWeightType: \(w.cirBlendInfo?.ownBlendWeightType ?? .fixedAt100)
+                  otherBlendWeightType: \(w.cirBlendInfo?.otherBlendWeightType ?? .fixedAt0)
+
+                """
+            }
+            if let s = alt.strideLength {
+                msg += "  strideLength: \(s)\n"
+            }
+            AppLogger.shared.anim(msg)
+        } else {
+            AppLogger.shared.anim("animAlteration: none")
+        }
+    }
+
+
+    guard let animData = animationSequenceElement.animData
+    else {
+        AppLogger.shared.error("Error: No base transforms found for animationName: \(animationSequenceElement.animationName)")
+        return
+    }
+
+    let baseTransforms = animData.animTransforms
+
+    guard let (cirOffsetTransforms, boneIndices) = createCirWalkOffsetTransforms(
+        animationSequenceElement: animationSequenceElement,
+        changeInOrientationDegrees: cirWalkDegree,
+        operationMode: .all,
+        dataManager: dataManager
+    )
+    else {
+        AppLogger.shared.error("Error: cir Walk animation creation failed for \(animationSequenceElement.animationName)")
+        return
+    }
+
+
+    guard let updatedTransforms = addTwoTransforms(
+        transformsMain: baseTransforms,
+        transformsAdd: cirOffsetTransforms,
+        jointIndicesAdd: boneIndices,
+        blendWeightTypeAdd: cirBlendInfo.ownBlendWeightType,
+        blendType: cirBlendInfo.blendType,
+        fromEffectiveSeriesDuration: cirBlendInfo.fromEffectiveSeriesDuration,
+        toEffectiveSeriesDuration: cirBlendInfo.toEffectiveSeriesDuration,
+        totalEffectiveSeriesDuration: cirBlendInfo.totalEffectiveSeriesDuration,
+        dataManager: dataManager,
+        alphaForA: 1.0
+    ) else {
+        AppLogger.shared.error("Error: Failed to add CIR Walk offset transforms.")
+        return
+    }
+
+    animationSequenceElement.animData!.animTransforms = updatedTransforms
+}
+
+==== AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift ====
+
+
+import CoreLib
+import RealityKit
+
+func adjustAnimDataWithMatchTransform(
+    animationSequenceElement element: inout AnimationSequenceElement,
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+    guard
+        let animAlteration = element.animAlteration,
+        let matchTransform = animAlteration.matchTransformAlteration
+    else { return .done}
+    
+    guard
+        let animData = element.animData
+    else {
+        AppLogger.shared.error("Error: No transform data found for animationName: \(element.animationName) while doing match transform adjustments.")
+        return .failed
+    }
+    
+    var (startDeltaTransform, startIndices): ([Transform], [Int]) = ([Transform.identity], [])
+    if let startPoseMatch = matchTransform.startPoseMatch {
+        let poseName = element.startPoseName
+        let baseFrame = element.startPoseFrame
+        let animationName = element.animationName
+        
+        guard let (startDeltaTransformCalc, startIndicesCalc) =
+            computeDeltaPoseTransform(
+                animationName: animationName,
+                poseName: poseName,
+                baseFrame: baseFrame,
+                poseMatch: startPoseMatch,
+                dataManager: dataManager
+            )
+        else {
+            AppLogger.shared.error("Error: [1] Failed to compute delta pose transform for start pose.")
+            return .failed
+        }
+        (startDeltaTransform, startIndices) = (startDeltaTransformCalc, startIndicesCalc)
+    }
+    
+    var (endDeltaTransform, endIndices): ([Transform], [Int]) = ([Transform.identity], [])
+    if let endPoseMatch = matchTransform.endPoseMatch {
+        let poseName = element.endPoseName
+        guard let baseFrame = element.endPoseFrame else {
+            AppLogger.shared.error("Error: No end pose frame found for animationName: \(element.animationName).")
+            return .failed
+        }
+        let animationName = element.animationName
+        
+        guard let (endDeltaTransformCalc, endIndicesCalc) =
+            computeDeltaPoseTransform(
+                animationName: animationName,
+                poseName: poseName,
+                baseFrame: baseFrame,
+                poseMatch: endPoseMatch,
+                dataManager: dataManager
+            )
+        else {
+            AppLogger.shared.error("Error: [2] Failed to compute delta pose transform for start pose.")
+            return .failed
+        }
+        (endDeltaTransform, endIndices) = (endDeltaTransformCalc, endIndicesCalc)
+    }
+    
+    
+    mergeDeltaTransforms(
+        startIndices: &startIndices,
+        startTransforms: &startDeltaTransform,
+        endIndices: &endIndices,
+        endTransforms: &endDeltaTransform
+    )
+    
+    let elementDuration = animData.animTimeArray.last ?? 0
+        
+    guard let finalTransforms = addTwoTransforms(
+        transformsMain: animData.animTransforms,
+        transformsAdd: [startDeltaTransform, endDeltaTransform],
+        jointIndicesAdd: startIndices,
+        blendWeightTypeAdd: .fixedAt100,
+        blendType: .linear,
+        fromEffectiveSeriesDuration: 0,
+        toEffectiveSeriesDuration: Double(elementDuration),
+        totalEffectiveSeriesDuration: Double(elementDuration),
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("Error: Failed to add delta transforms to animation data.")
+        return .failed
+    }
+    
+    element.animData!.animTransforms = finalTransforms
+    
+    return .done
+}
+
+private func computeDeltaPoseTransform(
+    animationName: String,
+    poseName: CriticalPoseName,
+    baseFrame: Int,
+    poseMatch: PoseMatchTransformAlteration,
+    dataManager: DataManager
+) -> (adjustedTransform: [Transform], indices: [Int])? {
+    
+    
+    let referenceTransform: [Transform]
+    if poseMatch.referenceTransformType == .none {
+        if printBrainSystem {
+            AppLogger.shared.debug("⚧️ The pose does not require adjustment per the configuration: referenceTransformType: \(poseMatch.referenceTransformType).")
+        }
+        return ([],[])
+    } else if poseMatch.referenceTransformType == .start {
+        guard let animReferenceTransformCalc = dataManager.getAnimationTransformForFrame(
+            for: poseMatch.startReferenceAnimFrameDict.animationName,
+            atFrame: poseMatch.startReferenceAnimFrameDict.frame,
+            accountForLooping: true
+        ) else {
+            AppLogger.shared.error("Error: No transform data found for animationName: \(poseMatch.startReferenceAnimFrameDict.animationName) at  frame: \(poseMatch.startReferenceAnimFrameDict.frame)")
+            return nil
+        }
+        referenceTransform = animReferenceTransformCalc
+    } else if poseMatch.referenceTransformType == .end {
+        guard let animReferenceTransformCalc = dataManager.getAnimationTransformForFrame(
+            for: poseMatch.endReferenceAnimFrameDict.animationName,
+            atFrame: poseMatch.endReferenceAnimFrameDict.frame,
+            accountForLooping: true
+        ) else {
+            AppLogger.shared.error("Error: No transform data found for animationName: \(poseMatch.endReferenceAnimFrameDict.animationName) at  frame: \(poseMatch.endReferenceAnimFrameDict.frame)")
+            return nil
+        }
+        referenceTransform = animReferenceTransformCalc
+    } else if poseMatch.referenceTransformType == .blendBeforeAndAfter {
+        guard let animReferenceTransformCalc1 = dataManager.getAnimationTransformForFrame(
+            for: poseMatch.startReferenceAnimFrameDict.animationName,
+            atFrame: poseMatch.startReferenceAnimFrameDict.frame,
+            accountForLooping: true
+        ) else {
+            AppLogger.shared.error("Error: No transform data found for animationName: \(poseMatch.startReferenceAnimFrameDict.animationName) at  frame: \(poseMatch.startReferenceAnimFrameDict.frame)")
+            return nil
+        }
+        
+        guard let animReferenceTransformCalc2 = dataManager.getAnimationTransformForFrame(
+            for: poseMatch.endReferenceAnimFrameDict.animationName,
+            atFrame: poseMatch.endReferenceAnimFrameDict.frame,
+            accountForLooping: true
+        ) else {
+            AppLogger.shared.error("Error: No transform data found for animationName: \(poseMatch.endReferenceAnimFrameDict.animationName) at  frame: \(poseMatch.endReferenceAnimFrameDict.frame)")
+            return nil
+        }
+        
+        referenceTransform = blendTransforms(
+            transformsA: animReferenceTransformCalc1,
+            transformsB: animReferenceTransformCalc2,
+            alpha: 0.5
+        )
+        
+    } else {
+        AppLogger.shared.error("Error: Invalid reference transform type \(poseMatch.referenceTransformType).")
+        return nil
+    }
+    
+    guard let baseTransform = dataManager.getAnimationTransformForFrame(
+        for: animationName,
+        atFrame: baseFrame,
+        accountForLooping: true
+    ) else {
+        AppLogger.shared.error("Error: Could not retrieve baseTransformsFrame for frame \(baseFrame) in \(animationName).")
+        return nil
+    }
+    
+    let (poseAdjustment, baseSide) = determinePoseAdjustmentAndBaseSide(
+        poseMatch: poseMatch,
+        startPoseName: poseName
+    )
+    
+    guard var (adjustedTransform, indices) = adjustPose(
+        baseTransforms: baseTransform,
+        referenceTransforms: referenceTransform,
+        baseSide: baseSide,
+        poseAdjustment: poseAdjustment,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("Error: Failed to adjust pose transforms.")
+        return nil
+    }
+    
+    let isSuccess = applyFeetRotationIfNeeded(
+        currentTransforms: &adjustedTransform,
+        currentIndices: &indices,
+        poseMatch: poseMatch,
+        dataManager: dataManager
+    )
+    if isSuccess != .done {
+        AppLogger.shared.error("Error: Failed to apply foot rotation.")
+        return nil
+    }
+    
+    
+    let filteredAdjTransform = filterTransforms(transforms: adjustedTransform, indices: indices)
+    let filteredBaseTransform = filterTransforms(transforms: baseTransform, indices: indices)
+    
+    let deltaTransform = calculateDeltaTransforms(
+        fromTransforms: filteredBaseTransform,
+        toTransforms: filteredAdjTransform
+    )
+    
+    return (deltaTransform, indices)
+}
+
+private func determinePoseAdjustmentAndBaseSide(
+    poseMatch: PoseMatchTransformAlteration,
+    startPoseName: CriticalPoseName
+) -> (poseAdjustment: PoseAdjustment, baseSide: Side) {
+    let baseSide = poseMatch.baseSide
+    
+    let poseType = startPoseName.poseType
+    
+    let poseAdjustment: PoseAdjustment
+        
+    switch poseType {
+    case .toeOn, .footOff:
+        poseAdjustment = .aboutToLiftFoot
+            
+    case .low, .other, .toeOff, .footOn, .toeHigh:
+        poseAdjustment = .none
+            
+    case .high:
+        poseAdjustment = .liftedFoot
+            
+    case .on, .w_ground, .aboutToBendKnees, .off:
+        poseAdjustment = .plantedFeetIfPossible
+    }
+    
+    return (poseAdjustment, baseSide)
+}
+
+private func applyFeetRotationIfNeeded(
+    currentTransforms: inout [Transform],
+    currentIndices: inout [Int],
+    poseMatch: PoseMatchTransformAlteration,
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+    let baseSide = poseMatch.baseSide
+    
+    for footSide in [baseSide, baseSide.otherSide] {
+        let animationStartDict = poseMatch.startReferenceAnimFrameDict
+        let animationStart = animationStartDict.animationName
+        let frameStart = animationStartDict.frame
+        
+        let footRotationType = footSide == poseMatch.baseSide ? poseMatch.sideFootRotationType : poseMatch.otherSideFootRotationType
+                
+        switch footRotationType {
+        case .start:
+            
+            guard let startAnimReferenceTransform = dataManager.getAnimationTransformForFrame(
+                for: animationStart,
+                atFrame: frameStart,
+                accountForLooping: true
+            ) else {
+                AppLogger.shared.error("Error: No transform data found for animationName: \(animationStart)")
+                return .failed
+            }
+            
+            if let (adjusted, adjIndices) = adjustPose(
+                baseTransforms: currentTransforms,
+                referenceTransforms: startAnimReferenceTransform,
+                baseSide: footSide,
+                poseAdjustment: .adjustFootRotation,
+                dataManager: dataManager
+            ) {
+                currentTransforms = adjusted
+                for idx in adjIndices {
+                    if !currentIndices.contains(idx) {
+                        currentIndices.append(idx)
+                    }
+                }
+            } else {
+                AppLogger.shared.error("Error: Could not adjust foot rotation (start).")
+            }
+            
+        case .end:
+            
+            let animationEndDict = poseMatch.endReferenceAnimFrameDict
+            let animationEnd = animationEndDict.animationName
+            let frameEnd = animationEndDict.frame
+            
+            guard let endAnimReferenceTransform = dataManager.getAnimationTransformForFrame(
+                for: animationEnd,
+                atFrame: frameEnd,
+                accountForLooping: true
+            ) else {
+                AppLogger.shared.error("Error: No transform data found for animationName: \(animationEnd)")
+                return .failed
+            }
+            
+            if let (adjusted, adjIndices) = adjustPose(
+                baseTransforms: currentTransforms,
+                referenceTransforms: endAnimReferenceTransform,
+                baseSide: footSide,
+                poseAdjustment: .adjustFootRotation,
+                dataManager: dataManager
+            ) {
+                currentTransforms = adjusted
+                for idx in adjIndices {
+                    if !currentIndices.contains(idx) {
+                        currentIndices.append(idx)
+                    }
+                }
+            } else {
+                AppLogger.shared.error("Error: Could not adjust foot rotation (end).")
+            }
+            
+        default:
+            break
+        }
+    }
+    return .done
+}
+
+func mergeDeltaTransforms(
+    startIndices: inout [Int],
+    startTransforms: inout [Transform],
+    endIndices: inout [Int],
+    endTransforms: inout [Transform]
+) {
+    let startSet = Set(startIndices)
+    let endSet = Set(endIndices)
+
+    let endOnly = endSet.subtracting(startSet).sorted()
+    for frame in endOnly {
+        startIndices.append(frame)
+        startTransforms.append(.identity)
+    }
+
+    let startOnly = startSet.subtracting(endSet).sorted()
+    for frame in startOnly {
+        endIndices.append(frame)
+        endTransforms.append(.identity)
+    }
+
+    func sortByFrame(_ indices: inout [Int], _ transforms: inout [Transform]) {
+        let paired = zip(indices, transforms)
+            .sorted { $0.0 < $1.0 }
+        indices = paired.map { $0.0 }
+        transforms = paired.map { $0.1 }
+    }
+
+    sortByFrame(&startIndices, &startTransforms)
+    sortByFrame(&endIndices, &endTransforms)
+}
+
+==== AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift ====
+
+
+import CoreLib
+import RealityKit
+
+func adjustAnimDataWithStride(
+    animationSequenceElement element: inout AnimationSequenceElement,
+    dataManager: DataManager
+) {
+    guard
+        let animAlteration = element.animAlteration,
+        let targetStrideLength = animAlteration.strideLength
+    else { return }
+
+    guard
+        let animDataOrig = element.animData
+    else {
+        AppLogger.shared.error("Error: No transform data found for animationName: \(element.animationName) while doing stride adjustments.")
+        return
+    }
+
+    guard let stepData = dataManager.getStepData(for: element.animationName, criticalPoseIndex: element.startPoseIndex) else {
+        AppLogger.shared.error("Error: No step data found for animationName: \(element.animationName)")
+        return
+    }
+    let currentStrideLength: Float = length(stepData.stepLocation)
+
+    let suffix = currentStrideLength < targetStrideLength ? "--strideMAX" : "--strideMIN"
+
+    let strideAnimationName = "\(element.animationName)\(suffix)"
+    guard
+        let animDataStride = populateAnimDataWithOrig(
+            animationName: strideAnimationName,
+            startPoseIndex: element.startPoseIndex,
+            animationSpeedMultiplier: element.speed * systemWideSpeedMultiplier,
+            dataManager: dataManager
+        )
+    else {
+        AppLogger.shared.error("Error: No transform data found for animationName: \(element.animationName)")
+        return
+    }
+
+    guard let stepDataExtreme = dataManager.getStepData(for: strideAnimationName, criticalPoseIndex: element.startPoseIndex) else {
+        AppLogger.shared.error("Error: No step data found for animationName: \(element.animationName)")
+        return
+    }
+    let extremeStrideLength: Float = length(stepDataExtreme.stepLocation)
+
+    if extremeStrideLength == currentStrideLength {
+        AppLogger.shared.error("Error: Extreme stride length \(extremeStrideLength) equals current stride length \(currentStrideLength). Proceeding to populate animData without adjustments.")
+
+        guard let animData = populateAnimDataWithOrig(
+            animationName: element.animationName,
+            startPoseIndex: element.startPoseIndex,
+            animationSpeedMultiplier: element.speed,
+            dataManager: dataManager
+        ) else {
+            AppLogger.shared.error("Error: Unable to populate anim data for: \(element.animationName) (no adjustments)")
+            return
+        }
+        element.animData = animData
+        return
+    }
+
+    var blendFactor: Float = Swift.abs(targetStrideLength - currentStrideLength) / Swift.abs(extremeStrideLength - currentStrideLength) // for stride data
+    
+    if blendFactor > 1 || blendFactor < 0 {
+        blendFactor = min(max(blendFactor, 0), 1)
+    }
+
+
+    let blendInfo = BlendInfo(
+        jointIndices: nil,
+        ownBlendWeightType: .fixedAt(blendFactor),
+        otherBlendWeightType: .fixedAt(1 - blendFactor),
+        isAdditive: false,
+        blendFunction: .crossFade,
+        blendType: .linear,
+        fromEffectiveSeriesDuration: 0,
+        toEffectiveSeriesDuration: 1,
+        totalEffectiveSeriesDuration: 1
+    )
+
+    guard let blendedTransformsComputed = blendWithTransforms(
+        transformsA: animDataOrig.animTransforms,
+        transformsB: animDataStride.animTransforms,
+        jointIndicesB: blendInfo.jointIndices,
+        blendWeightTypeA: blendInfo.otherBlendWeightType,
+        blendWeightTypeB: blendInfo.ownBlendWeightType,
+        blendType: blendInfo.blendType,
+        fromEffectiveSeriesDuration: blendInfo.fromEffectiveSeriesDuration,
+        toEffectiveSeriesDuration: blendInfo.toEffectiveSeriesDuration,
+        totalEffectiveSeriesDuration: blendInfo.totalEffectiveSeriesDuration
+    ) else {
+        AppLogger.shared.error("Error: Failed to blend transforms.")
+        return
+    }
+
+
+
+    guard
+        let endPoseFrameOrig = element.endPoseFrame,
+        let (elapsedTimeArrayOrig, frameIndicesOrig) = dataManager.calculateElapsedTimeArray(
+            for: element.animationName,
+            fromFrameIncl: element.startPoseFrame,
+            toFrameIncl: endPoseFrameOrig,
+            speed: element.speed * systemWideSpeedMultiplier
+        )
+    else {
+        AppLogger.shared.error("Error: Failed to calculate elapsed time array for original animation.")
+        return
+    }
+
+    guard
+        let endPoseFrameOrig = element.endPoseFrame,
+        let (elapsedTimeArrayStride, _) = dataManager.calculateElapsedTimeArray(
+            for: strideAnimationName,
+            fromFrameIncl: element.startPoseFrame,
+            toFrameIncl: endPoseFrameOrig,
+            speed: element.speed * systemWideSpeedMultiplier
+        )
+    else {
+        AppLogger.shared.error("Error: Failed to calculate elapsed time array for original animation.")
+        return
+    }
+
+    guard elapsedTimeArrayOrig.count == elapsedTimeArrayStride.count else {
+        AppLogger.shared.error("Error: Mismatched elapsed time array lengths. Original count: \(elapsedTimeArrayOrig.count), Stride count: \(elapsedTimeArrayStride.count)")
+        return
+    }
+    let selectedTimes: [Float] = zip(elapsedTimeArrayOrig, elapsedTimeArrayStride)
+        .map { origTime, strideTime in
+            origTime * (1 - blendFactor) + strideTime * blendFactor
+        }
+
+
+    let animData = AnimData(
+        animTransforms: blendedTransformsComputed,
+        animTimeArray: selectedTimes,
+        frameArray: frameIndicesOrig
+    )
+
+    element.animData = animData
+}
+
+==== AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift ====
+
+import CoreLib
+import RealityKit
+
+func populateAnimDataWithAlterations(
+    animationSequenceElement: inout AnimationSequenceElement,
+    dataManager: DataManager
+) {
+    
+    guard let animData = populateAnimDataWithOrig(
+        animationName: animationSequenceElement.animationName,
+        startPoseIndex: animationSequenceElement.startPoseIndex,
+        animationSpeedMultiplier: animationSequenceElement.speed,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("Error: Unable to populate anim data for: \(animationSequenceElement.animationName) (no adjustments)")
+        return
+    }
+    
+    animationSequenceElement.animData = animData
+    
+    guard let animAlteration = animationSequenceElement.animAlteration else {
+        if printAnimationSystem {
+            AppLogger.shared.anim("populating anim data without adjustments for \(animationSequenceElement.animationName) from \(animationSequenceElement.startPoseName)[\(animationSequenceElement.startPoseFrame)] to \(animationSequenceElement.endPoseName)[\(animationSequenceElement.endPoseFrame ?? 0)]")
+        }
+        return
+    }
+
+    if animAlteration.strideLength != nil {
+        adjustAnimDataWithStride(
+            animationSequenceElement: &animationSequenceElement,
+            dataManager: dataManager
+        )
+    }
+    
+    if animAlteration.matchTransformAlteration != nil {
+        adjustAnimDataWithMatchTransform(
+            animationSequenceElement: &animationSequenceElement,
+            dataManager: dataManager
+        )
+    }
+    
+    return
+}
+
+==== AnimLibS/Brain/BrainAnimationSequence.swift ====
+
+import CoreLib
+import RealityKit
+
+enum buildAnimationSequenceOutcome {
+    case tooEarly
+    case done
+    case alreadyReady
+    case failed
+}
+
+@MainActor // Debug: to delete //👀
+func buildAnimationSequence(
+    entity: Entity, // Debug: to delete //👀
+    currentAnimationSequence: inout [AnimationSequenceElement],
+    initAnimationSequenceIndex: inout Int,
+    styleGuide: inout StyleGuide,
+    travelGuide: inout TravelGuide,
+    eventComponent: EventComponent?, // Debug: to delete //👀
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+    var isSuccess: buildAnimationSequenceOutcome = .failed
+
+    guard let transitionableIndex = findNextTransitionableCurrentSequenceIndex(
+        currentIndex: initAnimationSequenceIndex,
+        animationSequence: currentAnimationSequence,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("🧠 Error: No animation segments after custom animation segments.")
+        return .failed
+    }
+
+    guard transitionableIndex == 0 else {
+        AppLogger.shared.anim("🧠 Too early to transition. Skipping buildAnimationSequence.")
+        return .tooEarly
+    }
+
+    if transitionableIndex + 1 < currentAnimationSequence.count,
+       currentAnimationSequence[transitionableIndex + 1].isReadyToPlay == true,
+       styleGuide.targets[0].isNew == false
+    {
+        AppLogger.shared.anim("🧠 Next element already ready to play. Skipping buildAnimationSequence.")
+        return .alreadyReady
+    }
+
+    let initAnimationSequenceElement = currentAnimationSequence[transitionableIndex]
+    
+    
+    guard
+        let currentFrame = initAnimationSequenceElement.currentFrame,
+        let endPoseFrame = initAnimationSequenceElement.endPoseFrame
+    else {
+        AppLogger.shared.error("🧠 Error: Current frame or end pose frame is nil.")
+        return .failed
+    }
+    
+    
+
+    let initMoveType = initAnimationSequenceElement.endPoseName.moveType
+    
+    if let firstTargetDestination = travelGuide.targetDestinations.first {
+        AppLogger.shared.anim("🧠 TravelGuide First Destination: inPlace: \(firstTargetDestination.inPlace)  |  isNew: \(firstTargetDestination.isNew)")
+    } else {
+        AppLogger.shared.anim("🧠 TravelGuide: no destinations.")
+    }
+
+    switch initMoveType {
+    case .walk:
+        
+        guard initAnimationSequenceElement.isNearEndOfSegment() else {
+            if printBrainSystem {
+                AppLogger.shared.anim("Too early to construct walk‑to‑walk transition; segment not yet close to the end.")
+            }
+            return .tooEarly
+        }
+
+        AppLogger.shared.anim("Current move type is walk.")
+        isSuccess = constructWalkSequence(
+            animationSequence: &currentAnimationSequence,
+            initIndex: transitionableIndex,
+            styleGuide: &styleGuide,
+            travelGuide: &travelGuide,
+            entityWorldTransform: entity.transform,
+            dataManager: dataManager
+        )
+        return isSuccess
+
+    case .idle:
+        AppLogger.shared.anim("Current move type is idle.")
+        isSuccess = constructIdleSequence(
+            animationSequence: &currentAnimationSequence,
+            initIndex: transitionableIndex,
+            styleGuide: &styleGuide,
+            travelGuide: &travelGuide,
+            entityWorldTransform: entity.transform,
+            dataManager: dataManager
+        )
+        return isSuccess
+
+    case .transition:
+        AppLogger.shared.anim("Current move type is transition.")
+        return .failed
+
+    case .other:
+        AppLogger.shared.error("Error: Undetermined init move type.")
+        return .failed
+    }
+    
+
+}
+
+func findNextTransitionableCurrentSequenceIndex(
+    currentIndex: Int?,
+    animationSequence: [AnimationSequenceElement],
+    dataManager: DataManager
+) -> Int? {
+    var index = currentIndex
+
+    while let idx = index, idx < animationSequence.count {
+        let currentElement = animationSequence[idx]
+        let animationName = currentElement.animationName
+
+        if currentElement.endPoseName.moveType != .transition {
+            if printBrainSystem {
+                AppLogger.shared.anim("Found non-transition segment at index \(idx): \(animationName) (endPose \(currentElement.endPoseName)).")
+            }
+            break
+        }
+        else {
+            index = idx + 1
+        }
+    }
+
+    if let finalIndex = index, finalIndex >= animationSequence.count {
+        AppLogger.shared.error("Error: [2] Index \(finalIndex) is out of bounds. Returning nil.")
+        return nil
+    }
+
+    return index
+}
+
+==== AnimLibS/Brain/Idle/0-IdleSequence.swift ====
+
+
 import CoreLib
 import RealityKit
 import simd
 
-public struct TravelComponent: RealityKit.Component {
-    var lagAnimationTime: Float = .zero
-    
-    var lastBoneOnGround: [ExplicitBoneName] = []
-        
-    var lagTransforms: [ExplicitBoneName: Transform] = [:]
-    
-    var lagDeltaRotation: [Float] = [] // we are tracking only y axis of the quaternion
-    var lagDeltaTranslation: [simd_float3] = []
-    
-    public init() {}
+
+func constructIdleSequence(
+    animationSequence: inout [AnimationSequenceElement],
+    initIndex: Int,
+    styleGuide: inout StyleGuide,
+    travelGuide: inout TravelGuide,
+    entityWorldTransform: Transform,
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+    if printBrainSystem { AppLogger.shared.anim("🧠 Constructing idle sequence") }
+
+    let currentElement = animationSequence[initIndex]
+
+
+    var nextMoveType: MoveType? = .idle
+    if travelGuide.targetDestinations.count > 0, travelGuide.targetDestinations[0].inPlace == false {
+        nextMoveType = .walk
+    } else if travelGuide.targetDestinations.count == 0 {
+        AppLogger.shared.error("🧠 Error: No destinations found.")
+    }
+
+    AppLogger.shared.anim("🧠 Currently in Idle. Next move type is \(String(describing: nextMoveType)).")
+
+    let isNearEndOfSequence = (animationSequence.count == 1 && currentElement.isNearEndOfSegment())
+
+    let isNewOrientation = !validateIdleAlignment(travelGuide: travelGuide, entityWorldTransform: entityWorldTransform)
+
+
+    let animStyle = styleGuide.targets[0]
+    let needToTransition = animStyle.isNew || isNewOrientation || nextMoveType != .idle
+
+    guard isNearEndOfSequence || needToTransition else {
+        AppLogger.shared.anim("🧠 Too early to construct idle sequence. Neither of conditions are true: isNearEndOfSequence: \(isNearEndOfSequence), animStyle.isNew: \(animStyle.isNew), isNewOrientation: \(isNewOrientation), nextMoveType: \(String(describing: nextMoveType)).")
+        return .tooEarly
+    }
+
+
+    if needToTransition == false {
+        let extensionResult = extendAnimationSequence(
+            animationSequence: &animationSequence,
+            isFilledOut: false,
+            dataManager: dataManager
+        )
+        if extensionResult == .done {
+            AppLogger.shared.debug("⚧️ Extended sequence without transitions.")
+            animationSequence[initIndex + 1].isReadyToPlay = true
+            return .done
+        }
+    }
+
+
+    guard let (lastIndexBeforeTransition, transitionFrame) = findTransitionStart(
+        from: initIndex,
+        in: &animationSequence,
+        dataManager: dataManager,
+        printBrainSystem: printBrainSystem
+    ) else {
+        AppLogger.shared.error("🧠 Error: Failed to find lastIndexBeforeTransition.")
+        return .failed
+    }
+
+    let startAnimationName = animationSequence[lastIndexBeforeTransition].animationName
+
+
+
+    let transitionID: String
+    let endAnimationName: String
+    let endCriticalPoseIndex: Int
+
+    if nextMoveType == .idle {
+        AppLogger.shared.anim("🧠 Constructing Idle To Idle sequence.")
+
+        guard let (_transitionID, _endAnimationName, _endCriticalPoseIndex) = determineIdleToIdleTransitionAndTarget(
+            lastElementBelforeTransition: animationSequence[lastIndexBeforeTransition],
+            animStyle: animStyle,
+            dataManager: dataManager
+        ) else {
+            AppLogger.shared.error("🧠 Error: Failed to build idle to idle sequence.")
+            return .failed
+        }
+        (transitionID, endAnimationName, endCriticalPoseIndex) = (_transitionID, _endAnimationName, _endCriticalPoseIndex)
+    } else if nextMoveType == .walk {
+        AppLogger.shared.anim("🧠 Constructing Idle To Walk sequence.")
+
+        guard let (_transitionID, _endAnimationName, _endCriticalPoseIndex) = determineIdleToWalkTransitionAndTarget(
+            lastElementBelforeTransition: animationSequence[lastIndexBeforeTransition],
+            animStyle: animStyle,
+            dataManager: dataManager
+        ) else {
+            AppLogger.shared.error("🧠 Error: Failed to build idle to idle sequence.")
+            return .failed
+        }
+        (transitionID, endAnimationName, endCriticalPoseIndex) = (_transitionID, _endAnimationName, _endCriticalPoseIndex)
+    } else {
+        AppLogger.shared.error("🧠 Error: Invalid move type \(String(describing: nextMoveType)).")
+        return .failed
+    }
+
+
+
+    let buildResult = buildTransitionSequence(
+        animationSequence: &animationSequence,
+        lastIndexBeforeTransition: lastIndexBeforeTransition,
+        transitionFrame: transitionFrame,
+        transitionID: transitionID,
+        startAnimationName: startAnimationName,
+        endAnimationName: endAnimationName,
+        endCriticalPoseIndex: endCriticalPoseIndex,
+        styleGuide: &styleGuide,
+        dataManager: dataManager
+    )
+
+    guard buildResult == .done else {
+        AppLogger.shared.error("🧠 Error: Failed to build transition sequence.")
+        return .failed
+    }
+
+
+    assignInertialInfoForIdle(
+        animationSequence: &animationSequence,
+        initIndex: initIndex,
+        dataManager: dataManager
+    )
+
+
+    for i in initIndex + 1 ..< animationSequence.count {
+        animationSequence[i].isFilledOut = true
+    }
+
+    animationSequence[initIndex + 1].isReadyToPlay = true
+
+    if !styleGuide.targets.isEmpty {
+        styleGuide.targets[0].isNew = false
+    }
+
+    return .done
 }
 
-public class TravelSystem: RealityKit.System {
-    @MainActor private static let query = animationComponentQuery
-    
-    @MainActor private static let teraQuery = EntityQuery(where: .has(TeraComponent.self))
-    
-    public required init(scene: RealityKit.Scene) {}
-    
-    public static var dependencies: [SystemDependency] { [.after(AnimationSystem.self)] }
-    
-    public func update(context: SceneUpdateContext) {
-        let deltaTime = Float(context.deltaTime)
-        
-        let terrains = Array(context.entities(matching: Self.teraQuery, updatingSystemWhen: .rendering))
-        // check and warn in there is more than one
-        guard terrains.count == 1 else {
-            AppLogger.shared.error("TravelSystem: Error - more than one terrain entity found, expected only one.")
-            return
-        }
-        
-        guard let terrain = terrains.first else {
-            AppLogger.shared.error("TravelSystem: Error - terrain entity not found.")
-            return
-        }
-        
-        guard
-            var teraComponent = terrain.components[TeraComponent.self]
-        else {
-            AppLogger.shared.error("Error: Failed to get teraComponent")
-            return
-        }
-    
-        let travellers = context.entities(matching: Self.query, updatingSystemWhen: .rendering)
-        for traveller in travellers {
-            guard
-                let animComponent = traveller.components[AnimationComponent.self],
-                let brainComponent = traveller.components[BrainComponent.self],
-                var travelComponent = traveller.components[TravelComponent.self],
-                let dataCenterComponent = traveller.components[DataCenterComponent.self]
-            else { continue }
-            
-            if printTravelSystem { AppLogger.shared.anim(" ----- TravelSystem is running for  \(traveller.name) at \((dataCenterComponent.gameTime * 10000).rounded() / 10000) with deltaTime \((context.deltaTime * 10000).rounded() / 10000)-----") }
-            
-            guard brainComponent.animationSequence.isEmpty == false else {
-                AppLogger.shared.error("Error: animationSequence is empty in TravelSystem")
-                continue
-            }
-            
 
-            let boneOnGround = brainComponent.animationSequence[0].startPoseName.groundBone
-            
-            let deltaTransform = fixFootOnGround(traveller: traveller, travelComponent: &travelComponent, boneOnGround: boneOnGround, gameTime: Float(dataCenterComponent.gameTime))
-            
-            if printPlot { AppLogger.shared.anim(" Traveller location from TravelSystem: \(traveller.transform.translation)") }
-            
-
-            if teraComponent.terrainAttached == true,
-                let y = TerrainMeshBuilder.sampledHeight(
-                worldX: traveller.transform.translation.x,
-                worldZ: traveller.transform.translation.z,
-                heightMap: teraComponent.heightMap,
-                gridCols: teraComponent.heightMapWidth,
-                horizontalSpacing: teraComponent.heightMapSpacing,
-                verticalScale: teraComponent.heightMapVerticalScale,
-                seaLevel: teraComponent.heightMapSeaLevel,
-                parentTransform: teraComponent.terrainEntityTransform
-            ) {
-                traveller.transform.translation.y = y
-            }
-            
-            
-            traveller.components.set(travelComponent)
-            traveller.components.set(animComponent)
-            
-            
-            
-            let localHead = getLocalJointTransform(entity: traveller, boneName: .head)
-            let localLThigh = getLocalJointTransform(entity: traveller, boneName: .leftThigh)
-            let localRThigh = getLocalJointTransform(entity: traveller, boneName: .rightThigh)
-            let localLFoot = getLocalJointTransform(entity: traveller, boneName: .leftFoot)
-            let localRFoot = getLocalJointTransform(entity: traveller, boneName: .rightFoot)
-            let localPelvis = getLocalJointTransform(entity: traveller, boneName: .pelvis)
-            let localWaist = getLocalJointTransform(entity: traveller, boneName: .waist)
-
-            if printTravelSystem {
-                AppLogger.shared.plot("Plot: gameTime: \(dataCenterComponent.gameTime), deltaTime: \(deltaTime), head: \(localHead), lThigh: \(localLThigh), rThigh: \(localRThigh), lFoot: \(localLFoot), rFoot: \(localRFoot), waist: \(localWaist), pelvis: \(localPelvis), isNewSegment: \(brainComponent.isNewSegment)")
-            }
-        }
+private func determineIdleToWalkTransitionAndTarget(
+    lastElementBelforeTransition element: AnimationSequenceElement,
+    animStyle: StyleTarget,
+    dataManager: DataManager
+) -> (transitionID: String, endAnimationName: String, endCriticalPoseIndex: Int)? {
+    let endAnimation: String
+    if let newAnimDataPoint = dataManager.getAnimDataPoint(for: animStyle.animationName),
+       newAnimDataPoint.moveList.contains(.walk)
+    {
+        endAnimation = animStyle.animationName
+    } else {
+        AppLogger.shared.error("🧠 Error: The move target \(animStyle.animationName) is not a Walk animation. Reverting to default walk animation")
+        endAnimation = defaultWalkAnimation
     }
-}
 
-@MainActor
-
-func fixFootOnGround(
-    traveller: Entity,
-    travelComponent: inout TravelComponent,
-    boneOnGround: ExplicitBoneName,
-    gameTime: Float
-) -> Transform {
-    guard
-        let leftFootPath = ExplicitBoneName.leftFoot.fullPath(),
-        let rightFootPath = ExplicitBoneName.rightFoot.fullPath(),
-        let leftToePath = ExplicitBoneName.leftToeBase.fullPath(),
-        let rightToePath = ExplicitBoneName.rightToeBase.fullPath()
-    else {
-        AppLogger.shared.error("Error: Invalid bone name")
-        return .identity
+    guard let startCriticalPoseIndex = element.endPoseIndex else {
+        AppLogger.shared.error("🧠 Error: endPoseIndex is nil for \(element.animationName).")
+        return nil
     }
-    let identityQuat = simd_quatf(ix: 0, iy: 0, iz: 0, r: 1)
 
     guard
-        let leftFootTransform = getJointWorldTransform(of: leftFootPath, in: traveller),
-        let rightFootTransform = getJointWorldTransform(of: rightFootPath, in: traveller),
-        let leftToeTransform = getJointWorldTransform(of: leftToePath, in: traveller),
-        let rightToeTransform = getJointWorldTransform(of: rightToePath, in: traveller)
-    else {
-        AppLogger.shared.error("Error: Bone transforms not found for \(traveller.name)")
-        return .identity
-    }
-
-    let activeTransform: Transform
-    switch boneOnGround {
-    case .leftFoot: activeTransform = leftFootTransform
-    case .rightFoot: activeTransform = rightFootTransform
-    case .leftToeBase: activeTransform = leftToeTransform
-    case .rightToeBase: activeTransform = rightToeTransform
-    default:
-        AppLogger.shared.error("Error: Invalid boneOnGround")
-        return .identity
-    }
-
-    var isSwitching = false
-    var lagIsSwitching = false
-    if travelComponent.lastBoneOnGround.count >= 2 {
-        isSwitching = (boneOnGround != travelComponent.lastBoneOnGround[0])
-        lagIsSwitching = (travelComponent.lastBoneOnGround[0] != travelComponent.lastBoneOnGround[1])
-    }
-
-    if travelComponent.lagTransforms[boneOnGround] == nil {
-        travelComponent.lagTransforms[boneOnGround] = activeTransform
-    }
-    let usedLagTransform = travelComponent.lagTransforms[boneOnGround] ?? activeTransform
-
-    var deltaRotation = usedLagTransform.rotation != identityQuat
-        ? usedLagTransform.rotation * activeTransform.rotation.inverse
-        : identityQuat
-
-    deltaRotation = simd_quatf(
-        ix: 0,
-        iy: deltaRotation.imag.y,
-        iz: 0,
-        r: deltaRotation.real
-    ).normalized
-
-    traveller.orientation *= deltaRotation
-
-    guard
-        let activeTransformAfter = getJointWorldTransform(
-            of: boneOnGround.fullPath()!,
-            in: traveller
+        let (transitionID, endPoseIdx) =
+        selectIdleToWalkTransitionAndEndAnimations(
+            startAnimationName: element.animationName,
+            startCriticalPoseIndex: startCriticalPoseIndex,
+            endAnimationName: endAnimation,
+            endCriticalPoseIndex: nil,
+            dataManager: dataManager
         )
     else {
-        AppLogger.shared.error("Error: Could not get active transform after rotation for \(traveller.name)")
-        return .identity
+        AppLogger.shared.error("🧠 Error: Failed to select transition and end animations for idle-to-walk sequence.")
+        return nil
     }
 
-    let usedLagTranslation = usedLagTransform.translation
-    var deltaLocation = activeTransformAfter.translation - usedLagTranslation
+    return (transitionID, endAnimation, endPoseIdx)
+}
 
-    if activeTransformAfter.translation.y > 0.01 {
-        deltaLocation.y = min(activeTransformAfter.translation.y, 0.001)
-    } else if activeTransformAfter.translation.y < -0.01 {
-        deltaLocation.y = max(activeTransformAfter.translation.y, -0.001)
+
+private func determineIdleToIdleTransitionAndTarget(
+    lastElementBelforeTransition: AnimationSequenceElement,
+    animStyle: StyleTarget,
+    dataManager: DataManager
+) -> (transitionID: String, endAnimationName: String, endCriticalPoseIndex: Int)? {
+    if printBrainSystem { AppLogger.shared.anim("🧠 The move target is Idle") }
+
+    let startElement = lastElementBelforeTransition
+    let startAnimationName = startElement.animationName
+    guard let startAnimeDataPoint = dataManager.getAnimDataPoint(for: startAnimationName) else {
+        AppLogger.shared.error("🧠 Error: Animation data point not found for \(startAnimationName).")
+        return nil
     }
-    deltaLocation.y = 0 // enforce foot on ground
 
-    traveller.transform.translation -= deltaLocation
+    let endAnimationName: String
 
-    if travelComponent.lagDeltaTranslation.count >= 2 {
-        travelComponent.lagDeltaTranslation.removeLast()
+    if animStyle.isNew {
+        endAnimationName = animStyle.animationName
+    } else if startAnimeDataPoint.isLoop {
+        endAnimationName = startAnimationName
+    } else {
+        endAnimationName = defaultIdleAnimation
     }
-    travelComponent.lagDeltaTranslation.insert(deltaLocation, at: 0)
 
-    if travelComponent.lagDeltaRotation.count >= 2 {
-        travelComponent.lagDeltaRotation.removeLast()
+    guard let startCriticalPoseIndex = startElement.endPoseIndex else {
+        AppLogger.shared.error("🧠 Error: endPoseIndex is nil for \(startAnimationName).")
+        return nil
     }
-    travelComponent.lagDeltaRotation.insert(deltaRotation.imag.y, at: 0)
 
-    for (boneName, _) in travelComponent.lagTransforms {
-        if let fullPath = boneName.fullPath() {
-            travelComponent.lagTransforms[boneName] =
-                getJointWorldTransform(of: fullPath, in: traveller) ?? .identity
+    guard let (transitionID, endAnimationName, endCriticalPoseIndex) = selectIdleToIdleTransitionAndEndAnimations(
+        startAnimationName: startAnimationName,
+        startCriticalPoseIndex: startCriticalPoseIndex,
+        endAnimationDict: [endAnimationName: nil], // animation → criticalPoseIdx
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("🧠 Error: Failed to select transition and end animations.")
+        return nil
+    }
+
+    return (transitionID, endAnimationName, endCriticalPoseIndex)
+}
+
+func findTransitionStart(
+    from initIndex: Int,
+    in animationSequence: inout [AnimationSequenceElement],
+    dataManager: DataManager,
+    printBrainSystem: Bool = printBrainSystem
+) -> (startIndex: Int, transitionFrame: Int)? {
+    let originalCount = animationSequence.count
+
+    for idx in initIndex ..< originalCount {
+        guard let endFrame = animationSequence[idx].endPoseFrame else {
+            AppLogger.shared.error("🧠 Error: endPoseFrame is nil for index \(idx).")
+            return nil
+        }
+        let footBones: Set<ExplicitBoneName> = [.leftFoot, .rightFoot]
+        if footBones.contains(animationSequence[idx].endPoseName.groundBone) {
+            if printBrainSystem {
+                AppLogger.shared.anim("🧠 Transition point found at index \(idx), frame \(endFrame)")
+            }
+            return (idx, endFrame)
         }
     }
 
-    travelComponent.lastBoneOnGround.insert(boneOnGround, at: 0)
-    if travelComponent.lastBoneOnGround.count > 2 {
-        travelComponent.lastBoneOnGround.removeLast()
+    if printBrainSystem {
+        AppLogger.shared.debug("🧠 No both-feet-grounded in existing elements; extending idle sequence once")
+    }
+    let extensionResult = extendAnimationSequence(
+        animationSequence: &animationSequence,
+        isFilledOut: false,
+        dataManager: dataManager
+    )
+    guard extensionResult == .done else {
+        AppLogger.shared.error("🧠 Error: Failed to extend the animation sequence.")
+        return nil
     }
 
-    let correction = Transform(scale: .one,
-                               rotation: deltaRotation,
-                               translation: -deltaLocation)
-
-    return correction
-}
-
-//        AppLogger.shared.error("Error: Invalid bone name")
-//        AppLogger.shared.error("Error: Bone transforms not found for \(traveller.name)")
-//        AppLogger.shared.error("Error: Invalid boneOnGround")
-//        AppLogger.shared.error("Error: Could not get active transform after rotation for \(traveller.name)")
-
-func shouldUsePreviousValue(previousCount: Int,
-                            isSwitching: Bool,
-                            lagIsSwitching: Bool,
-                            currentReal: Float? = nil,
-                            previousReal: Float? = nil) -> Bool
-{
-    guard previousCount >= 1 else { return false }
-    
-    if let curReal = currentReal, let prevReal = previousReal {
-        if curReal * prevReal < 0 {
-            return false
+    for idx in originalCount ..< animationSequence.count {
+        guard let endFrame = animationSequence[idx].endPoseFrame else {
+            AppLogger.shared.error("🧠 Error: endPoseFrame is nil for index \(idx).")
+            return nil
+        }
+        if animationSequence[idx].endPoseName.bothFeet == .ground {
+            if printBrainSystem {
+                AppLogger.shared.anim("🧠 Transition point found at index \(idx), frame \(endFrame)")
+            }
+            return (idx, endFrame)
         }
     }
-    
-    if isSwitching || lagIsSwitching {
-        return true
-    }
-    
-    return false
+
+    AppLogger.shared.error("🧠 Error: No both-feet-grounded element found even after one extension.")
+    return nil
 }
 
-func clampDeltaLocation(_ newDelta: SIMD3<Float>, previousDelta: SIMD3<Float>, allowedChange: SIMD3<Float>) -> SIMD3<Float> {
-    var clamped = SIMD3<Float>()
-    
-    for i in 0 ..< 3 {
-        let prev = previousDelta[i]
-        let current = newDelta[i]
-        
-        if Swift.abs(prev) < 0.0001 {
-            clamped[i] = current
+
+private func buildTransitionSequence(
+    animationSequence: inout [AnimationSequenceElement],
+    lastIndexBeforeTransition: Int,
+    transitionFrame: Int,
+    transitionID: String,
+    startAnimationName: String,
+    endAnimationName: String,
+    endCriticalPoseIndex: Int,
+    styleGuide: inout StyleGuide,
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+
+    guard
+        let endAnimDP = dataManager.getAnimDataPoint(for: endAnimationName),
+        endCriticalPoseIndex < endAnimDP.criticalPoses.count
+    else {
+        AppLogger.shared.error("🧠 Error: Animation data point not found for \(endAnimationName).")
+        return .failed
+    }
+    let frameForEndAnimation = endAnimDP.criticalPoses[endCriticalPoseIndex].frame
+
+    guard let transitionSequenceData = dataManager.getTransitionSequence(sequenceID: transitionID) else {
+        AppLogger.shared.error("🧠 Error: Transition sequence not found for \(transitionID).")
+        return .failed
+    }
+
+    AppLogger.shared.anim("🧠 Transition sequence: \(transitionID) / \(startAnimationName) / \(endAnimationName)")
+    guard let transitionSequence = buildIdleToIdleTransitionSequence(
+        transitionID: transitionID,
+        startAnimationName: startAnimationName,
+        frameForStartAnimation: transitionFrame,
+        endAnimationName: endAnimationName,
+        frameForEndAnimation: frameForEndAnimation,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("🧠 Error: Transition sequence not found for \(transitionID).")
+        return .failed
+    }
+
+    let spliceIdx = lastIndexBeforeTransition + 1
+    if spliceIdx < animationSequence.count {
+        animationSequence.removeSubrange(spliceIdx ..< animationSequence.count)
+    }
+
+    if transitionSequenceData.transitionType == .idleToIdle {
+        animationSequence.append(contentsOf: transitionSequence)
+
+
+        guard let endAnimSeq = constructAnimationSequenceForGivenAnimation(
+            animationName: endAnimationName,
+            startCriticalPoseIndex: endCriticalPoseIndex,
+            endCriticalPoseIndex: nil, // Search to end / full loop
+            isFilledOut: false,
+            dataManager: dataManager
+        ) else {
+            AppLogger.shared.error("🧠 Error: Failed to construct animation sequence for \(endAnimationName).")
+            return .failed
+        }
+        animationSequence.append(contentsOf: endAnimSeq)
+
+        return .done
+    }
+
+
+    else if transitionSequenceData.transitionType == .idleToWalk {
+
+
+        let lastNonWalkIdx = transitionSequence.lastIndex(where: {
+            $0.startPoseName.moveType != .walk
+        })
+
+        let idleToWalkElements: [AnimationSequenceElement]
+        let walkElements: [AnimationSequenceElement]
+
+        if let n = lastNonWalkIdx {
+            idleToWalkElements = Array(transitionSequence[...n])
+            walkElements = (n + 1 < transitionSequence.count)
+                ? Array(transitionSequence[(n + 1)...])
+                : []
         } else {
-            let lowerBound = Swift.abs(prev) * (1 - allowedChange[i])
-            let upperBound = Swift.abs(prev) * (1 + allowedChange[i])
-            
-            let currentAbs = Swift.abs(current)
-            let clampedAbs = min(max(currentAbs, lowerBound), upperBound)
-            clamped[i] = copysign(clampedAbs, current)
+            idleToWalkElements = []
+            walkElements = transitionSequence
         }
+
+        animationSequence.append(contentsOf: idleToWalkElements)
+
+        guard let lastPoseName = animationSequence.last?.endPoseName else {
+            AppLogger.shared.error("🧠 Error: Unable to determine last endPoseName for transition sequence.")
+            return .failed
+        }
+        guard let matchingIndices = dataManager.getIndicesOfCriticalPose(
+            for: endAnimationName,
+            matching: lastPoseName
+        ),
+            let newStartPoseIndex = matchingIndices.first
+        else {
+            AppLogger.shared.error(
+                "🧠 Error: No matching critical pose '\(lastPoseName)' found in \(endAnimationName)."
+            )
+            return .failed
+        }
+
+        let outcome = transitionToNewStyle(
+            currentExtension: walkElements, // this is only the current sequence portion that goes into blendTree
+            newAnimationName: endAnimationName,
+            startPoseIndex: newStartPoseIndex,
+            sequence: &animationSequence,
+            styleGuide: &styleGuide,
+            fullStepCount: fullStepCount,
+            dataManager: dataManager
+        )
+        return outcome
+    } else {
+        AppLogger.shared.error("🧠 Error: Unknown transition type \(transitionSequenceData.transitionType).")
+        return .failed
     }
-    
-    return clamped
 }
 
-func clampDeltaRotation(_ newDelta: simd_quatf,
-                        _ prevDelta: simd_quatf?,
-                        allowedChange: Float = 0.03, gameTime: Float) -> simd_quatf
-{
-    guard let prev = prevDelta else {
-        return newDelta
+==== AnimLibS/Brain/Idle/3-build-transition.swift ====
+
+
+import CoreLib
+import Foundation
+import RealityKit
+
+func buildIdleToIdleTransitionSequence(
+    transitionID: String,
+    startAnimationName: String,
+    frameForStartAnimation: Int,
+    endAnimationName: String,
+    frameForEndAnimation: Int,
+    dataManager: DataManager
+) -> [AnimationSequenceElement]? {
+    if printBrainSystem {
+        AppLogger.shared.debug("🧠 Building transition sequence out of Idle for \(transitionID).")
+    }
+    guard let transitionSequence = dataManager.getTransitionSequence(sequenceID: transitionID) else {
+        AppLogger.shared.error("🧠 Error: Transition sequence not found for \(transitionID).")
+        return nil
+    }
+    let transitionAnimName = transitionSequence.animationName
+    
+    if printBrainSystem {
+        AppLogger.shared.debug("🧠 Transition type is \(transitionSequence.transitionType) and subtype is \(transitionSequence.transitionSubType).")
+    }
+
+    guard let transitionAnimationDataPoint = dataManager.getAnimDataPoint(for: transitionAnimName) else {
+        AppLogger.shared.error("🧠 Error: Animation data point not found for \(transitionAnimName).")
+        return nil
+    }
+
+
+    guard
+        let firstPose = transitionSequence.transitionPoses.first,
+        let lastPose = transitionSequence.transitionPoses.last,
+        let firstTransitionPose = transitionSequence.transitionPoses.first(where: { $0.transitionPoseType == .firstTransitionPose }),
+        let lastTransitionPose = transitionSequence.transitionPoses.first(where: { $0.transitionPoseType == .lastTransitionPose })
+    else {
+        AppLogger.shared.error("🧠 Error: Transition poses (.firstTransitionPose / .lastTransitionPose) missing in \(transitionID).")
+        return nil
+    }
+
+
+    guard
+        let availableBefore = dataManager.addFrames(
+            animationName: transitionAnimName,
+            frameA: firstPose.frame,
+            frameB: firstTransitionPose.frame
+        ),
+        let availableAfter = dataManager.addFrames(
+            animationName: transitionAnimName,
+            frameA: lastTransitionPose.frame,
+            frameB: lastPose.frame
+        )
+    else {
+        AppLogger.shared.error("🧠 Error computing clip‑in/out frames for \(transitionAnimName).")
+        return nil
+    }
+
+    let framesBefore = min(30, availableBefore)
+    let framesAfter = min(30, availableAfter)
+
+    guard
+        let firstSequenceFrame = addFramesLooping(
+            animationName: transitionAnimName,
+            currentFrame: firstTransitionPose.frame,
+            frameCountToAdd: -framesBefore,
+            dataManager: dataManager
+        ),
+        let lastSequenceFrame = addFramesLooping(
+            animationName: transitionAnimName,
+            currentFrame: lastTransitionPose.frame,
+            frameCountToAdd: framesAfter,
+            dataManager: dataManager
+        )
+    else {
+        AppLogger.shared.error("🧠 Internal error computing clip‑in/out frames for \(transitionAnimName)")
+        return nil
     }
     
-    let newImagLen = simd_length(newDelta.imag)
-    let prevImagLen = simd_length(prev.imag)
+    AppLogger.shared.debug("⚧️ Clip-in/out frames for \(transitionAnimName): \(firstSequenceFrame) / \(lastSequenceFrame), and \(framesBefore) / \(framesAfter) frames available and first transition pose frame is \(firstTransitionPose.frame) and last transition pose frame is \(lastTransitionPose.frame).")
     
-    if prevImagLen < 0.0001 {
-        return newDelta
+
+    guard
+        let firstCriticalPoseIndex = dataManager.preceedingCriticalPose(
+            animationName: transitionAnimName,
+            frameIncl: firstSequenceFrame
+        ),
+        let lastCriticalPoseIndex = dataManager.followingCriticalPose(
+            animationName: transitionAnimName,
+            frameIncl: lastSequenceFrame
+        )
+    else {
+        AppLogger.shared.error("🧠 Error deriving critical‑pose indices for clip‑in/out in \(transitionAnimName).")
+        return nil
+    }
+
+
+    guard var sequence = constructAnimationSequenceForGivenAnimation(
+        animationName: transitionAnimName,
+        startCriticalPoseIndex: firstCriticalPoseIndex,
+        endCriticalPoseIndex: lastCriticalPoseIndex,
+        isFilledOut: false,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("🧠 Error constructing animation sequence for \(transitionAnimName).")
+        return nil
+    }
+
+    let firstIndex = 0
+    let lastIndex = max(0, sequence.count - 1)
+
+    sequence[firstIndex].lateStartFrame = firstSequenceFrame
+    sequence[lastIndex].earlyStopFrame = lastSequenceFrame
+
+
+    var adjustedTransitionPoses = transitionSequence.transitionPoses
+
+    if let precedingIdx = dataManager.preceedingCriticalPose(
+        animationName: transitionAnimName,
+        frameIncl: firstPose.frame
+    ) {
+        let newFrame = transitionAnimationDataPoint.criticalPoses[precedingIdx].frame
+        adjustedTransitionPoses[0].frame = newFrame
+    }
+
+
+    if let lastIdx = adjustedTransitionPoses
+        .firstIndex(where: { $0.transitionPoseType == .lastTransitionPose }),
+        let followingIdx = dataManager.followingCriticalPose(
+            animationName: transitionAnimName,
+            frameIncl: lastTransitionPose.frame
+        )
+    {
+        let newFrame = transitionAnimationDataPoint.criticalPoses[followingIdx].frame
+        adjustedTransitionPoses[lastIdx].frame = newFrame // ← only the genuine last‑transition pose
+    }
+
+    let startReferenceDict = AnimFrameDict(animationName: startAnimationName, frame: frameForStartAnimation)
+    let endReferenceDict = AnimFrameDict(animationName: endAnimationName, frame: frameForEndAnimation)
+
+
+    for i in 0 ..< sequence.count {
+        var elem = sequence[i]
+
+        guard let startMeta = adjustedTransitionPoses.first(where: { $0.frame == elem.startPoseFrame }),
+              let endMeta = adjustedTransitionPoses.first(where: { $0.frame == elem.endPoseFrame })
+        else {
+            continue
+        }
+
+        let startAlter = PoseMatchTransformAlteration(
+            startReferenceAnimFrameDict: startReferenceDict,
+            endReferenceAnimFrameDict: endReferenceDict,
+            poseAdjustment: startMeta.poseAdjustment,
+            baseSide: startMeta.poseAdjustmentSide,
+            referenceTransformType: startMeta.referenceTransformType,
+            sideFootRotationType: startMeta.sideFootRotationType,
+            otherSideFootRotationType: startMeta.otherSideFootRotationType
+        )
+
+        let endAlter = PoseMatchTransformAlteration(
+            startReferenceAnimFrameDict: startReferenceDict,
+            endReferenceAnimFrameDict: endReferenceDict,
+            poseAdjustment: endMeta.poseAdjustment,
+            baseSide: endMeta.poseAdjustmentSide,
+            referenceTransformType: endMeta.referenceTransformType,
+            sideFootRotationType: endMeta.sideFootRotationType,
+            otherSideFootRotationType: endMeta.otherSideFootRotationType
+        )
+
+        elem.animAlteration = AnimAlteration(
+            walkCircleAlteration: nil,
+            strideLength: nil,
+            matchTransformAlteration: MatchTransformAlteration(
+                startPoseMatch: startAlter,
+                endPoseMatch: endAlter
+            )
+        )
+        sequence[i] = elem
+    }
+
+    return sequence
+}
+
+==== AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift ====
+
+
+import CoreLib
+
+let fullStepCount = 2
+
+
+
+func extendInitWalkSequence(
+    currentAnimationSequence: inout [AnimationSequenceElement],
+    initAnimationSequenceIndex: Int,
+    keepExistingElements: Bool = true,
+    styleGuide: inout StyleGuide,
+    dataManager: DataManager
+) {
+    if printBrainSystem {
+        AppLogger.shared.anim("🧠 Extending Init Walk Sequence – keepExistingElements = \(keepExistingElements)")
+    }
+
+    if keepExistingElements {
+        if countFullSteps(after: initAnimationSequenceIndex,
+                          in: currentAnimationSequence,
+                          dataManager: dataManager) >= fullStepCount,
+            styleGuide.targets[0].isNew == false
+
+        {
+            if printBrainSystem {
+                AppLogger.shared.anim("🧠 Already have \(fullStepCount) full steps after index \(initAnimationSequenceIndex) and style guide is not new.")
+            }
+            return
+        }
+
+        appendMissingSteps(to: &currentAnimationSequence,
+                           styleGuide: &styleGuide,
+                           dataManager: dataManager)
+    } else {
+        replaceTailThenAppend(to: &currentAnimationSequence,
+                              initIdx: initAnimationSequenceIndex,
+                              styleGuide: &styleGuide,
+                              dataManager: dataManager)
+    }
+}
+
+
+private func appendMissingSteps(
+    to sequence: inout [AnimationSequenceElement],
+    styleGuide: inout StyleGuide,
+    dataManager: DataManager
+) {
+    guard let lastElement = sequence.last,
+          let endPoseIndex = lastElement.endPoseIndex
+    else {
+        AppLogger.shared.error("Error: Sequence is empty or last element has nil endPoseIndex.")
+        return
+    }
+
+    let animationName = lastElement.animationName
+    guard let animDataPoint = dataManager.getAnimDataPoint(for: animationName) else {
+        AppLogger.shared.error("Error: Animation data not found for \(animationName).")
+        return
+    }
+    guard
+        let styleTarget = styleGuide.targets.first,
+        let newAnimDataPoint = dataManager.getAnimDataPoint(for: styleTarget.animationName)
+    else {
+        AppLogger.shared.error("Error: StyleGuide has no targets.")
+        return
+    }
+
+    let currentIsLoopWalk = animDataPoint.isLoop && animDataPoint.moveList == [.walk]
+    let switchingToNewWalkingLoopStyle = styleTarget.isNew && newAnimDataPoint.isLoop && newAnimDataPoint.moveList == [.walk]
+
+
+    if currentIsLoopWalk == false, switchingToNewWalkingLoopStyle == false {
+        guard endPoseIndex < animDataPoint.criticalPoses.count else {
+            AppLogger.shared.error("Error: endPoseIndex \(endPoseIndex) is out of bounds for animation \(animationName).")
+            return
+        }
+        let startCriticalPoseName = animDataPoint.criticalPoses[endPoseIndex].poseName
+        guard
+            let allMatches = dataManager.getIndicesOfCriticalPose(
+                for: styleTarget.animationName,
+                matching: startCriticalPoseName
+            ),
+            let startIndex = allMatches.first
+        else {
+            AppLogger.shared.error("Error: No matching critical pose found for \(startCriticalPoseName) in style animation \(styleTarget.animationName).")
+            return
+        }
+        
+
+        extendWithCurrentWalkLoop(into: &sequence,
+                                  styleAnimationName: styleTarget.animationName,
+                                  startPoseIndex: startIndex,
+                                  styleGuide: &styleGuide,
+                                  dataManager: dataManager)
+        return
     }
     
-    let lowerBound = Swift.abs(prevImagLen) * (1 - allowedChange)
-    let upperBound = Swift.abs(prevImagLen) * (1 + allowedChange)
-    
-    if newImagLen >= lowerBound, newImagLen <= upperBound {
-        return newDelta
+
+    guard let currentExtension = buildWalkSequenceExtension(
+        animationName: animationName,
+        startPoseIndex: endPoseIndex,
+        fullStepCount: fullStepCount,
+        dataManager: dataManager
+    ) else {
+        AppLogger.shared.error("Error: Failed to build extension for \(animationName).")
+        return
     }
+
+    if !switchingToNewWalkingLoopStyle {
+        appendElements(currentExtension, to: &sequence, logSuffix: "(no transition)")
+        return
+    }
+
+    if printBrainSystem {
+        AppLogger.shared.anim("🧠 Transitioning to new style \(styleTarget.animationName)")
+    }
+    let endPoseName = lastElement.endPoseName
+    guard
+        let indices = dataManager.getIndicesOfCriticalPose(
+            for: styleTarget.animationName,
+            matching: endPoseName
+        ),
+        let startPoseIndex = indices.first
+    else {
+        AppLogger.shared.error("Error: No matching critical pose found for \(endPoseName) in style animation \(styleTarget.animationName).")
+        return
+    }
+
+    transitionToNewStyle(
+        currentExtension: currentExtension, // put in only the blend-in portion
+        newAnimationName: styleTarget.animationName,
+        startPoseIndex: startPoseIndex,
+        sequence: &sequence,
+        styleGuide: &styleGuide,
+        fullStepCount: fullStepCount, // for looping animation. uses max available array of walk critical poses for non-looping walks
+        dataManager: dataManager
+    )
+}
+
+
+private func replaceTailThenAppend(
+    to sequence: inout [AnimationSequenceElement],
+    initIdx: Int,
+    styleGuide: inout StyleGuide,
+    dataManager: DataManager
+) {
+    var trimStart = initIdx + 1
+    let initElement = sequence[initIdx]
+
+    if !initElement.endPoseName.isStepFirstPose,
+       let stepID = getStepID(for: initElement, dataManager: dataManager)
+    {
+        while trimStart < sequence.count,
+              getStepID(for: sequence[trimStart], dataManager: dataManager) == stepID
+        {
+            trimStart += 1
+        }
+    }
+
+    if let initAnimData = dataManager.getAnimDataPoint(for: initElement.animationName),
+       !(initAnimData.isLoop && initAnimData.moveList == [.walk])
+    {
+        while trimStart < sequence.count {
+            if let ad = dataManager.getAnimDataPoint(for: sequence[trimStart].animationName),
+               !(ad.isLoop && ad.moveList == [.walk])
+            {
+                trimStart += 1
+            } else {
+                break
+            }
+        }
+    }
+
+    if trimStart < sequence.count {
+        sequence.removeSubrange(trimStart...)
+    }
+
+    appendMissingSteps(to: &sequence,
+                       styleGuide: &styleGuide,
+                       dataManager: dataManager)
+}
+
+
+private func extendWithCurrentWalkLoop(
+    into sequence: inout [AnimationSequenceElement],
+    styleAnimationName: String,
+    startPoseIndex: Int,
+    styleGuide: inout StyleGuide,
+    dataManager: DataManager
+) {
+    guard let styleAnimData = dataManager.getAnimDataPoint(for: styleAnimationName),
+          styleAnimData.isLoop, styleAnimData.moveList == [.walk]
+    else {
+        AppLogger.shared.error("Error: Style animation \(styleAnimationName) is not a looping walk.")
+        return
+    }
+    guard let ext = buildWalkSequenceExtension(
+        animationName: styleAnimationName,
+        startPoseIndex: startPoseIndex,
+        fullStepCount: fullStepCount,
+        dataManager: dataManager
+    )
+    else {
+        AppLogger.shared.error("Error: Could not build extension for style animation \(styleAnimationName).")
+        return
+    }
+    appendElements(ext, to: &sequence, logSuffix: "(transition)")
+    styleGuide.targets[0].isNew = false
+}
+
+func transitionToNewStyle(
+    currentExtension: [AnimationSequenceElement], // this is only the current sequence portion that goes into blendTree
+    newAnimationName styleAnimationName: String,
+    startPoseIndex: Int,
+    sequence: inout [AnimationSequenceElement],
+    styleGuide: inout StyleGuide,
+    fullStepCount: Int,
+    dataManager: DataManager
+) -> buildAnimationSequenceOutcome {
+    guard let targetExtension = buildWalkSequenceExtension(
+        animationName: styleAnimationName,
+        startPoseIndex: startPoseIndex,
+        fullStepCount: fullStepCount, // uses it for looping animation
+        dataManager: dataManager
+    )
+    else {
+        AppLogger.shared.error("Error: Failed to build extension for new style \(styleAnimationName).")
+        return .failed
+    }
+    guard let blended = attachBlendInSequence(
+        origExtension: currentExtension,
+        targetExtension: targetExtension,
+        dataManager: dataManager
+    )
+    else {
+        AppLogger.shared.error("Error: Failed to create blend for transition to \(styleAnimationName).")
+        return .failed
+    }
+    appendElements(blended, to: &sequence, logSuffix: "(blend to \(styleAnimationName))")
+    styleGuide.targets[0].isNew = false
     
-    let targetLen = (newImagLen > upperBound) ? upperBound : lowerBound
-    let scale = (newImagLen > 0.00001) ? (targetLen / newImagLen) : 1.0
-    let scaledImag = newDelta.imag * scale
-    
-    let sq = max(0, 1 - targetLen * targetLen)
-    let candidatePos = simd_quatf(vector: SIMD4<Float>(scaledImag.x,
-                                                       scaledImag.y,
-                                                       scaledImag.z,
-                                                       sqrt(sq)))
-    let candidateNeg = simd_quatf(vector: SIMD4<Float>(scaledImag.x,
-                                                       scaledImag.y,
-                                                       scaledImag.z,
-                                                       -sqrt(sq)))
-    
-    let dotPos = simd_dot(candidatePos.vector, prev.vector)
-    let dotNeg = simd_dot(candidateNeg.vector, prev.vector)
-    let chosenCandidate = dotPos >= dotNeg ? candidatePos : candidateNeg
-    
-    return simd_normalize(chosenCandidate)
+      return  .done
 }
 
 ==== AnimLibS/SettingsAndDataStructs/AnimationSettings.swift ====
@@ -5293,6 +6607,14 @@ import Foundation
 import RealityKit
 import simd
 
+func buildWalkTransitionalSequence(
+    currentAnimationSequence: inout [AnimationSequenceElement],
+    initAnimationSequenceIndex: Int,
+    transitionalAnimationNames: inout [String],
+    dataManager: DataManager
+) {
+    if printBrainSystem { AppLogger.shared.anim("🧠 Building walk transitional sequence. Candidates: \(transitionalAnimationNames).") }
+    
 
 
 let frameRate: Float = 60
@@ -5423,6 +6745,56 @@ extension TravelGuide {
         guard !curvePoints.isEmpty else {
             return (simd_length(point), SIMD3<Float>(repeating: 0))
         }
+        if dataManager.getAnimDataPoint(for: step1animationNameMIN) == nil {
+            adjustStrideForWalkAnimationMIN(animationName: step1animationName,
+                                            dataManager: dataManager)
+        }
+    }
+    
+    guard let stride1Data = dataManager.getStepData(
+        for: step1animationName,
+        criticalPoseIndex: step1CriticalPoseIndex
+    )
+    else {
+        return
+    }
+    let maxStride1 = stride1Data.maxStride
+    let minStride1 = stride1Data.minStride
+    
+    
+    var stride2Data: StepData?
+    var maxStride2: Float?
+    var minStride2: Float?
+    if let secondOccurrenceIndex = animationSequence[animationSequence.index(after: firstOccurrenceIndex)...]
+        .firstIndex(where: { elem in
+            guard elem.startPoseName.isStepFirstPose,
+                  let dp = dataManager.getAnimDataPoint(for: elem.animationName),
+                  dp.criticalPoses[elem.startPoseIndex].stepID != nil // ← NEW filter
+            else { return false }
+            return true
+        })
+    {
+        let step2animationName = animationSequence[secondOccurrenceIndex].animationName
+        let step2CriticalPoseIndex = animationSequence[secondOccurrenceIndex].startPoseIndex
+        let step2animationNameMAX = "\(step2animationName)--strideMAX"
+        let step2animationNameMIN = "\(step2animationName)--strideMIN"
+            
+        if let dp2 = dataManager.getAnimDataPoint(for: step2animationName),
+           dp2.criticalPoses[step2CriticalPoseIndex].stepID != nil
+        {
+            if dataManager.getAnimDataPoint(for: step2animationNameMAX) == nil {
+                adjustStrideForWalkAnimationMAX(animationName: step2animationName,
+                                                dataManager: dataManager)
+            }
+            if dataManager.getAnimDataPoint(for: step2animationNameMIN) == nil {
+                adjustStrideForWalkAnimationMIN(animationName: step2animationName,
+                                                dataManager: dataManager)
+            }
+        }
+            
+        guard let stride2DataCalc = dataManager.getStepData(for: step2animationName, criticalPoseIndex: step2CriticalPoseIndex) else {
+            return
+        }
         
         if curvePoints.count == 1 {
             let singlePoint = curvePoints[0]
@@ -5532,6 +6904,22 @@ struct TravelTarget {
         self.rotation = nil
         self.isNew = isNew
     }
+
+    if element.animAlteration == nil {
+        element.animAlteration = AnimAlteration(
+            walkCircleAlteration: WalkCircleAlteration(
+                cirWalkDegree: cirDeg,
+                cirBlendInfo: blend
+            ),
+            strideLength: nil
+        )
+    } else {
+        element.animAlteration?.walkCircleAlteration =
+            WalkCircleAlteration(cirWalkDegree: cirDeg, cirBlendInfo: blend)
+    }
+
+    if let dL = element.deltaLocation { element.deltaLocation = deltaQuat.act(dL) }
+    if let dR = element.deltaRotation { element.deltaRotation = deltaQuat * dR }
     
     enum areaScope {
         case point
@@ -5675,4 +7063,90 @@ public struct JoystickView: View {
                 )
         }
     }
+}
+
+struct BlendTree: Equatable {
+    var blendNodes: [BlendNode]
+}
+
+struct BlendNode: Equatable {
+    var blendElement: AnimationSequenceElement
+    var blendInfo: BlendInfo
+}
+
+struct AnimAlteration: Equatable {
+    var walkCircleAlteration: WalkCircleAlteration?
+    var strideLength: Float?
+    var matchTransformAlteration: MatchTransformAlteration?
+}
+
+struct WalkCircleAlteration: Equatable {
+    var cirWalkDegree: Float?
+    var cirCoreBlendInfo: BlendInfo?
+    var cirNonCoreBlendInfo: BlendInfo?
+    var cirBlendInfo: BlendInfo?
+    var startIsAltered: Bool {
+        guard let degree = cirWalkDegree, degree != 0 else { return false }
+
+        let infos = [cirCoreBlendInfo, cirNonCoreBlendInfo, cirBlendInfo]
+
+        if infos.allSatisfy({ $0 == nil }) {
+            return true
+        }
+
+        let isUnaltered = infos.compactMap { $0 }.allSatisfy {
+            ($0.ownBlendWeightType == .increasing && $0.fromEffectiveSeriesDuration == 0)
+                || $0.ownBlendWeightType == .fixedAt0
+        }
+
+        return !isUnaltered
+    }
+
+    var endIsAltered: Bool {
+        guard let degree = cirWalkDegree, degree != 0 else { return false }
+
+        let infos = [cirCoreBlendInfo, cirNonCoreBlendInfo, cirBlendInfo]
+
+        if infos.allSatisfy({ $0 == nil }) {
+            return false
+        }
+
+        let isUnaltered = infos.compactMap { $0 }.allSatisfy {
+            ($0.ownBlendWeightType == .decreasing && $0.toEffectiveSeriesDuration == $0.totalEffectiveSeriesDuration)
+                || $0.ownBlendWeightType == .fixedAt0
+        }
+
+        return !isUnaltered
+    }
+}
+
+struct MatchTransformAlteration: Equatable {
+    let startPoseMatch: PoseMatchTransformAlteration?
+    let endPoseMatch: PoseMatchTransformAlteration?
+}
+
+struct PoseMatchTransformAlteration: Equatable {
+    let startReferenceAnimFrameDict: AnimFrameDict
+    let endReferenceAnimFrameDict: AnimFrameDict
+    let poseAdjustment: PoseAdjustment
+    let baseSide: Side // usually weight-leaning side
+    let referenceTransformType: StartEndType
+    let sideFootRotationType: StartEndType
+    let otherSideFootRotationType: StartEndType
+}
+
+struct AnimFrameDict: Equatable {
+    let animationName: String
+    let frame: Int
+}
+
+struct InertialUnit: Equatable {
+    var boneIndices: [Int]? // <-  if nill then all bones
+    var blendFrames: Int // count of frames over blending interval (starting with ultimate start or end)
+    var isReverse: Bool
+}
+
+private extension Array where Element == Int {
+    func firstIndexGE(to x: Int) -> Int? { firstIndex(where: { $0 >= x }) }
+    func lastIndexLE(to x: Int) -> Int? { lastIndex(where: { $0 <= x }) }
 }

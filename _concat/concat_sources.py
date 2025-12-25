@@ -16,10 +16,10 @@ SOURCE_FILES = [
     "_concat/project_structure-MatheMagicApp.text",
     "_concat/project_structure-AILib.text",
     "_concat/project_structure-AnimLib.text",
-    "_concat/project_structure-AssetLib.text",
+    # "_concat/project_structure-AssetLib.text",
     "_concat/project_structure-CoreLib.text",
     "_concat/project_structure-Inertialization.text",
-    "_concat/project_structure-joystickController.text",
+    # "_concat/project_structure-joystickController.text",
 
     # ============================================================================
     # APP (MatheMagicApp)
@@ -70,8 +70,8 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # APP: Top-Level
     #----------------------------------------------------------------------------
-    # "MatheMagicApp/Top-Level/AppState.swift",
-    # "MatheMagicApp/Top-Level/ContentView.swift",
+    "MatheMagicApp/Top-Level/AppState.swift",
+    "MatheMagicApp/Top-Level/ContentView.swift",
     # "MatheMagicApp/Top-Level/GameModel.swift",
     "MatheMagicApp/Top-Level/GameModelView.swift",
     "MatheMagicApp/Top-Level/ImmersiveVew.swift",
@@ -149,20 +149,20 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/1-orig-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play / 2-Alterations Data Functions
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play (continuation)
     #----------------------------------------------------------------------------
-    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
+    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/3-blend-elments-in-tree.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/4-inertial-data.swift",
 
@@ -261,7 +261,7 @@ SOURCE_FILES = [
     # "AnimLibS/Components/CustomAnimationSystem.swift",
     "AnimLibS/Components/EventComponent.swift",
     # "AnimLibS/Components/SkeletalPosesSystem.swift",
-    "AnimLibS/Components/TravelComponent.swift",
+    # "AnimLibS/Components/TravelComponent.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: SettingsAndDataStructs

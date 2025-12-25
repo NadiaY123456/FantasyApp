@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */ = {isa = PBXBuildFile; productRef = 412F23652DA0262A00FF05C5 /* Inertialization */; };
 		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
+		41AILIB22E00000000000002 /* AILib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AILIB32E00000000000003 /* AILib */; };
 		413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */; };
 		413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */; };
 		4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */; };
@@ -84,6 +85,7 @@
 		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1056E640F58F4898AAFC1DE1 /* AnimationDebugHUDOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationDebugHUDOverlayView.swift; sourceTree = "<group>"; };
 		412ADE192D5FAEAF007BDE16 /* AnimLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AnimLib; path = ../../NexTaleLibraries/AnimationLibrary/AnimLib; sourceTree = SOURCE_ROOT; };
+		41AILIB12E00000000000001 /* AILib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AILib; path = ../../NexTaleLibraries/AILibrary/AILib; sourceTree = SOURCE_ROOT; };
 		4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveVew.swift; sourceTree = "<group>"; };
 		413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setupCharacterWithComponents.swift; sourceTree = "<group>"; };
 		4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEntity.swift; sourceTree = "<group>"; };
@@ -736,6 +738,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
 		};
+		41AILIB42E00000000000004 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AILibrary/AILib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/AILibrary/AILib;
+		};
 		41AFD20E2DE3711B00E1FE37 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AssetLib/AssetLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AssetLib/AssetLib;
@@ -767,6 +773,10 @@
 		4135079D2D6026440048FE53 /* AnimLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;
+		};
+		41AILIB32E00000000000003 /* AILib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AILib;
 		};
 		41AFD20F2DE3711B00E1FE37 /* AssetLib */ = {
 			isa = XCSwiftPackageProductDependency;
