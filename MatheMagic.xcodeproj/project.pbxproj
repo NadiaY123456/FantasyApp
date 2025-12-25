@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */ = {isa = PBXBuildFile; productRef = 412F23652DA0262A00FF05C5 /* Inertialization */; };
 		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
-		41AILIB22E00000000000002 /* AILib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AILIB32E00000000000003 /* AILib */; };
 		413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */; };
 		413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */; };
 		4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */; };
@@ -23,6 +22,16 @@
 		419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 419EDCF82D5C2767001CF47A /* LocalUtilities.swift */; };
 		41AFD2102DE3711B00E1FE37 /* AssetLib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AFD20F2DE3711B00E1FE37 /* AssetLib */; };
 		41AFD2122DE39F5500E1FE37 /* AssetsToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41AFD2112DE39F5500E1FE37 /* AssetsToImport.bundle */; };
+		41AILIB22E00000000000002 /* AILib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AILIB32E00000000000003 /* AILib */; };
+		41BB728F2EFCA3EA009FCE88 /* RealityTextInputState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB728E2EFCA3EA009FCE88 /* RealityTextInputState.swift */; };
+		41BB72912EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72902EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift */; };
+		41BB72992EFCC8B3009FCE88 /* AIEndpointConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72942EFCC8B3009FCE88 /* AIEndpointConfig.swift */; };
+		41BB729A2EFCC8B3009FCE88 /* MatheMagicAIContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72962EFCC8B3009FCE88 /* MatheMagicAIContract.swift */; };
+		41BB729B2EFCC8B3009FCE88 /* AIDebugState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72932EFCC8B3009FCE88 /* AIDebugState.swift */; };
+		41BB729C2EFCC8B3009FCE88 /* MatheMagicAIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72952EFCC8B3009FCE88 /* MatheMagicAIConfig.swift */; };
+		41BB729D2EFCC8B3009FCE88 /* MatheMagicAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */; };
+		41BB729F2EFCC8D0009FCE88 /* AIResponseHUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */; };
+		41BB72A12EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */; };
 		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
@@ -55,6 +64,7 @@
 		41E39CA82D5BE546007C29C6 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 41E39CA72D5BE546007C29C6 /* RealityKitContent */; };
 		41E3EBA52D5C15C5004752C9 /* CoreLib in Frameworks */ = {isa = PBXBuildFile; productRef = 41E3EBA42D5C15C5004752C9 /* CoreLib */; };
 		41E3EBAC2D5C19B3004752C9 /* CoreLib in Frameworks */ = {isa = PBXBuildFile; productRef = 41E3EBAB2D5C19B3004752C9 /* CoreLib */; };
+		CE2C6F5F1CCB4159A85267EE /* AnimationDebugHUDOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1056E640F58F4898AAFC1DE1 /* AnimationDebugHUDOverlayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -72,8 +82,8 @@
 
 /* Begin PBXFileReference section */
 		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1056E640F58F4898AAFC1DE1 /* AnimationDebugHUDOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationDebugHUDOverlayView.swift; sourceTree = "<group>"; };
 		412ADE192D5FAEAF007BDE16 /* AnimLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AnimLib; path = ../../NexTaleLibraries/AnimationLibrary/AnimLib; sourceTree = SOURCE_ROOT; };
-		41AILIB12E00000000000001 /* AILib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AILib; path = ../../NexTaleLibraries/AILibrary/AILib; sourceTree = SOURCE_ROOT; };
 		4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveVew.swift; sourceTree = "<group>"; };
 		413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setupCharacterWithComponents.swift; sourceTree = "<group>"; };
 		4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEntity.swift; sourceTree = "<group>"; };
@@ -86,6 +96,16 @@
 		419EDCF32D5C22F0001CF47A /* PreLoadAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLoadAssets.swift; sourceTree = "<group>"; };
 		419EDCF82D5C2767001CF47A /* LocalUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalUtilities.swift; sourceTree = "<group>"; };
 		41AFD2112DE39F5500E1FE37 /* AssetsToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AssetsToImport.bundle; sourceTree = "<group>"; };
+		41AILIB12E00000000000001 /* AILib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AILib; path = ../../NexTaleLibraries/AILibrary/AILib; sourceTree = SOURCE_ROOT; };
+		41BB728E2EFCA3EA009FCE88 /* RealityTextInputState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityTextInputState.swift; sourceTree = "<group>"; };
+		41BB72902EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityTextInputOverlayView.swift; sourceTree = "<group>"; };
+		41BB72932EFCC8B3009FCE88 /* AIDebugState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIDebugState.swift; sourceTree = "<group>"; };
+		41BB72942EFCC8B3009FCE88 /* AIEndpointConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEndpointConfig.swift; sourceTree = "<group>"; };
+		41BB72952EFCC8B3009FCE88 /* MatheMagicAIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIConfig.swift; sourceTree = "<group>"; };
+		41BB72962EFCC8B3009FCE88 /* MatheMagicAIContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIContract.swift; sourceTree = "<group>"; };
+		41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIService.swift; sourceTree = "<group>"; };
+		41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIResponseHUDView.swift; sourceTree = "<group>"; };
+		41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIEventPipeline.swift; sourceTree = "<group>"; };
 		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
@@ -191,6 +211,19 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		41BB72982EFCC8B3009FCE88 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				41BB72932EFCC8B3009FCE88 /* AIDebugState.swift */,
+				41BB72942EFCC8B3009FCE88 /* AIEndpointConfig.swift */,
+				41BB72952EFCC8B3009FCE88 /* MatheMagicAIConfig.swift */,
+				41BB72962EFCC8B3009FCE88 /* MatheMagicAIContract.swift */,
+				41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */,
+				41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
 		41E39C5D2D5BE1C6007C29C6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -253,6 +286,7 @@
 				41E39C6F2D5BE1C6007C29C6 /* GameModel.swift */,
 				41E39C702D5BE1C6007C29C6 /* GameModelView.swift */,
 				4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */,
+				41BB728E2EFCA3EA009FCE88 /* RealityTextInputState.swift */,
 			);
 			path = "Top-Level";
 			sourceTree = "<group>";
@@ -261,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				4138F14E2D5D2F5F00EE27CF /* Scene Functions */,
+				1056E640F58F4898AAFC1DE1 /* AnimationDebugHUDOverlayView.swift */,
 				41E39C722D5BE1C6007C29C6 /* BallView.swift */,
 				41E39C732D5BE1C6007C29C6 /* GameOver.swift */,
 				41E39C742D5BE1C6007C29C6 /* Lobby.swift */,
@@ -268,6 +303,8 @@
 				41E39C762D5BE1C6007C29C6 /* Selection.swift */,
 				41E39C772D5BE1C6007C29C6 /* Start.swift */,
 				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
+				41BB72902EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift */,
+				41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -285,6 +322,7 @@
 				41E39C692D5BE1C6007C29C6 /* Load */,
 				41E39C7A2D5BE1C6007C29C6 /* Assets.xcassets */,
 				41E3DF332D9C1EC900381500 /* Brain-Old */,
+				41BB72982EFCC8B3009FCE88 /* AI */,
 			);
 			path = MatheMagicApp;
 			sourceTree = "<group>";
@@ -440,16 +478,25 @@
 				41E39C832D5BE1C6007C29C6 /* EntityEntries.swift in Sources */,
 				4138F1522D5DB19700EE27CF /* CameraRotationComponent.swift in Sources */,
 				419EDCF92D5C2767001CF47A /* LocalUtilities.swift in Sources */,
+				41BB72912EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift in Sources */,
 				41E39C852D5BE1C6007C29C6 /* SkyboxUtilities.swift in Sources */,
 				41E39C862D5BE1C6007C29C6 /* CustomButtonStyle.swift in Sources */,
 				41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */,
 				41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */,
+				41BB728F2EFCA3EA009FCE88 /* RealityTextInputState.swift in Sources */,
 				41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */,
 				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
 				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
 				41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */,
 				41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */,
 				41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */,
+				41BB72992EFCC8B3009FCE88 /* AIEndpointConfig.swift in Sources */,
+				41BB729A2EFCC8B3009FCE88 /* MatheMagicAIContract.swift in Sources */,
+				41BB729B2EFCC8B3009FCE88 /* AIDebugState.swift in Sources */,
+				41BB729C2EFCC8B3009FCE88 /* MatheMagicAIConfig.swift in Sources */,
+				41BB72A12EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift in Sources */,
+				41BB729D2EFCC8B3009FCE88 /* MatheMagicAIService.swift in Sources */,
+				CE2C6F5F1CCB4159A85267EE /* AnimationDebugHUDOverlayView.swift in Sources */,
 				4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */,
 				41E39C902D5BE1C6007C29C6 /* BallView.swift in Sources */,
 				4138F1502D5D2FC300EE27CF /* SceneManager.swift in Sources */,
@@ -459,6 +506,7 @@
 				41E39C942D5BE1C6007C29C6 /* Selection.swift in Sources */,
 				41E39C952D5BE1C6007C29C6 /* Start.swift in Sources */,
 				419EDCF42D5C22F0001CF47A /* PreLoadAssets.swift in Sources */,
+				41BB729F2EFCC8D0009FCE88 /* AIResponseHUDView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,7 +643,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = QVJVG7RWCN;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MatheMagicApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -630,7 +679,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = QVJVG7RWCN;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MatheMagicApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -686,13 +736,13 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
 		};
-		41AILIB42E00000000000004 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AILibrary/AILib" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../NexTaleLibraries/AILibrary/AILib;
-		};
 		41AFD20E2DE3711B00E1FE37 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AssetLib/AssetLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AssetLib/AssetLib;
+		};
+		41AILIB42E00000000000004 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AILibrary/AILib" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../NexTaleLibraries/AILibrary/AILib;
 		};
 		41D2E5112D667DDF00A8FA8F /* XCLocalSwiftPackageReference "../../NexTaleLibraries/joystickController" */ = {
 			isa = XCLocalSwiftPackageReference;
@@ -718,13 +768,13 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;
 		};
-		41AILIB32E00000000000003 /* AILib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AILib;
-		};
 		41AFD20F2DE3711B00E1FE37 /* AssetLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AssetLib;
+		};
+		41AILIB32E00000000000003 /* AILib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AILib;
 		};
 		41D2E5122D667DDF00A8FA8F /* joystickController */ = {
 			isa = XCSwiftPackageProductDependency;

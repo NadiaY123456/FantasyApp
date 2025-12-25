@@ -3,27 +3,39 @@
 Make sure to provide EXACT EDITS, not like "wherever you compute ...". If you don't see the file you need, EXPLICITELY ask for it upfront!
 
 Task:
-i want to add UI overlay which will print which animation is playing, if animation is modified and if so - which modification is applied, or if the transition between animations are playing.
-also, because some transitions are super brief, i want to have history printed as well.  
+I want to connect my character (flash) to AI in the following way:
+a user can enter prompt describing an event. Based on that event, the target animation of the character changes to what AI suggests. 
 
+== this is how it works now ==:
 
-about my codebase:
-The transition/connection logic and the on‑the‑fly walk shaping are both in AnimLibS; here are the exact spots.
+ImmersiveVew.swift — places the bottom‑right button and wires it to gameModelView.isHoldingButton.
+ActionButtonView.swift — press/hold gesture implementation (onPressStart/onPressEnd).
+GameModelView.swift — stores isHoldingButton and conforms to JoystickDataProvider.
+ExternalDataProtocol.swift — declares JoystickDataProvider.isHoldingButton.
+setupCharacterWithComponents.swift — attaches EventComponent(dataProvider: gameModelView) to the character.
+Must‑Have Files (Style Switching + Definitions)
 
-Transition/connection between animations (with dynamic tweaking)
+EventComponent.swift — EventSystem updates style guide and calls setAnimationStyleWithButton.
+Travel&StyleEvents.swift — edge‑detects button release and cycles styleGuides.
+StyleGuide.swift — defines the list of style guides and animation names.
+AnimationSettings.swift — default idle/walk animation names used as fallbacks.
+Nice‑to‑Have Follow‑Up (How Style Applies)
 
-0-IdleSequence.swift (line 347) builds/splices transition sequences (idle↔idle, idle→walk) and then blends into the target walk style.
-3-build-transition.swift (line 9) constructs the transition clip and injects MatchTransformAlteration per element (this is where the transition animation is modified on the fly to align start/end poses).
-2-ExtendWalkSequence.swift (line 263) blends from one walk style to another.
-2-ExtendWalkSequence.swift (line 436) attaches a per‑element blend tree (attachBlendInSequence) for the cross‑fade.
-3-blend-elments-in-tree.swift (line 9) actually applies that blend tree to the transforms.
-Walk direction/shape modifications (left/right/curved/stride)
+0-WalkSequence.swift — uses styleGuide.targets[0].isNew to rebuild walk sequence.
+2-ExtendWalkSequence.swift — blends into new walking style when isNew is true.
+0-IdleSequence.swift — uses style target for idle/idle‑to‑walk transitions.
+MoveComponent.swift — button also gates movement, affecting walk vs idle state.
+How It Works
 
-0-WalkSequence.swift (line 109) chooses and splices a transitional turn clip based on orientation.
-3-TranstionalSequence.swift (line 9) builds that turn sequence (picks left/right 180° candidates).
-0-WalkSequence.swift (line 144) applies cir‑walk adjustment (turning the walk).
-4-StepAlterations.swift (line 43) computes the per‑step cir adjustment and writes WalkCircleAlteration + deltaLocation/deltaRotation changes.
-CirWalk.swift (line 9) computes additive offsets for cir‑walk (mirrors twist ops for right turns).
-cirWalk-data.swift (line 9) applies those offsets to the actual transforms.
-0-WalkSequence.swift (line 168) applies stride adjustment when path deviation is still high.
-stride-data.swift (line 10) blends stride‑min/stride‑max data into the base animation.
+The bottom‑right button is ActionButtonView in ImmersiveVew.swift; it toggles gameModelView.isHoldingButton on press/release.
+GameModelView exposes that state via JoystickDataProvider, and EventComponent reads it per character.
+EventSystem (in EventComponent.swift) updates travel state and then calls setAnimationStyleWithButton.
+setAnimationStyleWithButton detects a release (was holding → not holding) and advances the styleGuides list, marking the new target as isNew.
+Walk/idle sequence builders see isNew, rebuild/blend to the new animation, then mark it old.
+
+=== how i want it to work: ====
+
+let's have a toggle AI controlled vs user-controlled. In user-controlled, the flow is as it is now (via joystick)
+
+we are adding AI controlled-mode. If no IA instructions are coming, the animation playing is default idle. For the rest, instruction are coming from AI (json in response to user typing an event) instead of joystick. 
+

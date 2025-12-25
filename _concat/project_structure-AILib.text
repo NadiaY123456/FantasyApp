@@ -1,0 +1,23 @@
+- AILibS
+  - ClassifierKit
+    - AIJSONContract.swift
+    - AIJSONRunModels.swift
+    - AILibConnection.swift
+    - ClassifierError.swift
+    - ClassifierKitLogger.swift
+    - ClassifierRunner.swift
+    - JSONSchema.swift
+    - JSONSchemaValidator.swift
+    - JSONValue.swift
+    - MCQFilledResponse.swift
+    - MCQKey.swift
+    - MCQSchemaBuilder.swift
+    - MCQTemplate.swift
+    - ModelOutputJSONExtractor.swift
+    - OllamaChatModels.swift
+    - OllamaClient.swift
+    - OllamaEndpointParser.swift
+    - OllamaJSONFiller.swift
+    - PromptBuilder.swift
+    - SchemaPromptBuilder.swift
+    - StrictJSONPromptBuilder.swift

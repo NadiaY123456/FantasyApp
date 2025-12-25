@@ -78,6 +78,7 @@
     - StyleGuide.swift
     - TravelGuide.swift
   - Utilities
+    - AnimationDebugHUD.swift
     - BuildTransforms.swift
     - CommonUseCases.swift
     - CriricalPoseFunctions.swift

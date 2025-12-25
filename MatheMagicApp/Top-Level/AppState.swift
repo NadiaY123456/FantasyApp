@@ -39,6 +39,13 @@ struct AppState: View {
                 }
             }
         }
+        .overlay(alignment: .topTrailing) {
+            // Show the HUD only on screens that have the 3D world.
+            if gameState == .play || gameState == .selection {
+                AnimationDebugHUDOverlayView()
+                    .padding([.top, .trailing], 12)
+            }
+        }
         .onReceive(timer) { _ in
 //            pr(gameModel.appStateMachine.currentState, variableName: "appStateMachine.currentState:")
             if gameModelView.currentState == .play {
@@ -52,5 +59,4 @@ struct AppState: View {
         }
     }
 }
-
 
