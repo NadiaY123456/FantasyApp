@@ -23,8 +23,11 @@
   - AI
     - MatheMagicAIConfig.swift
     - AIEndpointConfig.swift
+    - FlashAIEmoteCatalog.swift
+    - FlashAIIdleEmoteCatalog.swift
     - MatheMagicAIContract.swift
     - MatheMagicAIEventPipeline.swift
+    - MatheMagicAICharacterDialoguePipeline.swift
     - MatheMagicAIService.swift
     - AIDebugState.swift
   - Top-Level
@@ -32,6 +35,7 @@
     - ContentView.swift
     - GameModel.swift
     - GameModelView.swift
+    - CharacterDialogueState.swift
     - ImmersiveVew.swift
     - RealityTextInputState.swift
     - MatheMagicApp.swift
@@ -41,6 +45,7 @@
   - Views
     - AnimationDebugHUDOverlayView.swift
     - AIResponseHUDView.swift
+    - CharacterDialogueBubbleView.swift
     - RealityTextInputOverlayView.swift
     - BallView.swift
     - CustomButtonStyle.swift

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		412F23662DA0262A00FF05C5 /* Inertialization in Frameworks */ = {isa = PBXBuildFile; productRef = 412F23652DA0262A00FF05C5 /* Inertialization */; };
 		4135079E2D6026440048FE53 /* AnimLib in Frameworks */ = {isa = PBXBuildFile; productRef = 4135079D2D6026440048FE53 /* AnimLib */; };
-		41AILIB22E00000000000002 /* AILib in Frameworks */ = {isa = PBXBuildFile; productRef = 41AILIB32E00000000000003 /* AILib */; };
 		413507A02D6100CB0048FE53 /* ImmersiveVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */; };
 		413507A22D61013C0048FE53 /* setupCharacterWithComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */; };
 		4138F13F2D5C6D4000EE27CF /* ExtensionsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */; };
@@ -33,6 +32,10 @@
 		41BB729D2EFCC8B3009FCE88 /* MatheMagicAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */; };
 		41BB729F2EFCC8D0009FCE88 /* AIResponseHUDView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */; };
 		41BB72A12EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */; };
+		41BB72A52F043EC8009FCE88 /* FlashAIIdleEmoteCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72A42F043EC8009FCE88 /* FlashAIIdleEmoteCatalog.swift */; };
+		41BB72B62F085F5B009FCE88 /* MatheMagicAICharacterDialoguePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72B52F085F5B009FCE88 /* MatheMagicAICharacterDialoguePipeline.swift */; };
+		41BB72B82F085F77009FCE88 /* CharacterDialogueBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72B72F085F77009FCE88 /* CharacterDialogueBubbleView.swift */; };
+		41BB72BA2F085FCA009FCE88 /* CharacterDialogueState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41BB72B92F085FCA009FCE88 /* CharacterDialogueState.swift */; };
 		41D2E50E2D6123C200A8FA8F /* DataToImport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */; };
 		41D2E5132D667DDF00A8FA8F /* joystickController in Frameworks */ = {isa = PBXBuildFile; productRef = 41D2E5122D667DDF00A8FA8F /* joystickController */; };
 		41E39C7C2D5BE1C6007C29C6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 41E39C6A2D5BE1C6007C29C6 /* Preview Assets.xcassets */; };
@@ -85,7 +88,6 @@
 		05E9E6FA2D1CF5A80008014C /* MatheMagic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MatheMagic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1056E640F58F4898AAFC1DE1 /* AnimationDebugHUDOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationDebugHUDOverlayView.swift; sourceTree = "<group>"; };
 		412ADE192D5FAEAF007BDE16 /* AnimLib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AnimLib; path = ../../NexTaleLibraries/AnimationLibrary/AnimLib; sourceTree = SOURCE_ROOT; };
-		41AILIB12E00000000000001 /* AILib */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AILib; path = ../../NexTaleLibraries/AILibrary/AILib; sourceTree = SOURCE_ROOT; };
 		4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveVew.swift; sourceTree = "<group>"; };
 		413507A12D61012A0048FE53 /* setupCharacterWithComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setupCharacterWithComponents.swift; sourceTree = "<group>"; };
 		4138F13E2D5C6D4000EE27CF /* ExtensionsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsEntity.swift; sourceTree = "<group>"; };
@@ -108,6 +110,10 @@
 		41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIService.swift; sourceTree = "<group>"; };
 		41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIResponseHUDView.swift; sourceTree = "<group>"; };
 		41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAIEventPipeline.swift; sourceTree = "<group>"; };
+		41BB72A42F043EC8009FCE88 /* FlashAIIdleEmoteCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashAIIdleEmoteCatalog.swift; sourceTree = "<group>"; };
+		41BB72B52F085F5B009FCE88 /* MatheMagicAICharacterDialoguePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatheMagicAICharacterDialoguePipeline.swift; sourceTree = "<group>"; };
+		41BB72B72F085F77009FCE88 /* CharacterDialogueBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDialogueBubbleView.swift; sourceTree = "<group>"; };
+		41BB72B92F085FCA009FCE88 /* CharacterDialogueState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDialogueState.swift; sourceTree = "<group>"; };
 		41D144932D6E3B2000BBA700 /* Inertialization */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Inertialization; path = ../../NexTaleLibraries/Inertialization/Inertialization; sourceTree = SOURCE_ROOT; };
 		41D2E50D2D6123C200A8FA8F /* DataToImport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = DataToImport.bundle; sourceTree = "<group>"; };
 		41D2E5102D667D1A00A8FA8F /* joystickController */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = joystickController; path = ../../NexTaleLibraries/joystickController; sourceTree = SOURCE_ROOT; };
@@ -221,7 +227,9 @@
 				41BB72952EFCC8B3009FCE88 /* MatheMagicAIConfig.swift */,
 				41BB72962EFCC8B3009FCE88 /* MatheMagicAIContract.swift */,
 				41BB72972EFCC8B3009FCE88 /* MatheMagicAIService.swift */,
+				41BB72A42F043EC8009FCE88 /* FlashAIIdleEmoteCatalog.swift */,
 				41BB72A02EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift */,
+				41BB72B52F085F5B009FCE88 /* MatheMagicAICharacterDialoguePipeline.swift */,
 			);
 			path = AI;
 			sourceTree = "<group>";
@@ -289,6 +297,7 @@
 				41E39C702D5BE1C6007C29C6 /* GameModelView.swift */,
 				4135079F2D6100CB0048FE53 /* ImmersiveVew.swift */,
 				41BB728E2EFCA3EA009FCE88 /* RealityTextInputState.swift */,
+				41BB72B92F085FCA009FCE88 /* CharacterDialogueState.swift */,
 			);
 			path = "Top-Level";
 			sourceTree = "<group>";
@@ -307,6 +316,7 @@
 				41E39C632D5BE1C6007C29C6 /* CustomButtonStyle.swift */,
 				41BB72902EFCA3F9009FCE88 /* RealityTextInputOverlayView.swift */,
 				41BB729E2EFCC8D0009FCE88 /* AIResponseHUDView.swift */,
+				41BB72B72F085F77009FCE88 /* CharacterDialogueBubbleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -486,15 +496,19 @@
 				41E39C872D5BE1C6007C29C6 /* GameMachineStates.swift in Sources */,
 				41E39C882D5BE1C6007C29C6 /* GlobalEntities.swift in Sources */,
 				41BB728F2EFCA3EA009FCE88 /* RealityTextInputState.swift in Sources */,
+				41BB72BA2F085FCA009FCE88 /* CharacterDialogueState.swift in Sources */,
 				41E39C892D5BE1C6007C29C6 /* PlayData.swift in Sources */,
 				41E39C8B2D5BE1C6007C29C6 /* AppState.swift in Sources */,
 				41E39C8C2D5BE1C6007C29C6 /* ContentView.swift in Sources */,
 				41E39C8D2D5BE1C6007C29C6 /* MatheMagicApp.swift in Sources */,
+				41BB72B62F085F5B009FCE88 /* MatheMagicAICharacterDialoguePipeline.swift in Sources */,
 				41E39C8E2D5BE1C6007C29C6 /* GameModel.swift in Sources */,
 				41E39C8F2D5BE1C6007C29C6 /* GameModelView.swift in Sources */,
 				41BB72992EFCC8B3009FCE88 /* AIEndpointConfig.swift in Sources */,
+				41BB72B82F085F77009FCE88 /* CharacterDialogueBubbleView.swift in Sources */,
 				41BB729A2EFCC8B3009FCE88 /* MatheMagicAIContract.swift in Sources */,
 				41BB729B2EFCC8B3009FCE88 /* AIDebugState.swift in Sources */,
+				41BB72A52F043EC8009FCE88 /* FlashAIIdleEmoteCatalog.swift in Sources */,
 				41BB729C2EFCC8B3009FCE88 /* MatheMagicAIConfig.swift in Sources */,
 				41BB72A12EFCD20C009FCE88 /* MatheMagicAIEventPipeline.swift in Sources */,
 				41BB729D2EFCC8B3009FCE88 /* MatheMagicAIService.swift in Sources */,
@@ -738,10 +752,6 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AnimationLibrary/AnimLib;
 		};
-		41AILIB42E00000000000004 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AILibrary/AILib" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../NexTaleLibraries/AILibrary/AILib;
-		};
 		41AFD20E2DE3711B00E1FE37 /* XCLocalSwiftPackageReference "../../NexTaleLibraries/AssetLib/AssetLib" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../NexTaleLibraries/AssetLib/AssetLib;
@@ -773,10 +783,6 @@
 		4135079D2D6026440048FE53 /* AnimLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnimLib;
-		};
-		41AILIB32E00000000000003 /* AILib */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AILib;
 		};
 		41AFD20F2DE3711B00E1FE37 /* AssetLib */ = {
 			isa = XCSwiftPackageProductDependency;

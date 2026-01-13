@@ -81,6 +81,7 @@
     - AnimationDebugHUD.swift
     - BuildTransforms.swift
     - CommonUseCases.swift
+    - OneShotAnimationRequests.swift
     - CriricalPoseFunctions.swift
     - SkeletonUtilities.swift
     - TransformUtilities.swift

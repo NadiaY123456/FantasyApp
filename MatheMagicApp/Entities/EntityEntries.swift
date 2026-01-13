@@ -97,7 +97,7 @@ import Spatial
         jsonPaths: [""],
         isAnimated: false,
         isMoving: false,
-        position: SIMD3(x: 0, y: -0.1, z: 0),
+        position: SIMD3(x: 5, y: 2.3, z: 0),
         orientation: simd_quatf(
             Rotation3D(angle: .degrees(0), axis: .y)
                 .rotated(by: Rotation3D(angle: .degrees(0), axis: .z))

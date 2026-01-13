@@ -448,17 +448,18 @@ class CameraState {
         guard settings.lockPivotTranslationWhenIdle else { return false }
         guard let tracked = trackedEntity else { return false }
 
-        // Move type comes from AnimLib's published playback-state snapshot.
-        let isIdleMoveType = tracked.components[AnimationPlaybackStateComponent.self]?.isIdle ?? false
-        guard isIdleMoveType else { return false }
+        let moveType = tracked.components[AnimationPlaybackStateComponent.self]?.currentMoveType ?? .other
+        guard moveType != .walk else { return false }
 
-        if settings.idlePivotLockRequiresNoControllerInput {
+        if settings.idlePivotLockRequiresNoControllerInput, moveType == .idle {
             let joystickActive =
                 gameModelView.joystickIsTouching &&
                 gameModelView.joystickMagnitude > settings.idlePivotLockJoystickDeadzone
 
-            let controllerPressed = gameModelView.isHoldingButton || joystickActive
-            if controllerPressed { return false }
+            // IMPORTANT:
+            // isHoldingButton is used by the animation-style button, and should NOT drop the pivot lock.
+            // Dropping the lock for a tap/hold causes a brief unlock→relock which can "capture" an offset pivot.
+            if joystickActive { return false }
         }
 
         return true
@@ -478,28 +479,26 @@ class CameraState {
         
         // Smoothly update pivot position based on the tracked entity's current position.
         if let tracked = trackedEntity {
+            let desiredPivotPos = tracked.transform.translation + settings.pivotOffset
             let lockPivot = shouldLockPivotTranslation(gameModelView: gameModelView)
 
             if lockPivot {
-                // Capture once on entry, then hold steady while idle.
                 if lockedPivotWorldPosition == nil {
-                    lockedPivotWorldPosition = pivot.transform.translation
+                    // Lock to the tracked target (not the current/lagging pivot) so re-locking
+                    // can’t "capture" an offset and shift the character on screen.
+                    lockedPivotWorldPosition = desiredPivotPos
                 }
             } else {
-                // Leaving idle (or controller input resumed) → resume following the character.
                 lockedPivotWorldPosition = nil
             }
 
-            let targetPos = lockedPivotWorldPosition ?? (tracked.transform.translation + settings.pivotOffset)
+            let targetPos = lockedPivotWorldPosition ?? desiredPivotPos
             let currentPos = pivot.transform.translation
             
-            // Convert dt to Float.
             let dtFloat = Float(dt)
 
-            // Compute the smoothing factor based on exponential decay.
             let t = 1 - exp(-dtFloat / settings.pivotSmoothTime)
             
-            // Use simd_mix to blend between the current and target positions.
             let smoothedPos = simd_mix(currentPos, targetPos, SIMD3<Float>(repeating: t))
             pivot.transform.translation = smoothedPos
         } else {

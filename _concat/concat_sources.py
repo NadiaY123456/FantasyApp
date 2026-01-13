@@ -1,9 +1,44 @@
 #!/usr/bin/env python3
 from pathlib import Path; import concat_sources_lib as c; OUTPUT_FILENAME = "concatenated_MVR.txt"; SECONDARY_OUTPUT_PATH = Path("/Users/nata/Desktop/temp/concatenated.txt"); OUTPUT_FILENAME_temp = "concatenated_MVR_temp.txt"; SECONDARY_OUTPUT_PATH_temp = Path("/Users/nata/Desktop/temp/concatenated_temp.txt")
 
-# # Relative paths of files to concatenate 
+# # Relative paths of files to concatenate
 SOURCE_FILES_TEMP = [
-
+    # Required files
+    "AnimLibS/Components/BrainComponent.swift",
+    "AnimLibS/Brain/BrainAnimationSequence.swift",
+    "AnimLibS/Brain/Idle/0-IdleSequence.swift",
+    "AnimLibS/Brain/Idle/1-eval-orientation.swift",
+    "AnimLibS/Brain/Idle/2-pick-transition.swift",
+    "AnimLibS/Brain/Idle/3-build-transition.swift",
+    "AnimLibS/Brain/Idle/4-inertial-units.swift",
+    "AnimLibS/Brain/Walk/0-WalkSequence.swift",
+    "AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift",
+    "AnimLibS/Brain/Walk/3-TranstionalSequence.swift",
+    "AnimLibS/Brain/Walk/5-InertialUnits.swift",
+    "AnimLibS/Brain/Walk/6-walkToIdle.swift",
+    "CoreLibS/ImportData/ImportTransitions.swift",
+    "CoreLibS/ImportData/ImportAnim.swift",
+    "CoreLibS/ImportData/DataManager.swift",
+    "CoreLibS/ImportData/AutoGenFromPython/CriticalPosesDefinitions.swift",
+    "AnimLibS/SettingsAndDataStructs/AnimationSettings.swift",
+    "AnimLibS/SettingsAndDataStructs/StyleGuide.swift",
+    "AnimLibS/SettingsAndDataStructs/TravelGuide.swift",
+    "AnimLibS/SettingsAndDataStructs/SequenceData.swift",
+    # Nice-to-have files
+    "InertializationS/inert-main.swift",
+    "CoreLibS/ImportData/CriticalPosesFunctions.swift",
+    "AnimLibS/Utilities/CriricalPoseFunctions.swift",
+    "AnimLibS/Components/AnimationSystem.swift",
+    "AnimLibS/Components/AnimationPlaybackStateComponent.swift",
+    "AnimLibS/Components/EventComponent.swift",
+    "AnimLibS/Utilities/AnimationDebugHUD.swift",
+    "AnimLibS/AnimationTranstions/Idle-Idle Transitions/0-fillOutIdeToIdleElements.swift",
+    "AnimLibS/AnimationTranstions/Idle-Idle Transitions/addTargetAnimationSequenceAfterIdleToIdle.swift",
+    "AnimLibS/AnimationTranstions/Construct Poses/Bones-Level/AboutToLiftFoot-Idle.swift",
+    "AnimLibS/AnimationTranstions/Construct Poses/Bones-Level/LiftFoot-Idle.swift",
+    "AnimLibS/AnimationTranstions/Construct Poses/Bones-Level/PlantedFeetIfPossible-Idle.swift",
+    "AnimLibS/AnimationTranstions/Walk-Walk Transitions/CirWalk/CirWalk.swift",
+    "AnimLibS/AnimationTranstions/Walk-Walk Transitions/CirWalk/CirWalkBoneOffsets.swift",
 ]
 
 
@@ -16,22 +51,22 @@ SOURCE_FILES = [
     "_concat/project_structure-MatheMagicApp.text",
     "_concat/project_structure-AILib.text",
     "_concat/project_structure-AnimLib.text",
-    # "_concat/project_structure-AssetLib.text",
+    "_concat/project_structure-AssetLib.text",
     "_concat/project_structure-CoreLib.text",
     "_concat/project_structure-Inertialization.text",
-    # "_concat/project_structure-joystickController.text",
+    "_concat/project_structure-joystickController.text",
 
     # ============================================================================
     # APP (MatheMagicApp)
     # ============================================================================
 
-    "MatheMagicApp/Info.plist",
+    # "MatheMagicApp/Info.plist",
 
     #----------------------------------------------------------------------------
     # APP: Components
     #----------------------------------------------------------------------------
     # "MatheMagicApp/Components/CameraRotationComponent.swift",
-    "MatheMagicApp/Components/MoveComponent.swift",
+    # "MatheMagicApp/Components/MoveComponent.swift",
     # "MatheMagicApp/Components/RealityViewExtensions.swift",
     # "MatheMagicApp/Components/TapComponent.swift",
 
@@ -61,20 +96,23 @@ SOURCE_FILES = [
     # APP: AI
     #----------------------------------------------------------------------------
     "MatheMagicApp/AI/MatheMagicAIConfig.swift",
-    "MatheMagicApp/AI/AIEndpointConfig.swift",
+    # "MatheMagicApp/AI/AIEndpointConfig.swift",
+    "MatheMagicApp/AI/FlashAIIdleEmoteCatalog.swift",
     "MatheMagicApp/AI/MatheMagicAIContract.swift",
     "MatheMagicApp/AI/MatheMagicAIEventPipeline.swift",
-    "MatheMagicApp/AI/MatheMagicAIService.swift",
+    "MatheMagicApp/AI/MatheMagicAICharacterDialoguePipeline.swift",
+    # "MatheMagicApp/AI/MatheMagicAIService.swift",
     "MatheMagicApp/AI/AIDebugState.swift",
 
     #----------------------------------------------------------------------------
     # APP: Top-Level
     #----------------------------------------------------------------------------
-    "MatheMagicApp/Top-Level/AppState.swift",
-    "MatheMagicApp/Top-Level/ContentView.swift",
+    # "MatheMagicApp/Top-Level/AppState.swift",
+    # "MatheMagicApp/Top-Level/ContentView.swift",
     # "MatheMagicApp/Top-Level/GameModel.swift",
     "MatheMagicApp/Top-Level/GameModelView.swift",
-    "MatheMagicApp/Top-Level/ImmersiveVew.swift",
+    "MatheMagicApp/Top-Level/CharacterDialogueState.swift",
+    # "MatheMagicApp/Top-Level/ImmersiveVew.swift",
     "MatheMagicApp/Top-Level/RealityTextInputState.swift",
     # "MatheMagicApp/Top-Level/MatheMagicApp.swift",
 
@@ -94,6 +132,7 @@ SOURCE_FILES = [
     # "MatheMagicApp/Views/Play.swift",
     # "MatheMagicApp/Views/AnimationDebugHUDOverlayView.swift",
     "MatheMagicApp/Views/AIResponseHUDView.swift",
+    # "MatheMagicApp/Views/CharacterDialogueBubbleView.swift",
     "MatheMagicApp/Views/RealityTextInputOverlayView.swift",
     # "MatheMagicApp/Views/Selection.swift",
     # "MatheMagicApp/Views/Start.swift",
@@ -102,7 +141,7 @@ SOURCE_FILES = [
     # APP: Views / Scene Functions
     #----------------------------------------------------------------------------
     # "MatheMagicApp/Views/Scene Functions/SceneManager.swift",
-    "MatheMagicApp/Views/Scene Functions/setupCharacterWithComponents.swift",
+    # "MatheMagicApp/Views/Scene Functions/setupCharacterWithComponents.swift",
 
     # ============================================================================
     # AI LIBRARY (AILibS)
@@ -112,27 +151,27 @@ SOURCE_FILES = [
     # AI: External
     #----------------------------------------------------------------------------
     "AILibS/ClassifierKit/AIJSONContract.swift",
-    "AILibS/ClassifierKit/AIJSONRunModels.swift",
+    # "AILibS/ClassifierKit/AIJSONRunModels.swift",
     "AILibS/ClassifierKit/AILibConnection.swift",
-    "AILibS/ClassifierKit/ClassifierError.swift",
-    "AILibS/ClassifierKit/MCQFilledResponse.swift",
-    "AILibS/ClassifierKit/MCQKey.swift",
-    "AILibS/ClassifierKit/ClassifierRunner.swift",
-    "AILibS/ClassifierKit/MCQTemplate.swift",
+    # "AILibS/ClassifierKit/ClassifierError.swift",
+    # "AILibS/ClassifierKit/MCQFilledResponse.swift",
+    # "AILibS/ClassifierKit/MCQKey.swift",
+    # "AILibS/ClassifierKit/ClassifierRunner.swift",
+    # "AILibS/ClassifierKit/MCQTemplate.swift",
     "AILibS/ClassifierKit/OllamaChatModels.swift",
     
     #----------------------------------------------------------------------------
     # AI: Internal
     #----------------------------------------------------------------------------
-    # "AILibS/ClassifierKit/ClassifierKitLogger.swift",
+    "AILibS/ClassifierKit/ClassifierKitLogger.swift",
     # "AILibS/ClassifierKit/JSONSchema.swift",
     # "AILibS/ClassifierKit/JSONSchemaValidator.swift",
     # "AILibS/ClassifierKit/JSONValue.swift",
     # "AILibS/ClassifierKit/MCQSchemaBuilder.swift",
     # "AILibS/ClassifierKit/ModelOutputJSONExtractor.swift",
-    # "AILibS/ClassifierKit/OllamaClient.swift",
+    "AILibS/ClassifierKit/OllamaClient.swift",
     # "AILibS/ClassifierKit/OllamaEndpointParser.swift",
-    # "AILibS/ClassifierKit/OllamaJSONFiller.swift",
+    "AILibS/ClassifierKit/OllamaJSONFiller.swift",
     # "AILibS/ClassifierKit/PromptBuilder.swift",
     # "AILibS/ClassifierKit/SchemaPromptBuilder.swift",
     # "AILibS/ClassifierKit/StrictJSONPromptBuilder.swift",
@@ -149,20 +188,20 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play
     #----------------------------------------------------------------------------
-    "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
+    # "AnimLibS/AnimationTransforms/Transforms-To-Play/0-TransformsToPlay.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/1-orig-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play / 2-Alterations Data Functions
     #----------------------------------------------------------------------------
-    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
-    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
-    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
+    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/cirWalk-data.swift",
+    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/matchTransform-data.swift",
+    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-Alterations Data Functions/stride-data.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Transforms / Transforms-To-Play (continuation)
     #----------------------------------------------------------------------------
-    "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
+    # "AnimLibS/AnimationTransforms/Transforms-To-Play/2-apply-alterations-pre-blend.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/3-blend-elments-in-tree.swift",
     # "AnimLibS/AnimationTransforms/Transforms-To-Play/4-inertial-data.swift",
 
@@ -229,48 +268,48 @@ SOURCE_FILES = [
     #----------------------------------------------------------------------------
     # ANIMATION: Brain
     #----------------------------------------------------------------------------
-    "AnimLibS/Brain/BrainAnimationSequence.swift",
-    "AnimLibS/Brain/Travel&StyleEvents.swift",
+    # "AnimLibS/Brain/BrainAnimationSequence.swift",
+    # "AnimLibS/Brain/Travel&StyleEvents.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Brain / Idle
     #----------------------------------------------------------------------------
-    "AnimLibS/Brain/Idle/0-IdleSequence.swift",
+    # "AnimLibS/Brain/Idle/0-IdleSequence.swift",
     # "AnimLibS/Brain/Idle/1-eval-orientation.swift",
-    "AnimLibS/Brain/Idle/2-pick-transition.swift",
+    # "AnimLibS/Brain/Idle/2-pick-transition.swift",
     # "AnimLibS/Brain/Idle/3-build-transition.swift",
     # "AnimLibS/Brain/Idle/4-inertial-units.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Brain / Walk
     #----------------------------------------------------------------------------
-    "AnimLibS/Brain/Walk/0-WalkSequence.swift",
-    "AnimLibS/Brain/Walk/1-PathwayEval.swift",
-    "AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift",
+    # "AnimLibS/Brain/Walk/0-WalkSequence.swift",
+    # "AnimLibS/Brain/Walk/1-PathwayEval.swift",
+    # "AnimLibS/Brain/Walk/2-ExtendWalkSequence.swift",
     # "AnimLibS/Brain/Walk/3-TranstionalSequence.swift",
     # "AnimLibS/Brain/Walk/4-StepAlterations.swift",
     # "AnimLibS/Brain/Walk/5-InertialUnits.swift",
-    "AnimLibS/Brain/Walk/6-walkToIdle.swift",
+    # "AnimLibS/Brain/Walk/6-walkToIdle.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Components
     #----------------------------------------------------------------------------
     # "AnimLibS/Components/AnimationSystem.swift",
     # "AnimLibS/Components/AnimationPlaybackStateComponent.swift",
-    "AnimLibS/Components/BrainComponent.swift",
+    # "AnimLibS/Components/BrainComponent.swift",
     # "AnimLibS/Components/CustomAnimationSystem.swift",
-    "AnimLibS/Components/EventComponent.swift",
+    # "AnimLibS/Components/EventComponent.swift",
     # "AnimLibS/Components/SkeletalPosesSystem.swift",
     # "AnimLibS/Components/TravelComponent.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: SettingsAndDataStructs
     #----------------------------------------------------------------------------
-    "AnimLibS/SettingsAndDataStructs/AnimationSettings.swift",
+    # "AnimLibS/SettingsAndDataStructs/AnimationSettings.swift",
     # "AnimLibS/SettingsAndDataStructs/CharacterAttachment.swift",
     # "AnimLibS/SettingsAndDataStructs/SequenceData.swift",
-    "AnimLibS/SettingsAndDataStructs/StyleGuide.swift",
-    "AnimLibS/SettingsAndDataStructs/TravelGuide.swift",
+    # "AnimLibS/SettingsAndDataStructs/StyleGuide.swift",
+    # "AnimLibS/SettingsAndDataStructs/TravelGuide.swift",
 
     #----------------------------------------------------------------------------
     # ANIMATION: Utilities
@@ -309,6 +348,14 @@ SOURCE_FILES = [
     # "AssetLibS/BuildTerrain/TerrainModelEntityLoader.swift",
 
     #----------------------------------------------------------------------------
+    # ASSET: Shaders
+    #----------------------------------------------------------------------------
+    # "AssetLibS/Shaders/SimpleTerrainShader.metal",
+    # "AssetLibS/Shaders/SplatTerrainShader.metal",
+    # "AssetLibS/Shaders/TerrainMaterials.h",
+    # "AssetLibS/Shaders/TerrainMaterials.metal",
+
+    #----------------------------------------------------------------------------
     # ASSET: Components
     #----------------------------------------------------------------------------
     # "AssetLibS/Components/TeraComponent.swift",
@@ -340,7 +387,7 @@ SOURCE_FILES = [
     # CORE: CoreUtilities
     #----------------------------------------------------------------------------
     # "CoreLibS/CoreUtilities/AdditiveOffsetsForCirWalk.swift",
-    # "CoreLibS/CoreUtilities/AppLogger.swift",
+    "CoreLibS/CoreUtilities/AppLogger.swift",
     # "CoreLibS/CoreUtilities/CoreTransform.swift",
     # "CoreLibS/CoreUtilities/SmoothingUtilities.swift",
     # "CoreLibS/CoreUtilities/VectorMath.swift",
@@ -369,14 +416,14 @@ SOURCE_FILES = [
     # ============================================================================
     # JOYSTICK CONTROLLER (joystickControllerS)
     # ============================================================================
-    "joystickControllerS/ExternalDataProtocol.swift",
+    # "joystickControllerS/ExternalDataProtocol.swift",
     # "joystickControllerS/JoystickInterpreter.swift",
 
     #----------------------------------------------------------------------------
     # JOYSTICK: UI
     #----------------------------------------------------------------------------
-    "joystickControllerS/UI/ActionButtonView.swift",
-    "joystickControllerS/UI/JoystickController.swift",
+    # "joystickControllerS/UI/ActionButtonView.swift",
+    # "joystickControllerS/UI/JoystickController.swift",
 ]
 
 if __name__ == "__main__":

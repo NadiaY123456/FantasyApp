@@ -30,23 +30,23 @@ struct Selection: View {
                 RealityView { content in
                     // Initial setup
                     content.add(spaceOrigin)
-                    
+
                     // Add directional light
                     sceneManager.addDirectionalLight(to: spaceOrigin)
-                    
+
                     // Add point light
                     // sceneManager.addPointLight(to: spaceOrigin)
-                    
+
                     // Image-based lighting (IBL)
                     guard let iblComponent = try? await sceneManager.addImageBasedLight(name: "ImageBasedLighting") else { return }
                     spaceOrigin.components.set(iblComponent) // space origin emits light
-                    
+
                     // position the camera immeditely on load to avoid a blink
                     gameModelView.camera.updateCameraTransform(deltaTime: 0.0, gameModelView: gameModelView)
-                    
+
                     // Skybox
                     gameModelView.camera.loadSkybox(into: content, for: .forest, with: iblComponent) // This loads png image as skybox
-                    
+
                     //                     // This function loads proper skybox (i.e. .exr) and uses it as IBL light source
                     //                     do {
                     //                         let skyboxResource = try await EnvironmentResource(named: "kloofendal_48d_partly_cloudy_puresky")
@@ -54,14 +54,14 @@ struct Selection: View {
                     //                     } catch {
                     //                         AppLogger.shared.error("Error loading fantasycastle skybox: \(error)")
                     //                     }
-                    
-                    //                    // add environment
-                    //                    if let planeModel = entityModelDictionaryCore["plane"] {
-                    //                        spaceOrigin.addChild(planeModel.entity)
-                    //                        // print plane position
-                    //                        AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
-                    //                    }
-                    
+
+                    // add environment
+                    if let planeModel = entityModelDictionaryCore["plane"] {
+                        spaceOrigin.addChild(planeModel.entity)
+                        // print plane position
+                        AppLogger.shared.info("Plane position: \(planeModel.entity.transform.translation)")
+                    }
+
                     // Add the character and create the camera pivot around it.
                     let flashModel = setupCharacterWithComponents(entityDictionaryID: "flash", gameModelView: gameModelView)
                     // Optionally, add lighting to Flash and add to the scene.
@@ -70,19 +70,18 @@ struct Selection: View {
                     gameModelView.camera.trackedEntity = flashModel
                     // Add the camera relative to Flash.
                     gameModelView.camera.addCamera(to: content, relativeTo: flashModel, gameModelView: gameModelView, deltaTime: 0)
-                    
-                    AppLogger.shared.info("Plane position: \(flashModel.transform.translation)")
-                    
+
+                    AppLogger.shared.info("Flash position: \(flashModel.transform.translation)")
+
                     // MARK: - Build terrain
-                    
+
                     //                    if let terrainRoot = await teraStore.getTeraSet(world: "firstWorld")?.entity {
                     //                        spaceOrigin.addChild(terrainRoot.clone(recursive: true)) // clone if multiple views share it
                     //                    }
-                    
+
                     // MARK: - Build terrain via component (diagnostics + asset-manager fetch)
 
                     // 0️⃣ pull the AssetManager straight from the store
-                
 
                     // 1️⃣ create placeholder + component
                     let terrainEntity = Entity()
@@ -134,8 +133,8 @@ struct Selection: View {
                 VStack {
                     HStack {
                         AIResponseHUDView(state: gameModelView.aiDebug)
-                        .frame(maxWidth: 520)
-                        .allowsHitTesting(false)
+                            .frame(maxWidth: 520)
+                            .allowsHitTesting(false)
 
                         Spacer(minLength: 0)
                     }
@@ -143,6 +142,22 @@ struct Selection: View {
                     Spacer(minLength: 0)
                 }
                 .padding([.top, .leading], 20)
+
+                Group {
+                    if gameModelView.characterDialogue.isVisible {
+                        CharacterDialogueBubbleView(text: gameModelView.characterDialogue.text)
+                            .frame(maxWidth: min(360, geometry.size.width * 0.45))
+                            // Right of center + vertically centered (approx. character head area)
+                            .position(
+                                x: geometry.size.width * 0.68,
+                                y: geometry.size.height * 0.5
+                            )
+                            .allowsHitTesting(false)
+                            .transition(.opacity.combined(with: .scale))
+                            .zIndex(10)
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: gameModelView.characterDialogue.isVisible)
 
                 // 2) Overlay the JoystickView at the bottom left
                 VStack {

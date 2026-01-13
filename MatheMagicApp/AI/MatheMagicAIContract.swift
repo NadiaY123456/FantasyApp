@@ -6,47 +6,30 @@
 import Foundation
 
 enum MatheMagicAIContract {
-    static let schemaVersion: Int = 1
+    static let schemaVersion: Int = 2
 
-    static let templateJSONString: String = #"""
-    {
-      "schemaVersion": 1,
-      "title": "MatheMagicEventToAnimation",
-      "includeEventEcho": true,
-      "eventEchoRequired": false,
-      "context": "You help a game character react to a short EVENT typed by the player. Choose a primary action and a mood. Use no_change if EVENT should not change the current state. Use unclear if ambiguous.",
-      "fields": [
+    static var templateJSONString: String {
+        let idleEmoteOptions = FlashAIIdleEmoteCatalog.aiContractOptionsJSONArray
+
+        return #"""
         {
-          "key": "character_action",
-          "promptTitle": "Character: Action",
-          "context": "Pick the primary physical action the character should take. Keep coherent with character_mood.",
-          "required": true,
-          "options": [
-            { "value": "unclear" },
-            { "value": "no_change" },
-            { "value": "idle" },
-            { "value": "walk" },
-            { "value": "run" },
-            { "value": "jump" },
-            { "value": "wave" }
-          ]
-        },
-        {
-          "key": "character_mood",
-          "promptTitle": "Character: Mood",
-          "context": "Pick an emotional tone coherent with character_action.",
-          "required": true,
-          "options": [
-            { "value": "unclear" },
-            { "value": "no_change" },
-            { "value": "calm" },
-            { "value": "happy" },
-            { "value": "angry" },
-            { "value": "scared" },
-            { "value": "surprised" }
+          "schemaVersion": \#(schemaVersion),
+          "title": "MatheMagicEventToAnimation",
+          "includeEventEcho": true,
+          "eventEchoRequired": false,
+          "context": "You help a game character react to a short EVENT typed by the player by selecting exactly ONE Flash idle emote. Do not choose generic character actions or moods. Use no_change if no idle emote reaction is needed. Use unclear if ambiguous.",
+          "fields": [
+            {
+              "key": "\#(FlashAIIdleEmoteCatalog.aiContractFieldKey)",
+              "promptTitle": "Flash: Idle Emote",
+              "context": "Pick the single best idle emote reaction for the EVENT (if any). Use the option labels/meanings to map intent (e.g., greeting / acknowledgement / respect -> Salute). Example: \"dragon riders are flying overhead\" => Salute. Use no_change if no emote is needed. Use unclear if ambiguous.",
+              "required": true,
+              "options": [
+                \#(idleEmoteOptions)
+              ]
+            }
           ]
         }
-      ]
+        """#
     }
-    """#
 }

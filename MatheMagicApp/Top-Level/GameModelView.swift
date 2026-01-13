@@ -7,7 +7,7 @@ import joystickController
 import RealityKit
 import SwiftUI
 
-class GameModelView: ObservableObject, JoystickDataProvider {
+class GameModelView: ObservableObject, JoystickDataProvider, AIIdleAnimationSuggestionProvider {
     // MARK: - Animation Debug HUD (overlay)
 
     @Published var showAnimationDebugHUD: Bool = false {
@@ -49,9 +49,19 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     // MARK: - AI (AILib contract pipeline)
     @Published var aiDebug: AIDebugState = .init()
 
+    // MARK: - Character Dialogue Bubble
+    @Published var characterDialogue: CharacterDialogueState = .init()
+
     private let aiPipeline = MatheMagicAIEventPipeline()
+    private let aiCharacterDialoguePipeline = MatheMagicAICharacterDialoguePipeline()
+
     private var aiTask: Task<Void, Never>?
+    private var aiDialogueTask: Task<Void, Never>?
     private var aiActiveEventID: UUID?
+
+    private var dialogueHideTask: Task<Void, Never>?
+
+    private var pendingAIIdleAnimationSuggestion: String?
 
     // MARK: Joystick data
 
@@ -111,6 +121,12 @@ class GameModelView: ObservableObject, JoystickDataProvider {
         showAnimationDebugHUD.toggle()
     }
 
+    func consumeAIIdleAnimationSuggestion() -> String? {
+        let v = pendingAIIdleAnimationSuggestion
+        pendingAIIdleAnimationSuggestion = nil
+        return v
+    }
+
     @MainActor
     func handleSubmittedRealityText(_ event: UserTextInputEvent) {
         AppLogger.shared.info("📝 Captured user text input (\(event.source.rawValue)): \(event.text)")
@@ -128,28 +144,99 @@ class GameModelView: ObservableObject, JoystickDataProvider {
     private func runAIClassification(for event: UserTextInputEvent) {
         // Cancel in-flight request (latest input wins)
         aiTask?.cancel()
+        aiDialogueTask?.cancel()
 
         aiActiveEventID = event.id
         aiDebug.start(eventText: event.text)
 
+        // Prevent an older pending suggestion from applying after a newer prompt is submitted.
+        pendingAIIdleAnimationSuggestion = nil
+        clearCharacterDialogue()
+
         let eventID = event.id
         let eventText = event.text
 
-        aiTask = Task { [weak self] in
+        // Character dialogue bubble (separate from the existing classification pipeline)
+        aiDialogueTask = Task { [weak self] in
+            guard let self else { return }
+
+            do {
+                let speech = try await self.aiCharacterDialoguePipeline.run(eventText: eventText)
+                try Task.checkCancellation()
+
+                await MainActor.run {
+                    guard !Task.isCancelled, self.aiActiveEventID == eventID else { return }
+                    self.showCharacterDialogue(speech)
+                }
+            } catch is CancellationError {
+                // no-op
+            } catch {
+                AppLogger.shared.error("AI Dialogue: FAILED eventID=\(eventID) error=\(String(describing: error))")
+            }
+        }
+
+        aiTask = Task { @MainActor [weak self] in
             guard let self else { return }
 
             do {
                 let result = try await self.aiPipeline.run(eventText: eventText)
                 guard !Task.isCancelled, self.aiActiveEventID == eventID else { return }
+
                 self.aiDebug.setSuccess(result)
+
+                self.pendingAIIdleAnimationSuggestion = FlashAIIdleEmoteCatalog.normalizedSuggestion(
+                    from: result.values[FlashAIIdleEmoteCatalog.aiContractFieldKey]
+                )
             } catch is CancellationError {
                 guard self.aiActiveEventID == eventID else { return }
                 self.aiDebug.setCancelled()
+
+                AppLogger.shared.info("AI: cancelled eventID=\(eventID)")
             } catch {
                 guard !Task.isCancelled, self.aiActiveEventID == eventID else { return }
                 self.aiDebug.setFailure(error)
+
+                // Ensure it shows in Xcode console.
+                let err = String(describing: error)
+                AppLogger.shared.error("AI: FAILED eventID=\(eventID) error=\(err)")
+                print("AI: FAILED eventID=\(eventID) error=\(err)")
             }
         }
+    }
+
+    // MARK: - Character Dialogue Bubble helpers
+
+    @MainActor
+    private func showCharacterDialogue(_ text: String, durationSeconds: TimeInterval = 15) {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        guard durationSeconds > 0 else { return }
+
+        dialogueHideTask?.cancel()
+
+        let newState = CharacterDialogueState(id: UUID(), text: trimmed, isVisible: true)
+        characterDialogue = newState
+
+        let shownID = newState.id
+        dialogueHideTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            do {
+                try await Task.sleep(nanoseconds: UInt64(durationSeconds * 1_000_000_000))
+            } catch {
+                return
+            }
+
+            guard self.characterDialogue.id == shownID else { return }
+            self.characterDialogue = .init()
+        }
+    }
+
+    @MainActor
+    private func clearCharacterDialogue() {
+        dialogueHideTask?.cancel()
+        dialogueHideTask = nil
+        characterDialogue = .init()
     }
 
     private func setupAnimationDebugHUDSubscription() {
@@ -162,9 +249,26 @@ class GameModelView: ObservableObject, JoystickDataProvider {
                     self.animationDebugHUDCards.removeAll()
 
                 case .card(let card):
-                    self.animationDebugHUDCards.append(card)
-                    if self.animationDebugHUDCards.count > 3 {
-                        self.animationDebugHUDCards.removeFirst(self.animationDebugHUDCards.count - 3)
+                    if let last = self.animationDebugHUDCards.last,
+                       last.kind == card.kind,
+                       last.title == card.title
+                    {
+                        // Same animation/transition: update in place (preserve id so SwiftUI doesn't treat it as a new card).
+                        let updated = AnimationDebugCard(
+                            id: last.id,
+                            gameTimeSeconds: card.gameTimeSeconds,
+                            characterName: card.characterName,
+                            kind: card.kind,
+                            title: card.title,
+                            subtitle: card.subtitle,
+                            details: card.details
+                        )
+                        self.animationDebugHUDCards[self.animationDebugHUDCards.count - 1] = updated
+                    } else {
+                        self.animationDebugHUDCards.append(card)
+                        if self.animationDebugHUDCards.count > 3 {
+                            self.animationDebugHUDCards.removeFirst(self.animationDebugHUDCards.count - 3)
+                        }
                     }
                 }
             }
@@ -227,5 +331,7 @@ class GameModelView: ObservableObject, JoystickDataProvider {
 
     deinit {
         aiTask?.cancel()
+        aiDialogueTask?.cancel()
+        dialogueHideTask?.cancel()
     }
 }
